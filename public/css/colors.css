@@ -1,0 +1,24 @@
+/* Definición de colores estándar */
+
+:root {
+
+    /* LIGHT COLORS */
+    --light-bg: #E5F4FF;
+    --light-text: #1A202C;
+    --light-accent: #3B82F6;
+    --light-button-bg: #13cc13;
+    --light-navbar-bg: #f3ca7f;
+    --light-submenu-bg: #f3ca7f;
+
+    /* DARK COLORS */
+    --dark-bg: #1A202C;
+    --dark-text: #FFFFFF;
+    --dark-accent: #fea701;
+    --dark-button-bg: #fea701;
+    --dark-navbar-bg: #333;
+    --dark-submenu-bg: #333;
+
+    /* STANDARD COLORS */
+    --menu-active: #ff5100;
+
+}

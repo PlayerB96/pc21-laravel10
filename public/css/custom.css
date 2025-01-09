@@ -1,0 +1,77 @@
+/* Incluir las variables de color */
+@import url('colors.css');
+
+/*########################### Light Mode ###########################*/
+body.light {
+    background-color: var(--light-bg);
+    color: var(--light-text);
+}
+
+body.light .services h1 {
+    color: var(--light-accent);
+}
+
+body.light .button {
+    background-color: var(--light-button-bg);
+    color: white;
+}
+
+body.light .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 650px;
+    background: linear-gradient(to bottom, #f3ca7f, transparent);
+    z-index: 10;
+}
+
+body.light .navbarbackground {
+    background-color: var(--light-navbar-bg);
+}
+
+body.light .navbar-link:hover,
+.navbar-link.active {
+    color: black;
+}
+
+body.light .sub-menubg {
+    background-color: var(--light-submenu-bg);
+}
+
+/*########################### Dark Mode ###########################*/
+body.dark {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
+body.dark .services h2 {
+    color: var(--dark-accent);
+}
+
+body.dark .button {
+    background-color: var(--dark-button-bg);
+    color: white;
+}
+
+body.dark .gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 650px;
+    background: linear-gradient(to bottom, var(--dark-navbar-bg), transparent);
+    z-index: 10;
+}
+
+body.dark .navbarbackground {
+    background-color: var(--dark-navbar-bg);
+}
+
+body.dark .navbar-link.active {
+    color: #FFD700;
+}
+
+body.dark .sub-menubg {
+    background-color: var(--dark-submenu-bg);
+}
