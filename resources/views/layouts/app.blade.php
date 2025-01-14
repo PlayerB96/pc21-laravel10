@@ -22,11 +22,9 @@
     <main id="main-content">
         @yield('content') <!-- Aquí se inyectará el contenido de cada página -->
     </main>
+    <!-- Incluir el footer -->
+    @include('partials.footer')
 
-    <!-- Footer (siempre visible) -->
-    <footer class="footer">
-        <p>&copy; {{ date('Y') }} Extranet La Número Uno. Todos los derechos reservados.</p>
-    </footer>
 
     <script>
         // Función para cargar contenido sin recargar la página
