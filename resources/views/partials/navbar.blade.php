@@ -56,7 +56,6 @@ $navItems = [
 
 <style>
     .navbar {
-        /* background-color: #333; */
         color: white;
         padding: 10px 20px;
         display: flex;

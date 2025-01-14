@@ -17,6 +17,23 @@
         margin: auto;
     }
 
+    /* Efecto al pasar el cursor sobre los íconos */
+    /* Cambiar el fondo al pasar el cursor sobre los íconos */
+    .social-links a:hover {
+        background-color: #ffffff;
+        transition: background-color 0.3s ease;
+        border-radius: 50%;
+
+    }
+
+    /* Si quieres agregar un poco de espacio entre el ícono y el fondo */
+    .social-links a img {
+        transition: background-color 0.3s ease;
+        padding: 0.1rem;
+        margin: 0.2rem;
+        border-radius: 50%;
+    }
+
     .row {
         display: flex;
         flex-wrap: wrap;
@@ -80,19 +97,11 @@
         display: inline-block;
         height: 40px;
         width: 40px;
-        background-color: rgba(255, 255, 255, 0.2);
         margin: 0 10px 10px 0;
-        text-align: center;
-        line-height: 40px;
-        border-radius: 50%;
-        color: #ffffff;
-        transition: all 0.5s ease;
+
     }
 
-    .footer-col .social-links a:hover {
-        color: #24262b;
-        background-color: #ffffff;
-    }
+
 
     /*responsive*/
     @media(max-width: 767px) {
@@ -108,49 +117,45 @@
         }
     }
 </style>
-<footer class="footer">
+<footer class="footer footerbackground">
     <div class="container">
         <div class="row">
             <div class="footer-col">
-                <h4>company</h4>
+                <h4>Compañia</h4>
                 <ul>
-                    <li><a href="#">about us</a></li>
-                    <li><a href="#">our services</a></li>
-                    <li><a href="#">privacy policy</a></li>
-                    <li><a href="#">affiliate program</a></li>
+                    <li><a class="footertext" href="#">Sobre Nosotros</a></li>
+                    <li><a class="footertext" href="#">Nuestros Servicios</a></li>
+                    <li><a class="footertext" href="#">Política de Privacidad</a></li>
+                    <li><a class="footertext" href="#">Aplicativo LN1</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>get help</h4>
+                <h4>Obtener Ayuda</h4>
                 <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">shipping</a></li>
-                    <li><a href="#">returns</a></li>
-                    <li><a href="#">order status</a></li>
-                    <li><a href="#">payment options</a></li>
+                    <li><a class="footertext" href="#">FAQ</a></li>
+                    <li><a class="footertext" href="#">Soporte</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>online shop</h4>
+                <h4>Tienda en Línea </h4>
                 <ul>
-                    <li><a href="#">watch</a></li>
-                    <li><a href="#">bag</a></li>
-                    <li><a href="#">shoes</a></li>
-                    <li><a href="#">dress</a></li>
+                    <li><a class="footertext" href="https://www.lanumero1.com.pe/collections/infantil" target="_blank">Infantil</a></li>
+                    <li><a class="footertext" href="https://www.lanumero1.com.pe/collections/hombre" target="_blank">Hombre</a></li>
+                    <li><a class="footertext" href="https://www.lanumero1.com.pe/collections/mujer" target="_blank">Mujer</a></li>
+                    <li><a class="footertext" href="https://www.lanumero1.com.pe/collections/promos-de-navidad" target="_blank">Ofertas</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Síganos</h4>
                 <div class="social-links">
-
                     <a href="#">
-                        <img id="fb-icon" src="{{ asset('assets/icons/facebook-icon.svg') }}" alt="FB Icono" class="theme-icon" />
+                        <img id="fb-icon" src="{{ asset('assets/icons/facebook-icon.svg') }}" alt="FB Icono" class="theme-icon" title="Facebook LN1" />
                     </a>
                     <a href="#">
-                        <img id="fb-icon" src="{{ asset('assets/icons/instagram-icon.svg') }}" alt="INSTA Icono" class="theme-icon" />
+                        <img id="fb-icon" src="{{ asset('assets/icons/instagram-icon.svg') }}" alt="INSTA Icono" class="theme-icon" title="Instagram LN1" />
                     </a>
                     <a href="#">
-                        <img id="fb-icon" src="{{ asset('assets/icons/linkedin-icon.svg') }}" alt="LINKDN Icono" class="theme-icon" />
+                        <img id="fb-icon" src="{{ asset('assets/icons/linkedin-icon.svg') }}" alt="LINKDN Icono" class="theme-icon" title="Linkedn LN1" />
                     </a>
                 </div>
             </div>

@@ -22,3 +22,6 @@ Route::get('/inicio', function () {
 Route::get('/', function () {
     return view('inicio');
 });
+Route::get('/footer/view', function () {
+    return view('partials.footer'); // Asegúrate de que este es el archivo Blade correcto para el footer
+})->name('footer.view');

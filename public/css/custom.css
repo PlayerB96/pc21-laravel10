@@ -40,6 +40,14 @@ body.light .sub-menubg {
     background-color: var(--light-submenu-bg);
 }
 
+body.light .footerbackground {
+    background-color: var(--light-navbar-bg);
+}
+
+body.light .footertext {
+    color: var(--light-text);
+}
+
 /*########################### Dark Mode ###########################*/
 body.dark {
     background-color: var(--dark-bg);
@@ -75,4 +83,12 @@ body.dark .navbar-link.active {
 
 body.dark .sub-menubg {
     background-color: var(--dark-submenu-bg);
+}
+
+body.dark .footerbackground {
+    background-color: var(--dark-navbar-bg);
+}
+
+body.dark .footertext {
+    color: var(--dark-text);
 }
