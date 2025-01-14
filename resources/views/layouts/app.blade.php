@@ -9,6 +9,7 @@
     <title>@yield('title', 'Extranet La Número Uno')</title>
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
 </head>
 

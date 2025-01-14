@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+IN:wght@100..400&display=swap');
+
+/* typography.css */
+
+/* Definir la fuente global */
+:root {
+    --font-family: 'Roboto', sans-serif;
+    --font-family-playwrite: 'Playwrite IN', sans-serif;
+
+    /* Definir la tipografía global */
+}

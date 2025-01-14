@@ -1,5 +1,6 @@
 /* Incluir las variables de color */
 @import url('colors.css');
+@import url('typography.css');
 
 /*########################### Light Mode ###########################*/
 body.light {
@@ -45,7 +46,7 @@ body.dark {
     color: var(--dark-text);
 }
 
-body.dark .services h2 {
+body.dark .services h1 {
     color: var(--dark-accent);
 }
 
