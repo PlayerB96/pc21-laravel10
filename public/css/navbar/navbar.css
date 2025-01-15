@@ -1,0 +1,256 @@
+.navbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    /* Ajusta el espacio entre los elementos */
+}
+
+/* Asegúrate de que el contenedor de la lista sea relativo */
+.nav-item.dropdown {
+    position: relative;
+}
+
+/* Estilos para el dropdown */
+.dropdown-menu {
+    display: none;
+    /* Ocultar por defecto */
+    position: absolute;
+    top: 100%;
+    /* Asegura que se despliegue justo debajo del botón */
+    left: -6rem;
+    z-index: 1000;
+    min-width: 200px;
+    /* Ajusta el tamaño mínimo de la lista */
+    background-color: #fff;
+    /* Fondo blanco */
+    border-radius: 4px;
+    /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra sutil */
+}
+
+/* Cuando el menú tiene la clase 'show', se hace visible */
+.show {
+    display: block;
+}
+
+/* Estilos para los elementos dentro del dropdown */
+.dropdown-item {
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Cambiar color al pasar el cursor por encima */
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilo para los iconos dentro de los elementos */
+.dropdown-item svg {
+    margin-right: 10px;
+}
+
+/* Estilos para el icono de usuario y los detalles del perfil */
+.user-profile-section {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Media query para hacer que el menú sea más accesible en pantallas pequeñas */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        left: 0;
+        /* Elimina el desplazamiento hacia la izquierda */
+        min-width: 150px;
+        /* Ajusta el tamaño mínimo si es necesario */
+    }
+}
+
+.navbar {
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    /* Inicialmente no sticky */
+    top: 0;
+    z-index: 1000;
+    transition: top 0.3s;
+    width: 100%;
+    /* Suaviza la transición al aparecer/desaparecer */
+}
+
+.navbar.sticky {
+    position: fixed;
+    /* Hace el navbar sticky */
+    top: 0;
+}
+
+.navbar-logo img {
+    height: 4rem;
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.navbar-link {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-link.active {
+    color: var(--menu-active);
+
+}
+
+/* Estilo del submenú */
+.sub-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #333;
+    padding: 20px;
+    opacity: 0;
+    min-width: 140px;
+}
+
+
+.navbar-item:hover>.sub-menu {
+    visibility: visible;
+    opacity: 1;
+    display: block;
+}
+
+.sub-menu li {
+    display: block;
+    margin-bottom: 5px;
+    margin: 5px 15px;
+}
+
+.navbar-item {
+    position: relative;
+    padding: 5px 15px;
+}
+
+.sub-menu {
+    width: auto;
+}
+
+/* Estilos del botón de cambio de tema */
+.theme-toggle button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.theme-icons img {
+    width: 30px;
+    height: 30px;
+}
+
+/* Responsividad: menú desplegable */
+@media (max-width: 768px) {
+    .navbar {
+        background-color: #333;
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        position: relative;
+        /* Inicialmente no sticky */
+        top: 0;
+        z-index: 1000;
+        transition: top 0.3s;
+        width: 100%;
+        /* Suaviza la transición al aparecer/desaparecer */
+    }
+
+    .navbar.sticky {
+        position: fixed;
+        /* Hace el navbar sticky */
+        top: 0;
+    }
+
+    .navbar-menu {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .navbar-item {
+        text-align: left;
+        width: 100%;
+        /* Asegura que cada ítem ocupe el 100% de ancho en pantallas pequeñas */
+        display: block;
+        /* Se asegura de que el item sea un bloque */
+        padding: 10px 15px;
+        /* Ajuste de padding para mejor apariencia */
+    }
+
+    .navbar-item .sub-menu {
+        position: static;
+        display: none;
+        /* Aseguramos que el submenú esté oculto por defecto */
+        width: 100%;
+        padding: 0;
+
+    }
+
+    .sub-menu {
+        position: static;
+        display: none;
+        width: 100%;
+        /* Asegura que el submenú también ocupe todo el ancho */
+        padding: 0;
+        /* Elimina padding extra en submenú */
+    }
+
+    .navbar-item:hover>.sub-menu {
+        display: block;
+    }
+
+    .navbar-item.active>.sub-menu {
+        display: block;
+    }
+
+    .sub-menu li {
+        padding: 10px 15px;
+    }
+
+    /* Asegurando que la imagen y el botón se ubiquen correctamente */
+    .navbar-logo {
+        order: -1;
+        margin-bottom: 10px;
+    }
+
+    .theme-toggle {
+        margin-top: 10px;
+        order: 1;
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .theme-icons img {
+        width: 2rem;
+        height: 2rem;
+    }
+}

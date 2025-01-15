@@ -19,9 +19,10 @@ Route::get('/inicio', function () {
     return view('inicio');
 });
 
+Route::get('/login', function () {
+    return view('login');
+});
+
 Route::get('/', function () {
     return view('inicio');
 });
-Route::get('/footer/view', function () {
-    return view('partials.footer'); // Asegúrate de que este es el archivo Blade correcto para el footer
-})->name('footer.view');
