@@ -8,14 +8,10 @@ body.light {
     color: var(--light-text);
 }
 
-body.light .services h1 {
-    color: var(--light-accent);
+body.light .primarybg {
+    background-color: var(--light-primary-bg);
 }
 
-body.light .button {
-    background-color: var(--light-button-bg);
-    color: white;
-}
 
 body.light .gradient-overlay {
     position: absolute;
@@ -27,40 +23,14 @@ body.light .gradient-overlay {
     z-index: 10;
 }
 
-body.light .navbarbackground {
-    background-color: var(--light-navbar-bg);
-}
-
-body.light .navbar-link:hover,
-.navbar-link.active {
-    color: black;
-}
-
-body.light .sub-menubg {
-    background-color: var(--light-submenu-bg);
-}
-
-body.light .footerbackground {
-    background-color: var(--light-navbar-bg);
-}
-
-body.light .footertext {
-    color: var(--light-text);
-}
-
 /*########################### Dark Mode ###########################*/
 body.dark {
     background-color: var(--dark-bg);
     color: var(--dark-text);
 }
 
-body.dark .services h1 {
-    color: var(--dark-accent);
-}
-
-body.dark .button {
-    background-color: var(--dark-button-bg);
-    color: white;
+body.dark .primarybg {
+    background-color: var(--dark-primary-bg);
 }
 
 body.dark .gradient-overlay {
@@ -69,26 +39,6 @@ body.dark .gradient-overlay {
     left: 0;
     width: 100%;
     height: 650px;
-    background: linear-gradient(to bottom, var(--dark-navbar-bg), transparent);
+    background: linear-gradient(to bottom, var(--dark-primary-bg), transparent);
     z-index: 10;
-}
-
-body.dark .navbarbackground {
-    background-color: var(--dark-navbar-bg);
-}
-
-body.dark .navbar-link.active {
-    color: #FFD700;
-}
-
-body.dark .sub-menubg {
-    background-color: var(--dark-submenu-bg);
-}
-
-body.dark .footerbackground {
-    background-color: var(--dark-navbar-bg);
-}
-
-body.dark .footertext {
-    color: var(--dark-text);
 }

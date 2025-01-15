@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="{{ asset('css/chatbot/chatbot.css') }}">
+</head>
 <!-- Botón flotante para abrir el chat -->
 <button id="chat-button" class="chat-button">
     <img style="width:2rem" src="{{ asset('assets/imgs/chatbot.png') }}" alt="Chatbot" />
@@ -16,17 +19,4 @@
         <button>Enviar</button>
     </div>
 </div>
-<script>
-    // Chat interactions
-    const chatButton = document.getElementById('chat-button');
-    const chatWindow = document.getElementById('chat-window');
-    const closeChatButton = document.getElementById('close-chat');
-
-    chatButton.addEventListener('click', () => {
-        chatWindow.style.display = 'block';
-    });
-
-    closeChatButton.addEventListener('click', () => {
-        chatWindow.style.display = 'none';
-    });
-</script>
+<script src="{{ asset('js/chatbot/chatbot.js') }}"></script>

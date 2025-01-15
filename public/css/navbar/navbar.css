@@ -22,7 +22,7 @@
     z-index: 1000;
     min-width: 200px;
     /* Ajusta el tamaño mínimo de la lista */
-    background-color: #fff;
+
     /* Fondo blanco */
     border-radius: 4px;
     /* Bordes redondeados */
@@ -38,7 +38,6 @@
 /* Estilos para los elementos dentro del dropdown */
 .dropdown-item {
     padding: 10px 15px;
-    color: #333;
     text-decoration: none;
     font-size: 14px;
     display: flex;
@@ -73,7 +72,6 @@
 }
 
 .navbar {
-    color: white;
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -121,7 +119,7 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #333;
+    background-color: var(--dark-primary-bg);
     padding: 20px;
     opacity: 0;
     min-width: 140px;
@@ -151,7 +149,7 @@
 
 /* Estilos del botón de cambio de tema */
 .theme-toggle button {
-    background-color: #333;
+    background-color: var(--dark-primary-bg);
     color: white;
     border: none;
     padding: 10px;
@@ -164,10 +162,20 @@
     height: 30px;
 }
 
+
+body.dark .navbar-link.active {
+    color: #FFD700;
+}
+
+body.light .navbar-link:hover,
+.navbar-link.active {
+    color: black;
+}
+
 /* Responsividad: menú desplegable */
 @media (max-width: 768px) {
     .navbar {
-        background-color: #333;
+        background-color: var(--dark-primary-bg);
         color: white;
         padding: 10px 20px;
         display: flex;

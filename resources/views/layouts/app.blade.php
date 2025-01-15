@@ -14,7 +14,7 @@
 <body>
 
     <!-- Navbar (siempre visible) -->
-    @include('partials.navbar')
+    @include('partials.navbar.navbar')
 
     <!-- Main Content: Aquí se cargará el contenido dinámico -->
     <main id="main-content" style="min-height: 500px;">

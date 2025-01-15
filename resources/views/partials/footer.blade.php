@@ -1,32 +1,32 @@
-<style>
-
-</style>
-<footer class="footer footerbackground">
+<head>
+    <link rel="stylesheet" href="{{ asset('css/footer/footer.css') }}">
+</head>
+<footer class="footer primarybg">
     <div class="container">
         <div class="row">
             <div class="footer-col">
                 <h4>Compañia</h4>
                 <ul>
-                    <li><a class="footertext" href="#">Sobre Nosotros</a></li>
-                    <li><a class="footertext" href="#">Nuestros Servicios</a></li>
-                    <li><a class="footertext" href="#">Política de Privacidad</a></li>
-                    <li><a class="footertext" href="#">Aplicativo LN1</a></li>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                    <li><a href="#">Nuestros Servicios</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Aplicativo LN1</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Obtener Ayuda</h4>
                 <ul>
-                    <li><a class="footertext" href="#">FAQ</a></li>
-                    <li><a class="footertext" href="#">Soporte</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Soporte</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Tienda en Línea </h4>
                 <ul>
-                    <li><a class="footertext" href="https://www.lanumero1.com.pe/collections/infantil" target="_blank">Infantil</a></li>
-                    <li><a class="footertext" href="https://www.lanumero1.com.pe/collections/hombre" target="_blank">Hombre</a></li>
-                    <li><a class="footertext" href="https://www.lanumero1.com.pe/collections/mujer" target="_blank">Mujer</a></li>
-                    <li><a class="footertext" href="https://www.lanumero1.com.pe/collections/promos-de-navidad" target="_blank">Ofertas</a></li>
+                    <li><a href="https://www.lanumero1.com.pe/collections/infantil" target="_blank">Infantil</a></li>
+                    <li><a href="https://www.lanumero1.com.pe/collections/hombre" target="_blank">Hombre</a></li>
+                    <li><a href="https://www.lanumero1.com.pe/collections/mujer" target="_blank">Mujer</a></li>
+                    <li><a href="https://www.lanumero1.com.pe/collections/promos-de-navidad" target="_blank">Ofertas</a></li>
                 </ul>
             </div>
             <div class="footer-col">
