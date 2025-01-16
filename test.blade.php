@@ -53,6 +53,7 @@
         cursor: pointer;
     }
 
+    /* Ejemplo de clase personalizada */
     .wide-modal {
         max-width: 800px;
     }

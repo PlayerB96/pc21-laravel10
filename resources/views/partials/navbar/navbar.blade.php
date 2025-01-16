@@ -1,3 +1,5 @@
+@include('partials.navbar.modal_login')
+
 <?php
 $navItems = [
     ['label' => 'eLearning', 'route' => '/home', 'subitems' => []],
@@ -10,7 +12,7 @@ $navItems = [
     ['label' => 'Inicio', 'route' => '/inicio', 'subitems' => []],
 ];
 ?>
-@include('partials.navbar.modal_login')
+
 
 <head>
     <link rel="stylesheet" href="{{ asset('css/navbar/navbar.css') }}">
@@ -41,7 +43,7 @@ $navItems = [
         </li>
         @endforeach
     </ul>
-    <div class="navbar-right ">
+    <div class="navbar-right">
         <div class="nav-item dropdown" style="display: none;">
             <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
@@ -53,26 +55,19 @@ $navItems = [
                 <div class="user-profile-section">
                     <div class="media mx-auto">
                         <div class="media-body">
-                            <h5></h5> <!-- El nombre del usuario se insertará aquí -->
+                            <h5></h5>
                         </div>
                     </div>
                 </div>
                 <div class="dropdown-item">
                     <a href="url_to_profile_page">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        <span>Mi Perfil</span>
+                        <img id="setting" src="{{ asset('assets/icons/setting.svg') }}" alt="Configuración" />
+                        <span>Configuración</span>
                     </a>
                 </div>
-                <div class="dropdown-item">
-                    <a href="logout_url">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                            <polyline points="16 17 21 12 16 7"></polyline>
-                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                        </svg>
+                <div class="dropdown-item" id="logoutBtn">
+                    <a href="javascript:void(0);">
+                        <img id="quit" src="{{ asset('assets/icons/quit.svg') }}" alt="Salir" />
                         <span>Salir</span>
                     </a>
                 </div>
@@ -89,7 +84,6 @@ $navItems = [
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
             </svg>
             ' />
-
 
         <!-- Icono para cambiar el modo -->
         <div class="theme-toggle">

@@ -1,9 +1,10 @@
+
 // Selecciona el botón del dropdown y el menú
 const userProfileDropdown = document.getElementById('userProfileDropdown');
 const dropdownMenu = document.querySelector('.dropdown-menu');
 
 // Muestra u oculta el menú al hacer clic en el botón
-userProfileDropdown.addEventListener('click', function (event) {
+userProfileDropdown.addEventListener('click', function () {
     dropdownMenu.classList.toggle('show');
 });
 
@@ -26,34 +27,45 @@ function toggleDarkMode() {
         body.classList.add('light');
         moonIcon.style.display = 'block';
         sunIcon.style.display = 'none';
-        localStorage.setItem('theme', 'light'); // Guardar en localStorage
+        localStorage.setItem('theme', 'light');
 
     } else {
         body.classList.remove('light');
         body.classList.add('dark');
         moonIcon.style.display = 'none';
         sunIcon.style.display = 'block';
-        localStorage.setItem('theme', 'dark'); // Guardar en localStorage
+        localStorage.setItem('theme', 'dark');
 
     }
 }
 
-
 // Configurar el tema al cargar la página
 window.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme');
-    const body = document.body;
+    const user = localStorage.getItem('user');
+    const userProfileDropdown = document.querySelector(".nav-item.dropdown");
 
+    var loginButton = document.querySelector('[id^="login-btn-"]');
+    const body = document.body;
     if (savedTheme) {
         body.classList.add(savedTheme);
     } else {
         body.classList.add('light'); // Tema predeterminado
     }
 
+    if (!user) {
+        loginButton.style.display = 'inline-block';
+    } else {
+        loginButton.style.display = 'none';
+        const dropdownMenu = userProfileDropdown.querySelector(".dropdown-menu");
+        const userNameElement = dropdownMenu.querySelector("h5");
+        userNameElement.textContent = user;
+        userProfileDropdown.style.display = "block";
+    }
+
 });
-let lastScrollTop = 0; // Variable para almacenar la última posición de desplazamiento
 
-
+let lastScrollTop = 0;
 window.addEventListener("scroll", function () {
     let navbar = document.querySelector(".navbar");
     let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
@@ -93,73 +105,25 @@ function toggleSubMenu(index) {
 }
 
 
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Verifica si el usuario está en el localStorage
-    const user = localStorage.getItem("user");
-
-    // Obtén el contenedor donde se debería mostrar el perfil o el botón de inicio de sesión
-    const userProfileDropdown = document.querySelector(".nav-item.dropdown");
-    const loginButton = document.querySelector(".login-button");
-
-    if (user) {
-        // Si el usuario está en el localStorage, muestra el perfil con el nombre del usuario
-        const dropdownMenu = userProfileDropdown.querySelector(".dropdown-menu");
-        const userNameElement = dropdownMenu.querySelector("h5");
-        // Inserta el nombre del usuario
-        userNameElement.textContent = user;
-        // Asegúrate de que el dropdown se muestre
-        userProfileDropdown.style.display = "block";
-    } else {
-        // Si no hay usuario en el localStorage, muestra el botón de inicio de sesión
-        if (loginButton) {
-            loginButton.style.display = "block";
-        }
-        // Oculta el dropdown
-        userProfileDropdown.style.display = "none";
-    }
-});
-
-function redirectToLogin(button) {
-    // Obtener el valor de 'data-route' que contiene la URL de redirección
-    const loginUrl = button.getAttribute('data-route');
-    // Redirigir al usuario a la URL especificada en 'data-route'
-    window.location.href = loginUrl;
-}
-
 // Función de cierre de sesión
-function logout() {
-    localStorage.removeItem('user'); // Eliminar datos del usuario en localStorage
-    location.reload(); // Recargar la página para reflejar el cambio
-}
-
-
+document.getElementById('logoutBtn').addEventListener('click', function () {
+    localStorage.removeItem('user');
+    location.reload();
+});
 
 
 function handleLoginClick() {
-    console.log("#######111");
-    // Obtener el modal por su ID
-    var modalId = 'modalLogin'; // El mismo ID que asignaste al modal en Blade
-    var modalElement = document.getElementById(modalId);
-    console.log("#######2222");
-    console.log(modalElement);
-
+    modalElement = document.querySelector('[id^="modal-"]')
     // Verifica si el modal existe
     if (modalElement) {
         modalElement.style.display = 'block';  // Muestra el modal
         modalElement.style.zIndex = '9999'; // Asegura que el modal esté sobre otros elementos
         modalElement.classList.add('show'); // Si usas clases para el modal, añade una clase 'show' para visibilidad
-
-        console.log("#######333");
-
         // Si quieres ocultarlo al hacer clic fuera del modal
         window.onclick = function (event) {
-            console.log("#######333----");
             if (event.target === modalElement) {
                 modalElement.style.display = 'none';  // Oculta el modal cuando se hace clic fuera de él
             }
         };
     }
-
-    console.log("#######4444");
 }

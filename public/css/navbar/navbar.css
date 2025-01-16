@@ -6,28 +6,19 @@
     /* Ajusta el espacio entre los elementos */
 }
 
-/* Asegúrate de que el contenedor de la lista sea relativo */
 .nav-item.dropdown {
     position: relative;
 }
 
-/* Estilos para el dropdown */
 .dropdown-menu {
     display: none;
-    /* Ocultar por defecto */
     position: absolute;
     top: 100%;
-    /* Asegura que se despliegue justo debajo del botón */
     left: -6rem;
     z-index: 1000;
     min-width: 200px;
-    /* Ajusta el tamaño mínimo de la lista */
-
-    /* Fondo blanco */
     border-radius: 4px;
-    /* Bordes redondeados */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Sombra sutil */
 }
 
 /* Cuando el menú tiene la clase 'show', se hace visible */
@@ -36,18 +27,37 @@
 }
 
 /* Estilos para los elementos dentro del dropdown */
-.dropdown-item {
+.dropdown-item a {
     padding: 10px 15px;
+    /* Espaciado interno */
     text-decoration: none;
     font-size: 14px;
     display: flex;
     align-items: center;
+    gap: 10px;
     cursor: pointer;
 }
 
+.dropdown-item img {
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+
+.dropdown-item span {
+    display: block;
+    white-space: nowrap;
+}
+
+
+
 /* Cambiar color al pasar el cursor por encima */
-.dropdown-item:hover {
-    background-color: #f1f1f1;
+body.light .dropdown-item:hover {
+    background-color: var(--light-bg);
+}
+
+body.dark .dropdown-item:hover {
+    background-color: var(--dark-bg);
 }
 
 /* Estilo para los iconos dentro de los elementos */
@@ -162,7 +172,6 @@
     height: 30px;
 }
 
-
 body.dark .navbar-link.active {
     color: #FFD700;
 }
@@ -171,6 +180,15 @@ body.light .navbar-link:hover,
 .navbar-link.active {
     color: black;
 }
+
+body.light .bg {
+    background-color: var(--light-primary-bg);
+}
+
+body.dark .bg {
+    background-color: var(--dark-primary-bg);
+}
+
 
 /* Responsividad: menú desplegable */
 @media (max-width: 768px) {
