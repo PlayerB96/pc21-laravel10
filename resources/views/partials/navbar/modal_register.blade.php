@@ -1,15 +1,32 @@
 <head>
-    <link rel="stylesheet" href="{{ asset('css/auth/login.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/auth/register.css') }}">
 </head>
-<x-modal id="modal-{{ uniqid() }}" title="Iniciar sesión" actionButton="Aceptar" class="custom-modal" extraClass="">
+<x-modal id="modalr-{{ uniqid() }}" title="Iniciar sesión" actionButton="Aceptar" class="custom-modal" extraClass="">
     <div class="wide-content">
         <div class="login-card">
             <div class="brand">
                 <img src="{{ asset('assets/imgs/Grupo.LN1NegroFTransp.png') }}" alt="Grupo LN1 Logo">
-                <h1>Bienvenido</h1>
-                <p>Ingrese sus credenciales para acceder a su cuenta </p>
+                <h1>Regístrate</h1>
             </div>
             <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Correo</label>
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="username"
+                        autocomplete="username">
+                    <div class="error" id="usernameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Nombre Completo</label>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password">
+                    <div class="error" id="passwordError"></div>
+                </div>
                 <div class="form-group">
                     <label for="username">Usuario</label>
                     <input
@@ -33,7 +50,7 @@
                 </button>
             </form>
             <div class="signup-link">
-                <p>¿No tienes una cuenta? <a href="#" id="openRegisterModal">Registrarse</a></p>
+                <p>¿ya tienes una cuenta? <a href="#" id="openLoginModal">Ingresa Aquí</a></p>
             </div>
         </div>
     </div>

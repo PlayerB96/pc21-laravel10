@@ -1,4 +1,5 @@
 @include('partials.navbar.modal_login')
+@include('partials.navbar.modal_register')
 
 <?php
 $navItems = [
