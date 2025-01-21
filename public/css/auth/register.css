@@ -65,7 +65,7 @@
 
 .brand h1 {
     font-size: 1.75rem;
-    color: #1a1a1a;
+    color: var(--light-text);
     margin-bottom: 0.5rem;
 }
 
@@ -82,7 +82,7 @@
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: #333 !important;
+    color: var(--text-secondary) !important;
     font-size: 0.9rem;
     font-weight: 500;
 }
@@ -126,7 +126,7 @@
 }
 
 .remember-me label {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
 

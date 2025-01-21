@@ -1,5 +1,7 @@
 <head>
     <link rel="stylesheet" href="{{ asset('css/chatbot/chatbot.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 </head>
 <!-- Botón flotante para abrir el chat -->
 <button id="chat-button" class="chat-button">
@@ -15,8 +17,9 @@
         <p>¡Hola! ¿En qué puedo ayudarte?</p>
     </div>
     <div class="chat-footer">
-        <input type="text" placeholder="Escribe un mensaje..." />
-        <button>Enviar</button>
+        <input type="text" id="chat-input" placeholder="Escribe un mensaje..." />
+
+        <button id="send-message">Enviar</button>
     </div>
 </div>
 <script src="{{ asset('js/chatbot/chatbot.js') }}"></script>

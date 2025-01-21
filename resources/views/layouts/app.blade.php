@@ -42,11 +42,15 @@
                     const doc = parser.parseFromString(data, 'text/html');
                     const content = doc.querySelector('#main-content').innerHTML;
                     mainContent.innerHTML = content;
+                    // Obtener y actualizar el título de la página
+                    const newTitle = doc.querySelector('title').innerText;
+                    document.title = newTitle;
                     history.pushState(null, '', url);
                 })
                 .catch(error => console.error('Error loading content:', error));
         });
     });
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </html>

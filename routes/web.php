@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
 
 // routes/web.php
 Route::get('/home', function () {
@@ -25,4 +26,8 @@ Route::get('/login', function () {
 
 Route::get('/', function () {
     return view('inicio');
+});
+
+Route::controller(ChatController::class)->group(function () {
+    Route::post('chatbot/messages', 'getResponse')->name('chatbot.messages');
 });

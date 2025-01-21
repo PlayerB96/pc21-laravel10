@@ -113,15 +113,6 @@ document.getElementById('logoutBtn').addEventListener('click', function () {
 function handleLoginClick() {
     modalElement = document.querySelector('[id^="modal-"]')
     // Verifica si el modal existe
-    if (modalElement) {
-        modalElement.style.display = 'block';  // Muestra el modal
-        modalElement.style.zIndex = '9999'; // Asegura que el modal esté sobre otros elementos
-        modalElement.classList.add('show'); // Si usas clases para el modal, añade una clase 'show' para visibilidad
-        // Si quieres ocultarlo al hacer clic fuera del modal
-        window.onclick = function (event) {
-            if (event.target === modalElement) {
-                modalElement.style.display = 'none';  // Oculta el modal cuando se hace clic fuera de él
-            }
-        };
-    }
+    openModal(modalElement.id)
+
 }

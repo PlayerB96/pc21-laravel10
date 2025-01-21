@@ -1,9 +1,6 @@
 @extends('layouts.app')
-
 @section('title', 'Bienvenido a Extranet La Número Uno')
-
 @section('content')
-
 <!-- Sección con video de fondo -->
 <section class="video-background-container">
     <!-- Fondo degradado encima del video -->
@@ -12,7 +9,6 @@
     <!-- Video de fondo -->
     <video autoplay loop muted class="video-background">
         <source src="{{ asset('assets/videos/4068410-uhd_4096_2160_25fps.mp4') }}" type="video/mp4">
-        Tu navegador no soporta el video.
     </video>
 
     <!-- Contenido sobre el video -->
