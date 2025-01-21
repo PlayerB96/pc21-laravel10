@@ -12,18 +12,16 @@ document.querySelector('[id^="modal-"]').addEventListener('submit', function (ev
 
 // Abrir el modal de registro y cerrar el modal de login al hacer clic en "Registrarse"
 document.getElementById('openRegisterModal').addEventListener('click', function () {
-    element = document.querySelector('[id^="modal-"]');
-    closeModal(element.id);
-    modalElementR = document.querySelector('[id^="modalr-"]')
-    openModal(modalElementR.id)
+    // Número de WhatsApp al que quieres redirigir (incluye el código de país sin el signo "+")
+    const phoneNumber = '+51926151507';  // Reemplaza con tu número de WhatsApp
+    const message = 'Hola, quiero más información.'; // Mensaje opcional
+    // Codificar el mensaje para la URL de WhatsApp
+    const encodedMessage = encodeURIComponent(message);
+    // URL de WhatsApp
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    // Redirigir a WhatsApp
+    window.open(whatsappUrl, '_blank');
+
 
 });
 
-// Abrir el modal de registro y cerrar el modal de login al hacer clic en "Registrarse"
-document.getElementById('openLoginModal').addEventListener('click', function () {
-    modalElementR = document.querySelector('[id^="modalr-"]');
-    closeModal(modalElementR.id);
-    element = document.querySelector('[id^="modal-"]')
-    openModal(element.id)
-
-});

@@ -1,10 +1,9 @@
 @include('partials.navbar.modal_login')
-@include('partials.navbar.modal_register')
 
 <?php
 $navItems = [
     ['label' => 'eLearning', 'route' => '/home', 'subitems' => []],
-    ['label' => 'About', 'route' => '/about', 'subitems' => []],
+    ['label' => 'Inducción', 'route' => '/induccion', 'subitems' => []],
     ['label' => 'Services', 'route' => '/services', 'subitems' => [
         ['label' => 'Web Development', 'route' => '/services/web'],
         ['label' => 'App Development', 'route' => '/services/app'],

@@ -2,7 +2,7 @@
     <link rel="stylesheet" href="{{ asset('css/footer/footer.css') }}">
 </head>
 <footer class="footer primarybg">
-    <div class="container">
+    <div class="footer-container">
         <div class="row">
             <div class="footer-col">
                 <h4>Compañia</h4>

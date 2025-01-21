@@ -57,7 +57,7 @@ body.light .dropdown-item:hover {
 }
 
 body.dark .dropdown-item:hover {
-    background-color: var(--dark-bg);
+    background-color: var(--dark-secondary-bg);
 }
 
 /* Estilo para los iconos dentro de los elementos */

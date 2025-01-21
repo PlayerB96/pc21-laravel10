@@ -1,9 +1,8 @@
 /* FOOTER */
-.container {
-    max-width: 1170px;
-    margin: auto;
-    line-height: 1.5;
-
+.footer-container {
+    max-width: 1170px !important;
+    margin: auto !important;
+    line-height: 1.5 !important;
 }
 
 /* Cambiar el fondo al pasar el cursor sobre los íconos */
@@ -38,6 +37,7 @@
 }
 
 .footer-col h4 {
+    color: white !important;
     font-size: 18px;
     text-transform: capitalize;
     margin-bottom: 35px;
@@ -51,10 +51,12 @@
     position: absolute;
     left: 0;
     bottom: -10px;
-    background-color: #e91e63;
+    background-color: var(--light-secondary-bg);
     height: 2px;
     box-sizing: border-box;
     width: 50px;
+    color: white !important;
+
 }
 
 .footer-col ul li:not(:last-child) {
@@ -67,6 +69,8 @@
     text-decoration: none;
     font-weight: 300;
     display: block;
+    color: white !important;
+
 }
 
 .footer-col ul li a:hover {

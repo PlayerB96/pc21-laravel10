@@ -35,7 +35,7 @@
                     style="width: 100%; padding: 1rem; margin: 1rem 0rem; background: #000; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" />
             </form>
             <div class=" signup-link">
-                <p>¿No tienes una cuenta? <a href="#" id="openRegisterModal">Registrarse</a></p>
+                <p>¿No tienes una cuenta? Solicitar <a href="#" id="openRegisterModal">aquí</a></p>
             </div>
         </div>
     </div>

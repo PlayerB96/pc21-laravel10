@@ -63,9 +63,10 @@
 /* Pie de la ventana de chat */
 .chat-footer {
     padding: 10px;
-    border-top: 1px solid #ddd;
     display: flex;
     justify-content: space-between;
+    color: white;
+
 }
 
 /* Estilo para el campo de texto y botón de enviar */
@@ -73,6 +74,8 @@
     width: 70%;
     padding: 5px;
     font-size: 14px;
+    color: black;
+    border: 1px solid red;
 }
 
 .chat-footer button {

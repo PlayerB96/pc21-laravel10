@@ -3,16 +3,17 @@
 :root {
 
     /* LIGHT COLORS */
-    --light-primary-bg: #f3ca7f;
+    --light-primary-bg: #00b1f4;
+    --light-secondary-bg: #ffa700;
     --light-bg: #E5F4FF;
     --light-text: #1A202C;
     --light-accent: #3B82F6;
 
     /* DARK COLORS */
-    --dark-primary-bg: #333;
-    --dark-bg: #1A202C;
+    --dark-primary-bg: #15171c;
+    --dark-secondary-bg: #26272f;
     --dark-text: #FFFFFF;
-    --dark-accent: #fea701;
+    --dark-accent: #00b1f4;
 
     /* STANDARD COLORS */
     --menu-active: #ff5100;

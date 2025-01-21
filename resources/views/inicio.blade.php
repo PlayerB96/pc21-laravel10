@@ -8,13 +8,13 @@
 
     <!-- Video de fondo -->
     <video autoplay loop muted class="video-background">
-        <source src="{{ asset('assets/videos/4068410-uhd_4096_2160_25fps.mp4') }}" type="video/mp4">
+        <source src="{{ asset('assets/videos/induccion.mp4') }}" type="video/mp4">
     </video>
 
     <!-- Contenido sobre el video -->
     <div class="content">
-        <h1>Bienvenido a mi Landing Page</h1>
-        <p>Este es el contenido de la página.</p>
+        <!-- <h1>Bienvenido <label for=""></label></h1>
+        <p>Extranet - Lanúmerouno</p> -->
     </div>
 </section>
 
@@ -170,13 +170,29 @@
     }
 
     .content h1 {
-        font-size: 3rem;
+        font-size: 6rem;
         font-weight: bold;
+        background: linear-gradient(to right, var(--light-secondary-bg), var(--light-secondary-bg));
+        /* Gradiente de fondo */
+        -webkit-background-clip: text;
+        /* Para Safari y Chrome */
+        background-clip: text;
+        /* Propiedad estándar para otros navegadores */
+        color: transparent;
+        /* Hace que solo se vea el gradiente en el texto */
+        border: 2px solid var(--light-secondary-bg);
+        /* Borde alrededor del texto */
+        padding: 5px;
+        /* Espaciado para que el borde se vea bien */
     }
+
+
 
     .content p {
         font-size: 1.25rem;
-        margin-top: 10px;
+        margin-top: 1rem;
+        background: linear-gradient(to right, var(--light-secondary-bg), var(--light-secondary-bg));
+
     }
 </style>
 

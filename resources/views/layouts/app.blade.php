@@ -27,27 +27,23 @@
 </body>
 
 <script>
-    // Lazy loading para el footer
     const mainContent = document.getElementById('main-content');
-
-
     document.querySelectorAll('a[data-route]').forEach(anchor => {
         anchor.addEventListener('click', function(event) {
-            event.preventDefault();
-            const url = this.getAttribute('data-route');
-            fetch(url)
+            event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+            const url = this.getAttribute('data-route'); // Obtener la URL del atributo data-route
+            fetch(url) // Realizar una solicitud fetch para obtener el contenido
                 .then(response => response.text())
                 .then(data => {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(data, 'text/html');
-                    const content = doc.querySelector('#main-content').innerHTML;
-                    mainContent.innerHTML = content;
-                    // Obtener y actualizar el título de la página
+                    const content = doc.querySelector('#main-content').innerHTML; // Extraer el contenido
+                    mainContent.innerHTML = content; // Reemplazar el contenido del contenedor
                     const newTitle = doc.querySelector('title').innerText;
-                    document.title = newTitle;
-                    history.pushState(null, '', url);
+                    document.title = newTitle; // Cambiar el título de la página
+                    history.pushState(null, '', url); // Actualizar la URL en el historial
                 })
-                .catch(error => console.error('Error loading content:', error));
+                .catch(error => console.error('Error loading content:', error)); // Manejar errores
         });
     });
 </script>

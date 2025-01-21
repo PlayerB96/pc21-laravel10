@@ -18,14 +18,14 @@ body.light .gradient-overlay {
     top: 0;
     left: 0;
     width: 100%;
-    height: 650px;
-    background: linear-gradient(to bottom, #f3ca7f, transparent);
+    height: 150px;
+    background: linear-gradient(to bottom, var(--light-primary-bg), transparent);
     z-index: 10;
 }
 
 /*########################### Dark Mode ###########################*/
 body.dark {
-    background-color: var(--dark-bg);
+    background-color: var(--dark-secondary-bg);
     color: var(--dark-text);
 }
 
