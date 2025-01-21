@@ -140,12 +140,17 @@ body.dark .dropdown-item:hover {
     visibility: visible;
     opacity: 1;
     display: block;
+
 }
 
 .sub-menu li {
     display: block;
     margin-bottom: 5px;
     margin: 5px 15px;
+}
+
+.parent:hover .sub-menu {
+    background-color: red !important;
 }
 
 .navbar-item {

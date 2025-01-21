@@ -64,7 +64,7 @@
 
 <script>
     function openModal(id) {
-        document.getElementById(id).style.display = 'flex';
+        document.getElementById(id).style.display = 'block';
     }
 
     function closeModal(id) {

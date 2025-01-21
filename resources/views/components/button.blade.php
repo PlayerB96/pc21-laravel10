@@ -7,10 +7,25 @@
         cursor: pointer;
         transition: background-color 0.3s ease, box-shadow 0.3s ease;
         display: inline-flex;
-        /* Alinea el contenido en fila */
-        align-items: center;
-        /* Centra verticalmente el texto e icono */
+        justify-content: center;
+        /* Centrar contenido horizontalmente */
+        align-items: center !important;
+        /* Centrar contenido verticalmente */
+        text-align: center;
+        /* Asegurar que el texto esté centrado */
+        width: 100%;
+        /* Opcional, si deseas que el botón ocupe todo el ancho disponible */
     }
+
+    .btn-text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        /* Asegurar que el texto se ajuste correctamente */
+        text-align: center;
+    }
+
 
     /* Estilo cuando el botón tiene el enfoque */
     .btn:focus {
@@ -22,6 +37,8 @@
     /* Estilo cuando el botón está en hover */
     .btn:hover {
         background-color: var(--light-accent);
+        opacity: 80%;
+        transform: translateY(-2px);
         /* Azul más oscuro para el hover */
     }
 
@@ -31,7 +48,6 @@
         width: 24px;
         height: 24px;
     }
-
 
     .btn-text {
         display: inline-block;

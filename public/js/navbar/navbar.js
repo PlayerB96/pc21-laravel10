@@ -104,13 +104,11 @@ function toggleSubMenu(index) {
     }
 }
 
-
 // Función de cierre de sesión
 document.getElementById('logoutBtn').addEventListener('click', function () {
     localStorage.removeItem('user');
     location.reload();
 });
-
 
 function handleLoginClick() {
     modalElement = document.querySelector('[id^="modal-"]')

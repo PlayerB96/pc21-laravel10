@@ -28,11 +28,13 @@
                         autocomplete="current-password">
                     <div class="error" id="passwordError"></div>
                 </div>
-                <button type="submit" class="login-btn" id="loginButton">
-                    Ingresar
-                </button>
+                <x-button
+                    text="Iniciar sesión"
+                    id="loginButton"
+                    class="btn-primary"
+                    style="width: 100%; padding: 1rem; margin: 1rem 0rem; background: #000; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" />
             </form>
-            <div class="signup-link">
+            <div class=" signup-link">
                 <p>¿No tienes una cuenta? <a href="#" id="openRegisterModal">Registrarse</a></p>
             </div>
         </div>
