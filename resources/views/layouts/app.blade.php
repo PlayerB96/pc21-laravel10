@@ -56,32 +56,20 @@
                 const newTitle = doc.querySelector('title').innerText;
                 document.title = newTitle; // Cambiar el título de la página
                 history.pushState(null, '', url); // Actualizar la URL en el historial
-                // Llamar a la función para inicializar JavaScript específico del contenido cargado
-                initSurveyJS();
+
+                // Ejecutar todos los scripts dentro del contenido cargado
+                executeScripts(doc);
             })
             .catch(error => console.error('Error loading content:', error)); // Manejar errores
     }
 
-    // Función para inicializar JavaScript de la encuesta
-    function initSurveyJS() {
-        const preguntaGrupos = document.querySelectorAll('.form-group-encuesta');
-        preguntaGrupos.forEach((grupo) => {
-            const checkboxes = grupo.querySelectorAll('.respuesta-checkbox');
-            checkboxes.forEach((checkbox) => {
-                checkbox.addEventListener('change', function() {
-                    let seleccionados = grupo.querySelectorAll('.respuesta-checkbox:checked').length;
-                    if (seleccionados > 3) {
-                        this.checked = false;
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Límite alcanzado',
-                            text: 'Solo puedes seleccionar un máximo de 3 respuestas por pregunta.',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'Entendido'
-                        });
-                    }
-                });
-            });
+    // Función para ejecutar todos los scripts encontrados en el contenido cargado
+    function executeScripts(doc) {
+        const scripts = doc.querySelectorAll('script'); // Obtener todos los scripts en el contenido cargado
+        scripts.forEach(script => {
+            const newScript = document.createElement('script');
+            newScript.textContent = script.textContent; // Copiar el contenido del script
+            document.body.appendChild(newScript); // Insertar el script en el body para ejecutarlo
         });
     }
 </script>

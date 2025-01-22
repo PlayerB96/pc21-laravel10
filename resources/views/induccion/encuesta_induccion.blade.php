@@ -29,25 +29,23 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Tu código JavaScript aquí
-        const preguntaGrupos = document.querySelectorAll('.form-group-encuesta');
-        preguntaGrupos.forEach((grupo) => {
-            const checkboxes = grupo.querySelectorAll('.respuesta-checkbox');
-            checkboxes.forEach((checkbox) => {
-                checkbox.addEventListener('change', function() {
-                    let seleccionados = grupo.querySelectorAll('.respuesta-checkbox:checked').length;
-                    if (seleccionados > 3) {
-                        this.checked = false;
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Límite alcanzado',
-                            text: 'Solo puedes seleccionar un máximo de 3 respuestas por pregunta.',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'Entendido'
-                        });
-                    }
-                });
+    var preguntaGrupos = document.querySelectorAll('.form-group-encuesta');
+    preguntaGrupos.forEach((grupo) => {
+        const checkboxes = grupo.querySelectorAll('.respuesta-checkbox');
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', function() {
+                let seleccionados = grupo.querySelectorAll('.respuesta-checkbox:checked').length;
+                if (seleccionados > 3) {
+                    console.log("###11")
+                    this.checked = false; // Esto desmarca el checkbox si se seleccionan más de 3
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Límite alcanzado',
+                        text: 'Solo puedes seleccionar un máximo de 3 respuestas por pregunta.',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'Entendido'
+                    });
+                }
             });
         });
     });

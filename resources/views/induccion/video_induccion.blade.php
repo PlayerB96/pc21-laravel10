@@ -27,7 +27,8 @@
         <button
             id="btnContinuar"
             style="width: 16rem; padding: 1rem; margin: 1rem 0rem; background: var(--text-secondary); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;"
-            data-route="{{ route('induccion.encuesta_induccion') }}">
+            data-route="{{ route('induccion.encuesta_induccion') }}"
+            data-js="alert('JavaScript dinámico ejecutado');">
             Continuar
         </button>
 
