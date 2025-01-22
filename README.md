@@ -95,28 +95,3 @@ extraClass="full-modal"
     <p>Este modal ocupa todo el ancho disponible.</p>
 </x-modal>
 ```
-
-## Componente x-button
-
-El componente `Button` proporciona una forma sencilla de crear botones reutilizables en tu proyecto. Este componente admite propiedades configurables para personalizar su comportamiento y estilo.
-
-### Uso básico
-
-```blade
- <x-button
-    text="Iniciar sesión"
-    id="login-btn-{{ uniqid() }}"
-    class="btn-primary"
-    style="padding: 0.8rem 1.6rem; font-size: 1rem; border-radius: 0.5rem; color:white;"
-    action="handleLoginClick"
-    icon='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-    </svg>' 
- />
-```
-```
-id="login-btn-{{ uniqid() }}" : Generará de forma dinámica un id único que se identificará de la siguiente manera en el js: element=document.querySelector('[id^="modal-"]');
-style= : Se puede agregar estilos personalizados para el button.
-action= : Permite ejecutar una funcion desde el js donde este el x-button.
-icon= : Permite agregar un svg al button
-```

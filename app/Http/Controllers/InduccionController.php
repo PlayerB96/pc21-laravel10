@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PreguntaInduccion;
+
 use Illuminate\Http\Request;
 
 class InduccionController extends Controller
@@ -15,7 +17,9 @@ class InduccionController extends Controller
     }
     public function index_encuesta()
     {
-        return view('induccion/encuesta_induccion');
+        $preguntas = PreguntaInduccion::with('respuestas')->get();
+        // dd($preguntas);
+        return view('induccion.encuesta_induccion', compact('preguntas'));
     }
 
     public function submitSurvey()

@@ -1,63 +1,127 @@
+/* Estilos generales */
 .container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
-}
-
-h1 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
+    font-family: 'Arial', sans-serif;
 }
 
 h3 {
-    font-size: 1.25rem;
-    font-weight: normal;
+    font-size: 1.75rem;
+    font-weight: 600;
     margin-top: 1.5rem;
-    color: #333;
+    color: var(--light-text);
+    border-bottom: 2px solid var(--light-secondary-bg);
+    display: inline-block;
+    padding-bottom: 0.2rem;
+    margin-bottom: 1.5rem;
+
 }
 
+/* Sección de contenido */
 .content-section {
     margin-top: 1.5rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.form-group {
-    margin-bottom: 1rem;
+/* Formularios */
+.form-group-encuesta {
+    margin-bottom: 1.5rem;
     text-align: left;
+    background-color: #f9f9f9;
+    /* Fondo distinto para cada pregunta */
+    border-radius: 10px;
+    /* Bordes redondeados */
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Sombra suave */
 }
 
-.form-group label {
+.form-group-encuesta label {
     font-weight: bold;
     display: block;
     margin-bottom: 0.5rem;
+    color: black !important;
+    font-size: 1.2rem;
 }
 
-.form-control {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 0.375rem;
+.form-responses label {
+    color: var(--text-secondary) !important;
+
+}
+
+/* Estilos para los checkboxes y respuestas */
+.form-group-encuesta div {
+    display: flex;
+    justify-content: flex-start;
+    /* Alinea los elementos al inicio */
+    align-items: center;
+    /* Centra los elementos verticalmente */
+    margin-bottom: 1rem;
+    /* Espacio entre cada checkbox */
+}
+
+.form-group-encuesta input[type="checkbox"] {
+    margin-left: 10px;
+    /* Margen a la izquierda del checkbox */
+    width: 20px;
+    height: 20px;
+    accent-color: var(--light-secondary-bg);
+}
+
+/* Estilo para el texto de la respuesta */
+.form-group-encuesta label {
+    margin-left: 10px;
+    /* Añadir un margen entre el checkbox y el texto */
     font-size: 1rem;
+    color: var(--light-text);
 }
 
+/* Botones */
 .btn {
     display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 0.375rem;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
     text-decoration: none;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
 }
 
 .btn-submit {
-    background-color: #10b981;
+    background-color: var(--light-secondary-bg);
     color: white;
-    margin-top: 1rem;
+    border: none;
+    box-shadow: 0 4px 6px rgba(255, 167, 0, 0.3);
+    margin-top: 1.5rem;
 }
 
 .btn-submit:hover {
-    background-color: #059669;
+    background-color: var(--light-text);
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    .form-control {
+        font-size: 0.95rem;
+    }
+
+    .btn {
+        font-size: 1rem;
+    }
 }

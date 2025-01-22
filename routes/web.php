@@ -15,9 +15,6 @@ Route::controller(InduccionController::class)->group(function () {
     Route::post('induccion/submit_survey', 'submitSurvey')->name('induccion.submit_survey');
 });
 
-// Route::get('/induccion', function () {
-//     return view('induccion/video_induccion');
-// });
 
 Route::get('/services', function () {
     return view('services');

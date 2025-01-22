@@ -16,13 +16,23 @@
     </div>
 
     <div id="contentSection" class="content-section">
-        <a href="#" class="btn btn-download">
-            Descargar Manual
-        </a>
 
-        <a data-route="{{ route('induccion.encuesta_induccion') }}" class="btn btn-continue">
+        <button
+            id="loginButtonManual"
+            style="width: 16rem; padding: 1rem; margin: 1rem 0rem; background: var(--light-primary-bg); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+            Descargar Manual
+        </button>
+
+
+        <button
+            id="btnContinuar"
+            style="width: 16rem; padding: 1rem; margin: 1rem 0rem; background: var(--text-secondary); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;"
+            data-route="{{ route('induccion.encuesta_induccion') }}">
             Continuar
-        </a>
+        </button>
+
+
+
     </div>
 
 </div>
@@ -30,9 +40,9 @@
     document.addEventListener("DOMContentLoaded", function() {
         const video = document.getElementById('induccionVideo');
         const contentSection = document.getElementById('contentSection');
-        video.onended = function() {
-            contentSection.style.display = 'block'; // Mostrar la sección
-        };
+        // video.onended = function() {
+        contentSection.style.display = 'block';
+        // };
     });
 </script>
 

@@ -119,7 +119,7 @@ body.dark .dropdown-item:hover {
 }
 
 .navbar-link.active {
-    color: var(--menu-active);
+    color: var(--light-secondary-bg);
 
 }
 
@@ -133,13 +133,7 @@ body.dark .dropdown-item:hover {
     padding: 20px;
     opacity: 0;
     min-width: 140px;
-}
-
-
-.navbar-item:hover>.sub-menu {
-    visibility: visible;
-    opacity: 1;
-    display: block;
+    transition: opacity 0.3s ease-in-out;
 
 }
 
@@ -148,6 +142,20 @@ body.dark .dropdown-item:hover {
     margin-bottom: 5px;
     margin: 5px 15px;
 }
+
+.sub-menu {
+    width: auto;
+}
+
+.navbar-item:hover>.sub-menu {
+    visibility: visible;
+    opacity: 1;
+    display: block;
+
+}
+
+
+
 
 .parent:hover .sub-menu {
     background-color: red !important;
@@ -158,9 +166,7 @@ body.dark .dropdown-item:hover {
     padding: 5px 15px;
 }
 
-.sub-menu {
-    width: auto;
-}
+
 
 /* Estilos del botón de cambio de tema */
 .theme-toggle button {
@@ -183,7 +189,7 @@ body.dark .navbar-link.active {
 
 body.light .navbar-link:hover,
 .navbar-link.active {
-    color: black;
+    color: var();
 }
 
 body.light .bg {
