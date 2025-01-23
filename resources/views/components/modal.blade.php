@@ -46,11 +46,17 @@
         margin-bottom: 20px;
     }
 
+    .modal-header h2 {
+        color: white;
+    }
+
+
     .close-button {
         background: none;
         border: none;
         font-size: 1.5rem;
         cursor: pointer;
+        color: white;
     }
 
     .wide-modal {

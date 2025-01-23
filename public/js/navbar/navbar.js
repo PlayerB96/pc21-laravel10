@@ -81,7 +81,6 @@ window.addEventListener("scroll", function () {
 
 // Función para manejar la clase activa en los enlaces
 function setActiveLink(link) {
-    console.log(link)
     // Eliminar la clase activa de todos los enlaces
     const links = document.querySelectorAll('.navbar-link');
     links.forEach(function (item) {

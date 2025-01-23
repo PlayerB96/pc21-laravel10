@@ -1,27 +1,59 @@
+document.addEventListener('DOMContentLoaded', function () {
+    const modalForm = document.querySelector('[id^="modal-"]');
+    
+    if (modalForm) {
+        modalForm.addEventListener('submit', function (event) {
+            event.preventDefault(); // Evita el envío del formulario
 
-document.querySelector('[id^="modal-"]').addEventListener('submit', function (event) {
-    element = document.querySelector('[id^="modal-"]');
-    event.preventDefault(); // Evita el envío del formulario
-    // Obtén los valores de los inputs
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
-    localStorage.setItem('user', username);
-    location.reload();
-    closeModal(element.id);
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Obtener el token CSRF desde el meta tag
+            var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            $.ajax({
+                type: 'POST',
+                url: '/auth/validate_user',
+                data: {
+                    'username': username,
+                    'password': password
+                },
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function (response) {
+                    closeModal(modalForm.id);
+                    Swal.fire({
+                        icon: 'success',
+                        title: `¡Bienvenido, ${response.nombre_completo}!`,
+                        text: response.message,
+                        imageUrl: response.foto,  // URL de la imagen del usuario
+                        imageWidth: 100,  // Ancho de la imagen
+                        imageHeight: 100,  // Alto de la imagen
+                        imageAlt: 'Foto de perfil',
+                        confirmButtonText: 'Aceptar'
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.log("Respuesta completa:", xhr.responseText);
+                    document.getElementById("mensajeError").innerText = xhr.responseJSON ? xhr.responseJSON.error : "Ocurrió un error desconocido.";
+                }
+            });
+        });
+    }
 });
+
 
 // Abrir el modal de registro y cerrar el modal de login al hacer clic en "Registrarse"
 document.getElementById('openRegisterModal').addEventListener('click', function () {
-    // Número de WhatsApp al que quieres redirigir (incluye el código de país sin el signo "+")
-    const phoneNumber = '+51926151507';  // Reemplaza con tu número de WhatsApp
-    const message = 'Hola, quiero más información.'; // Mensaje opcional
+    const phoneNumber = '+51967778561';
+    const message = 'Hola, quiero más información.';
     // Codificar el mensaje para la URL de WhatsApp
     const encodedMessage = encodeURIComponent(message);
     // URL de WhatsApp
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
     // Redirigir a WhatsApp
     window.open(whatsappUrl, '_blank');
-
 
 });
 

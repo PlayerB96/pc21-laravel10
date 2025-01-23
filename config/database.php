@@ -47,7 +47,7 @@ return [
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'intranet'),
+            'database' => env('DB_DATABASE', 'extranet'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
@@ -55,6 +55,23 @@ return [
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => '',
             'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'mysql_intranet' => [
+            'driver' => 'mysql',
+            'host' => env('INTRANET_DB_HOST', '172.16.0.134'),
+            'port' => env('INTRANET_DB_PORT', '3306'),
+            'database' => env('INTRANET_DB_DATABASE', 'lanumerouno'),
+            'username' => env('INTRANET_DB_USERNAME', 'developer'),
+            'password' => env('INTRANET_DB_PASSWORD', 'L4num3r01'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([

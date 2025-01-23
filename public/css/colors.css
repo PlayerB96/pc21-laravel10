@@ -8,16 +8,22 @@
     --light-bg: #E5F4FF;
     --light-text: #1A202C;
     --light-accent: #3B82F6;
+    /* SKELETON */
+    --light-skeleton-primary: #eee;
+    --light-skeleton-secondary: #ddd;
 
     /* DARK COLORS */
     --dark-primary-bg: #15171c;
     --dark-secondary-bg: #26272f;
     --dark-text: #FFFFFF;
     --dark-accent: #00b1f4;
+    /* SKELETON */
+    --dark-skeleton-primary: #383a3f;
+    --dark-skeleton-secondary: #616263;
 
     /* STANDARD COLORS */
     --menu-active: #ff5100;
-    --text-secondary: #10b981;
+    --text-secondary: #858b89;
     --error: #dc3545;
 
 }

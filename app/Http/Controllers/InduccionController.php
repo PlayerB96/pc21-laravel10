@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PreguntaInduccion;
+use App\Models\RespuestaInduccion;
 
 use Illuminate\Http\Request;
 
@@ -18,14 +19,36 @@ class InduccionController extends Controller
     public function index_encuesta()
     {
         $preguntas = PreguntaInduccion::with('respuestas')->get();
-        // dd($preguntas);
         return view('induccion.encuesta_induccion', compact('preguntas'));
     }
 
-    public function submitSurvey()
-    {
-        return redirect()->route('home');
+    public function submitSurvey(Request $request)
+{
+    $preguntas = PreguntaInduccion::with('respuestas')->get();
+
+    $respuestasUsuario = $request->input('respuestas', []);
+    $puntajeTotal = 0;
+    $puntajeMaximo = 0;
+
+    foreach ($respuestasUsuario as $idPregunta => $respuestasSeleccionadas) {
+        // Obtener todas las respuestas correctas para la pregunta
+        $respuestasCorrectas = RespuestaInduccion::where('id_pregunta', $idPregunta)
+            ->where('correcto', 1)
+            ->pluck('id_respuesta')
+            ->toArray();
+
+        $puntajeMaximo += count($respuestasCorrectas);
+
+        // Comparar respuestas seleccionadas con las correctas
+        $aciertos = array_intersect($respuestasCorrectas, $respuestasSeleccionadas);
+        $puntajeTotal += count($aciertos);
     }
+
+    // Calcular el porcentaje de aciertos
+    $porcentaje = $puntajeMaximo > 0 ? ($puntajeTotal / $puntajeMaximo) * 100 : 0;
+    return response()->json(['porcentaje' => $porcentaje, 'preguntas' => $preguntas]);
+}
+
 
 
 
