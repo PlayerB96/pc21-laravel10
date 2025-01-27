@@ -9,7 +9,8 @@ class UserIntranet extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql_intranet';  // Conexión a la base de datos externa
+    // Conexión a la base de datos externa
+    protected $connection = 'mysql_intranet';
 
     protected $table = 'users';  // Nombre de la tabla en la base de datos externa
 
@@ -167,5 +168,11 @@ class UserIntranet extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user_intranet', 'id_usuario');
+    }
+
+    public function permisoPapeletasSalida()
+    {
+        return $this->hasOne(PermisoPapeletasSalida::class, 'id_puesto_jefe', 'id_puesto')
+            ->where('estado', 1);
     }
 }

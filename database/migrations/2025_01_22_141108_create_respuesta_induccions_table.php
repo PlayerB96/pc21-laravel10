@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pregunta_induccion', function (Blueprint $table) {
-            $table->id('id_pregunta');
-            $table->string('pregunta', 200);
-            $table->integer('orden');
+        Schema::create('respuesta_induccion', function (Blueprint $table) {
+            $table->id('id_respuesta');
+            $table->unsignedBigInteger('id_pregunta');
+            $table->string('desc_respuesta', 255);
+            $table->integer('correcto');
             $table->integer('estado');
             $table->dateTime('fec_reg');
             $table->unsignedBigInteger('user_reg');
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->unsignedBigInteger('user_eli')->nullable();
+            $table->foreign('id_pregunta', 'respind_fk_id_pregind')->references('id_pregunta')->on('pregunta_induccion');
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pregunta_induccion');
+        Schema::dropIfExists('respuesta_induccion');
     }
 };

@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+
+
+
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -11,11 +23,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('respuesta_induccion', function (Blueprint $table) {
-            $table->id('id_respuesta');
-            $table->unsignedBigInteger('id_pregunta');
-            $table->string('desc_respuesta', 255);
-            $table->integer('correcto');
+        Schema::create('pregunta_induccion', function (Blueprint $table) {
+            $table->id('id_pregunta');
+            $table->string('pregunta', 200);
+            $table->integer('orden');
             $table->integer('estado');
             $table->dateTime('fec_reg');
             $table->unsignedBigInteger('user_reg');
@@ -23,8 +34,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->unsignedBigInteger('user_eli')->nullable();
-
-            $table->foreign('id_pregunta')->references('id')->on('preguntas')->onDelete('cascade');
         });
     }
 
@@ -33,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('respuesta_induccion');
+        Schema::dropIfExists('pregunta_induccion');
     }
 };

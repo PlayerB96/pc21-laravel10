@@ -27,4 +27,15 @@ class User extends Model
     {
         return $this->hasOne(UserIntranet::class, 'id_usuario', 'id_user_intranet');
     }
+
+    public function puesto()
+    {
+        return $this->belongsTo(Puesto::class, 'id_puesto', 'id_puesto');
+    }
+
+    // Relación con el área a través del puesto
+    public function area()
+    {
+        return $this->hasOneThrough(Area::class, Puesto::class, 'id_puesto', 'id_area', 'id_puesto', 'id_area');
+    }
 }

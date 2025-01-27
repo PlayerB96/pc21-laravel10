@@ -1,3 +1,77 @@
 .services h1 {
     font-family: var(--font-family-playwrite);
 }
+
+body.dark .layout-container-section-content {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--dark-secondary-bg);
+}
+
+body.light .layout-container-section-content {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--light-bg);
+}
+
+
+.widget-container-section-content {
+    padding: 20px;
+    /* background-color: #fff; */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.toolbar-section-content {
+    /* background: red; */
+    margin-bottom: 20px;
+    display: flex;
+    /* Activa Flexbox */
+    align-items: center;
+    /* Alinea verticalmente los elementos */
+    gap: 10px;
+    /* Espacio entre los elementos */
+}
+@media (max-width: 768px) {
+    .toolbar-section-content {
+        flex-direction: column;
+        /* Asegura que los elementos se apilen verticalmente */
+        padding: 10px;
+        /* Reduce el padding para pantallas pequeñas */
+    }
+}
+
+/* Estilos base del botón */
+.btn-section-content {
+    padding: 10px 20px; /* Ajusta el padding según sea necesario */
+    background-color: #007bff; /* Color de fondo azul (puedes cambiarlo) */
+    color: #fff; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar el mouse */
+    font-size: 16px; /* Tamaño de la fuente */
+    transition: background-color 0.3s ease; /* Transición suave para el hover */
+}
+
+/* Estilos de hover */
+.btn-section-content:hover {
+    background-color: #0056b3; /* Color de fondo más oscuro al pasar el mouse */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para un efecto elevado */
+}
+
+/* Estilos de focus (opcional) */
+.btn-section-content:focus {
+    outline: none; /* Elimina el contorno predeterminado */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Sombra para resaltar el foco */
+}

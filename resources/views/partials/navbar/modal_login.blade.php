@@ -12,34 +12,25 @@
             <form id="loginForm">
                 <div class="form-group">
                     <label for="username">Usuario</label>
-                    <input
-                        type="text"
-                        id="username"
-                        placeholder="username"
-                        autocomplete="username">
+                    <input type="text" id="username" placeholder="username" autocomplete="username">
                     <div class="error" id="usernameError"></div>
                 </div>
                 <div class="form-group">
                     <label for="password">Contraseña</label>
-                    <input
-                        type="password"
-                        id="password"
-                        placeholder="Enter your password"
+                    <input type="password" id="password" placeholder="Enter your password"
                         autocomplete="current-password">
                     <div class="error" id="passwordError"></div>
                 </div>
                 <p id="mensajeError" style="color: red;"></p>
 
-                <button
-                    id="loginButton"
-                    class="btn-primary"
+                <button id="loginButton" class="btn-primary"
                     style="width: 100%; padding: 1rem; margin: 0.5rem 0rem; background: #000; color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
                     Iniciar sesión
                 </button>
 
             </form>
             <div class=" signup-link">
-                <p>¿No tienes una cuenta? Solicitar <a href="#" id="openRegisterModal">aquí</a></p>
+                <p>¿No tienes una cuenta? Solicitar <a href="#" id="redirectWhasstp">aquí</a></p>
             </div>
         </div>
     </div>

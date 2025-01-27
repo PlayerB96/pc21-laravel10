@@ -5,7 +5,58 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\InduccionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ElearningController;
+use App\Http\Controllers\GestionPersonas;
 
+
+
+Route::controller(GestionPersonas::class)->group(function () {
+    Route::get('gestionpersonas', 'index')->name('gestionpersonas');
+    Route::get('gestionpersonas/registro_papeletas', 'registro_papeletas')->name('gestionpersonas.registro_papeletas');
+});
+
+Route::get('/produccion', function () {
+    return view('produccion');
+});
+Route::get('/empresas', function () {
+    return view('empresas');
+});
+Route::get('/productos', function () {
+    return view('productos');
+});
+Route::get('/blog', function () {
+
+    return view('blog');
+});
+Route::get('/identidadcorporativa', function () {
+    return view('identidadcorporativa');
+});
+Route::get('/ecommerce', function () {
+    return view('ecommerce');
+});
+
+
+
+Route::get('/inicio', function () {
+    return view('inicio');
+})->name('inicio');
+
+Route::get('/', function () {
+    return view('inicio');
+})->name('home');
+
+Route::controller(AuthController::class)->group(function () {
+    Route::post('auth/validate_user', 'auth')->name('auth.validate_user');
+    Route::post('auth/logout', 'logout')->name('auth.logout');
+});
+
+// Rutas públicas
+
+Route::controller(ChatController::class)->group(function () {
+    Route::post('chatbot/messages', 'getResponse')->name('chatbot.messages');
+});
+
+// Rutas protegidas por el middleware 'checkSession'
+// Route::middleware(['checkSession'])->group(function () {
 // routes/web.php
 Route::controller(ElearningController::class)->group(function () {
     Route::get('elearning/cursos', 'index')->name('elearning.cursos');
@@ -16,27 +67,4 @@ Route::controller(InduccionController::class)->group(function () {
     Route::get('induccion/encuesta_induccion', 'index_encuesta')->name('induccion.encuesta_induccion');
     Route::post('induccion/submit_survey', 'submitSurvey')->name('induccion.submit_survey');
 });
-
-Route::controller(AuthController::class)->group(function () {
-    Route::post('auth/validate_user', 'auth')->name('auth.validate_user');
-});
-
-
-Route::get('/services', function () {
-    return view('services');
-});
-
-Route::get('/inicio', function () {
-    return view('inicio');
-});
-
-
-
-
-Route::get('/', function () {
-    return view('inicio');
-});
-
-Route::controller(ChatController::class)->group(function () {
-    Route::post('chatbot/messages', 'getResponse')->name('chatbot.messages');
-});
+// });
