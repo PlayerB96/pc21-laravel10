@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Departamento extends Model
 {
     use HasFactory;
+    protected $connection = 'mysql_intranet';
 
     // Nombre de la tabla
     protected $table = 'departamento';

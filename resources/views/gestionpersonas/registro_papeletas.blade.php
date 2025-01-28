@@ -1,7 +1,11 @@
 @extends('layouts.app')
 @section('title', 'REGISTRO PAPELETAS')
+@include('gestionpersonas.modal_insert')
 @section('content')
 
+    <head>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+    </head>
     <div class="layout-container-section-content">
         <div class="page-header">
             <div class="page-title">
@@ -12,9 +16,8 @@
             <div class="toolbar-section-content">
                 {{-- A PARTIR DE AQUI CAMBIA EL CONTENIDO --}}
                 <div class="toolbar-col">
-                    <label class="control-label text-bold">Estado Solicitud:</label>
-                    <select id="estado_solicitud" name="estado_solicitud" class="form-control"
-                        onchange="Busca_Registro_Papeleta()">
+                    <label class="control-label text-bold">Estado Solicitud11:</label>
+                    <select id="estado_solicitud" name="estado_solicitud" class="form-control">
                         <option value="0">Todos</option>
                         <option value="1" selected>En Proceso de aprobacion</option>
                         <option value="2">Aprobados</option>
@@ -23,13 +26,14 @@
                 </div>
 
                 <div class="toolbar-col">
-                    <button type="button" class="btn-section-content" title="Registrar" data-toggle="modal"
-                        data-target="#ModalRegistroGrande" app_reg_grande="{{ url('Papeletas/Modal_Papeletas_Salida/0') }}">
+                    <button type="button" id="login-btn-{{ uniqid() }}" class="btn-section-content" title="Registrar"
+                        data-toggle="modal" onclick="handleInsert()"
+                        app_reg_grande="{{ url('gestionpersonas/modal_registro_papeletas') }}">
                         Registrar
                     </button>
                 </div>
 
-                @if ($registro_masivo == 1 || $id_nivel == 1 || $id_puesto == 314)
+                {{-- @if ($registro_masivo == 1 || $id_nivel == 1 || $id_puesto == 314)
                     <div class="toolbar-col">
                         <button type="button" class="btn-section-content" title="Registrar Masivo" data-toggle="modal"
                             data-target="#ModalRegistroGrande"
@@ -37,7 +41,7 @@
                             Registro Masivo
                         </button>
                     </div>
-                @endif
+                @endif --}}
             </div>
             @csrf
             <div class="table-responsive" id="lista_colaborador">
@@ -65,9 +69,11 @@
                                 <td>{{ $list['tramite'] }}</td>
                                 <td align="center">{{ date('d/m/Y', strtotime($list['fec_solicitud'])) }}</td>
                                 <td align="center">
-                                    {{ $list['sin_ingreso'] == 1 ? 'Sin Ingreso' : $list['hora_salida'] }}</td>
+                                    {{ $list['sin_ingreso'] == 1 ? 'Sin Ingreso' : $list['hora_salida'] }}
+                                </td>
                                 <td align="center">
-                                    {{ $list['sin_retorno'] == 1 ? 'Sin Retorno' : $list['hora_retorno'] }}</td>
+                                    {{ $list['sin_retorno'] == 1 ? 'Sin Retorno' : $list['hora_retorno'] }}
+                                </td>
                                 <td align="center">
                                     @if ($list['estado_solicitud'] == 1)
                                         <span class="badge badge-warning">En proceso</span>
@@ -132,6 +138,83 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#estado_solicitud').on('change', Busca_Registro_Papeleta);
+        });
+
+        function handleInsert() {
+            const modalElement = document.getElementById("modalInsertPS");
+            // Verifica si el modal existe
+            if (modalElement) {
+                console.log("Modal encontrado:", modalElement);
+                openModal(modalElement.id);
+            } else {
+                alert("El modal no se encontró");
+            }
+        }
+
+
+        function Busca_Registro_Papeleta() {
+            var estado_solicitud = $('#estado_solicitud').val();
+            const url = "/gestionpersonas/buscar_papeletas";
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                data: {
+                    'estado_solicitud': estado_solicitud
+                },
+                success: function(data) {
+                    var tableBody = $('#lista_colaborador tbody');
+                    tableBody.empty();
+                    // Usamos la función para crear las filas y agregar al cuerpo de la tabla
+                    data.list_papeletas_salida.forEach(function(list) {
+                        var row = generateTableRow(list);
+                        tableBody.append(row);
+                    });
+                }
+            });
+        }
+
+        function generateTableRow(list) {
+            const motivo = list.id_motivo === 1 ? 'Laboral' : (list.id_motivo === 2 ? 'Personal' : list.motivo);
+            const estadoSolicitud = {
+                1: '<span class="badge badge-warning">En proceso</span>',
+                2: '<span class="badge badge-primary">Aprobado</span>',
+                3: '<span class="badge badge-danger">Denegado</span>',
+                4: '<span class="badge badge-warning">En proceso - Aprobación Gerencia</span>',
+                5: '<span class="badge badge-warning">En proceso - Aprobación RRHH</span>',
+            } [list.estado_solicitud] || '<span class="badge badge-primary">Error</span>';
+
+            const horaSalida = list.sin_ingreso === 1 ? 'Sin Ingreso' : list.hora_salida;
+            const horaRetorno = list.sin_retorno === 1 ? 'Sin Retorno' : list.hora_retorno;
+
+            const deleteButton = list.estado_solicitud === 1 ? `
+        <td class="text-center">
+            <a href="#" class="btn-action" title="Eliminar" onclick="Delete_Papeletas_Salida('${list.id_solicitudes_user}')">
+                <!-- SVG Icon -->
+            </a>
+        </td>` : '';
+
+            return `
+        <tr>
+            <td>${motivo}</td>
+            <td>${list.destino.nom_destino}</td> <!-- Nombre del destino -->
+            <td>${list.tramite.nom_tramite}</td> <!-- Nombre del trámite -->
+            <td align="center">${new Date(list.fec_solicitud).toLocaleDateString()}</td>
+            <td align="center">${horaSalida}</td>
+            <td align="center">${horaRetorno}</td>
+            <td align="center">${estadoSolicitud}</td>
+            ${deleteButton}
+        </tr>`;
+        }
+    </script>
 
     <style>
         .page-header {

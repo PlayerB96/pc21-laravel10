@@ -170,6 +170,21 @@ class UserIntranet extends Model
         return $this->belongsTo(User::class, 'id_user_intranet', 'id_usuario');
     }
 
+    public function puesto()
+    {
+        return $this->belongsTo(Puesto::class, 'id_puesto');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'id_area');
+    }
+
+    public function ubicacion()
+    {
+        return $this->belongsTo(Ubicacion::class, 'id_centro_labor', 'id_ubicacion');
+    }
+
     public function permisoPapeletasSalida()
     {
         return $this->hasOne(PermisoPapeletasSalida::class, 'id_puesto_jefe', 'id_puesto')

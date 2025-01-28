@@ -10,49 +10,50 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function auth(Request $request)
     {
-
-        // Validación de los datos recibidos
         $request->validate([
             'username' => 'required',
             'password' => 'required',
         ], [
             'username.required' => 'Debe ingresar username.',
             'password.required' => 'Debe ingresar password.',
-
         ]);
-        // Buscar el usuario en la base de datos externa
-        $user = UserIntranet::where('usuario_codigo', $request->username)->first();
+        // Buscar el usuario en la base de datos (INTRANET)
+        $user = UserIntranet::where('usuario_codigo', $request->username)
+            ->with(['puesto.area.subGerencia', 'ubicacion']) // Cargar las relaciones de puesto -> area -> subGerencia y ubicaciones
+            ->first();
 
+        // Acceder al sub_gerencia (subGerencia es la relación definida en Area)
+        $subGerenciaId = $user->puesto->area->subGerencia->id_gerencia ?? null;
+        // Verificar si el usuario fue encontrado
         if (!$user) {
-            // Si no se encuentra el usuario
             return response()->json(['error' => 'Usuario no encontrado.'], 401);
         }
         // Verificar si la contraseña es correcta
         if (password_verify($request->password, $user->usuario_password) == true) {
-            // Concatenar el nombre completo
             $fullName = $user->usuario_nombres . ' ' . $user->usuario_apater . ' ' . $user->usuario_amater;
             // Obtener el valor de registro_masivo desde permiso_papeletas_salida
             $registroMasivo = $user->permisoPapeletasSalida->registro_masivo ?? null;
-
+            // Obtener los cod_ubi de las relaciones 'ubicacionCentroLabor' y 'ubicacionUbicacion'
+            $codUbiUbicacion = $user->ubicacion->cod_ubi ?? null;
             // Guardar los datos en la sesión
             Session::put('usuario_codigo', $user->usuario_codigo);
             Session::put('nombre_completo', $fullName);
             Session::put('correo', $user->usuario_email);
             Session::put('id_puesto', $user->id_puesto);
             Session::put('id_nivel', $user->id_nivel);
+            Session::put('id_gerencia', $subGerenciaId);
+            Session::put('ubicacion', $user->ubicacion);
             Session::put('id_usuario', $user->id_usuario);
             Session::put('emailp', $user->emailp);
             Session::put('foto', $user->foto);
             Session::put('registro_masivo', $registroMasivo);
-
-            // Respuesta exitosa
+            Session::put('cod_ubi', $codUbiUbicacion); 
             // $sessionData = Session::all();
-            // dump($sessionData);
+            // dd($sessionData);
+            // Respuesta exitosa
             return response()->json([
                 'message' => 'Autenticación exitosa.',
                 'nombre_completo' => $fullName,
@@ -62,6 +63,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Contraseña Incorrecta.'], 401);
         }
     }
+
 
 
     public function logout()
@@ -123,3 +125,5 @@ class AuthController extends Controller
         //
     }
 }
+
+

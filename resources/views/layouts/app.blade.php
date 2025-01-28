@@ -18,19 +18,20 @@
 </head>
 
 <body>
-    <!-- Navbar (siempre visible) -->
-    @include('partials.navbar.navbar')
+    <header> 
+        @include('partials.navbar.navbar')
+    </header>
     <!-- Main Content: Aquí se cargará el contenido dinámico -->
     <main id="main-content" style="min-height: 500px;">
         @yield('content')
     </main>
-    <!-- Contenedor del footer -->
-    @include('partials.footer')
+    <footer> 
+        @include('partials.footer') 
+    </footer>
     @include('partials.chatbot')
 
 </body>
 <script src="{{ asset('js/main-content.js') }}"></script>
-
 <!-- Script global para inicializar DataTables -->
 <script src="{{ asset('js/datatable-init.js') }}"></script>
 <!-- DataTables JS -->

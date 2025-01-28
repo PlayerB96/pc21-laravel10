@@ -1,7 +1,7 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<x-modal id="modal-{{ uniqid() }}" title="Iniciar sesión" actionButton="Aceptar" class="custom-modal" extraClass="">
+<x-modal id="modal-{{ uniqid() }}" title="Iniciar sesión"  class="custom-modal" extraClass="">
     <div class="wide-content">
         <div class="login-card">
             <div class="brand">
@@ -38,7 +38,7 @@
 
 <script src="{{ asset('js/auth/login.js') }}"></script>
 
-<style>
+<style scoped>
     .login-card {
         background: white;
         border-radius: 20px;
@@ -116,7 +116,7 @@
     }
 
     .form-group {
-        margin-bottom: 1rem;
+        margin-bottom: 0.2rem;
         position: relative;
     }
 

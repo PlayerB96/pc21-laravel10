@@ -12,6 +12,14 @@ use App\Http\Controllers\GestionPersonas;
 Route::controller(GestionPersonas::class)->group(function () {
     Route::get('gestionpersonas', 'index')->name('gestionpersonas');
     Route::get('gestionpersonas/registro_papeletas', 'registro_papeletas')->name('gestionpersonas.registro_papeletas');
+    Route::post('gestionpersonas/buscar_papeletas', 'buscar_papeletas')->name('gestionpersonas.buscar_papeletas');
+    // REGISTRO DE PAPELETAS DE SALIDA
+    Route::get('gestionpersonas/modal_registro_papeletas', 'modal_insert')->name('gestionpersonas.modal_registro_papeletas');
+    Route::post('gestionpersonas/cambiar_motivo', 'cambiar_motivo')->name('gestionpersonas.cambiar_motivo');
+    Route::post('gestionpersonas/traer_tramite', 'traer_tramite')->name('gestionpersonas.traer_tramite');
+    Route::post('gestionpersonas/store', 'store')->name('gestionpersonas.store');
+
+
 });
 
 Route::get('/produccion', function () {

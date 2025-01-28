@@ -5,32 +5,64 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 class SolicitudUser extends Model
 {
     use HasFactory;
     protected $connection = 'mysql_intranet';
+    protected $table = 'solicitudes_user'; 
+    protected $primaryKey = 'id_solicitudes_user';
 
-    protected $table = 'solicitudes_user'; // Nombre de la tabla
-    protected $primaryKey = 'id_solicitudes_user'; // Clave primaria
-
-    // Campos que se pueden asignar masivamente
     protected $fillable = [
         'id_usuario',
         'id_solicitudes',
-        'estado_solicitud',
+        'cod_solicitud',
+        'cod_base',
+        'id_gerencia',
+        'anio',
+        'fec_desde',
+        'fec_hasta',
+        'dif_dias',
+        'fec_solicitud',
+        'hora_salida',
+        'hora_retorno',
+        'horar_salida',
+        'horar_retorno',
+        'user_horar_salida',
+        'user_horar_entrada',
         'id_motivo',
         'destino',
         'tramite',
+        'especificacion_destino',
+        'especificacion_tramite',
+        'motivo',
+        'estado_solicitud',
+        'user_aprob',
+        'fec_apro',
+        'sin_ingreso',
+        'sin_retorno',
+        'mediodia',
+        'observacion',
+        'estado',
         'fec_reg',
         'user_reg',
-        'estado',
+        'fec_act',
+        'user_act',
+        'fec_eli',
+        'user_eli'
     ];
+
+    // Definir las fechas para que el modelo pueda manejarlas automáticamente
+    protected $dates = ['fec_solicitud', 'fec_apro', 'fec_reg', 'fec_act', 'fec_eli'];
+
+    // Si no estás usando timestamps automáticos, puedes desactivar la propiedad
+    public $timestamps = false;
 
     // Relación con el modelo User
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_reg', 'id_usuario');
+        return $this->belongsTo(UserIntranet::class, 'user_reg', 'id_usuario');
     }
 
     // Relación con el modelo Destino
@@ -68,8 +100,8 @@ class SolicitudUser extends Model
         $result = $query->orderBy('fec_reg', 'DESC')
             ->get()
             ->map(function ($solicitud) {
-                return [
-                    'id_solicitudes_user' => $solicitud->id_solicitudes_user,
+                // Incluir todos los campos de la tabla solicitudes_user
+                return $solicitud->toArray() + [
                     'usuario_nombres' => $solicitud->user->usuario_nombres ?? null,
                     'usuario_apater' => $solicitud->user->usuario_apater ?? null,
                     'usuario_amater' => $solicitud->user->usuario_amater ?? null,
@@ -98,16 +130,16 @@ class SolicitudUser extends Model
 
         // Construir la consulta usando Eloquent
         $solicitud = SolicitudUser::with([
-            'user.puesto.area.subGerencia.gerencia', // Relaciones anidadas
+            'user.puesto.area.subGerencia.gerencia', 
             'destino',
             'tramite'
         ])
-            ->where('estado', 1) // Filtro para estado = 1
-            ->where('estado_solicitud', 1) // Filtro para estado_solicitud = 1
-            ->where('id_solicitudes', 2) // Filtro para id_solicitudes = 2
-            ->where('id_usuario', $id_usuario) // Filtro para el usuario en sesión
-            ->orderBy('fec_reg', 'DESC') // Ordenar por fecha de registro descendente
-            ->first(); // Obtener solo el primer registro
+            ->where('estado', 1) 
+            ->where('estado_solicitud', 1) 
+            ->where('id_solicitudes', 2) 
+            ->where('id_usuario', $id_usuario) 
+            ->orderBy('fec_reg', 'DESC')
+            ->first(); 
 
         // Si no se encuentra la solicitud, retornar un array vacío
         if (!$solicitud) {
@@ -133,5 +165,11 @@ class SolicitudUser extends Model
             'fec_reg' => $solicitud->fec_reg,
             'estado_solicitud' => $solicitud->estado_solicitud,
         ];
+    }
+
+    public function verificacion_papeletas()
+    {
+        // Usar la conexión definida en el modelo
+        DB::connection($this->getConnectionName())->statement("CALL Papeletas_de_Salida(NULL)");
     }
 }

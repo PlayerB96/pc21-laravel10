@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Area extends Model
 {
     use HasFactory;
+    protected $connection = 'mysql_intranet';
 
     // Nombre de la tabla
     protected $table = 'area';
@@ -49,5 +50,10 @@ class Area extends Model
     public function puestos()
     {
         return $this->hasMany(Puesto::class, 'id_area', 'id_area');
+    }
+
+    public function subGerencia()
+    {
+        return $this->belongsTo(SubGerencia::class, 'id_departamento', 'id_sub_gerencia');
     }
 }

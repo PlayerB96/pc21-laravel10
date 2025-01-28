@@ -127,7 +127,7 @@ if (!Session::has('usuario_codigo')) {
         position: relative;
         /* Inicialmente no sticky */
         top: 0;
-        z-index: 1000;
+        z-index: 2;
         transition: top 0.3s;
         width: 100%;
     }
@@ -142,7 +142,7 @@ if (!Session::has('usuario_codigo')) {
         position: relative;
         /* Inicialmente no sticky */
         top: 0;
-        z-index: 1000;
+        z-index: 2;
         transition: top 0.3s;
         width: 100%;
     }
@@ -165,7 +165,7 @@ if (!Session::has('usuario_codigo')) {
         position: absolute;
         top: 100%;
         left: -6rem;
-        z-index: 1000;
+        z-index: 2;
         min-width: 200px;
         border-radius: 4px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -369,7 +369,7 @@ if (!Session::has('usuario_codigo')) {
             position: relative;
             /* Inicialmente no sticky */
             top: 0;
-            z-index: 1000;
+            z-index: 2;
             transition: top 0.3s;
             width: 100%;
             /* Suaviza la transición al aparecer/desaparecer */

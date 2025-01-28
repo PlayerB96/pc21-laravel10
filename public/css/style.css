@@ -75,3 +75,48 @@ body.light .layout-container-section-content {
     outline: none; /* Elimina el contorno predeterminado */
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Sombra para resaltar el foco */
 }
+
+/* Personalización de la tabla */
+table.dataTable {
+    border: 1px solid #ddd; /* Borde de la tabla */
+    border-radius: 5px; /* Bordes redondeados */
+    overflow: hidden;
+    font-family: Arial, sans-serif; /* Tipografía personalizada */
+}
+
+table.dataTable th {
+    background-color: #4CAF50; /* Fondo verde para los encabezados */
+    color: white; /* Color blanco para el texto */
+    text-align: center; /* Centrado del texto */
+}
+
+table.dataTable td {
+    text-align: center; /* Centrado del texto en las celdas */
+}
+
+table.dataTable tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Fondo gris claro para filas pares */
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #ddd; /* Fondo gris oscuro al pasar el mouse */
+}
+
+/* Estilo para los botones de DataTable */
+.dt-buttons {
+    margin-bottom: 15px; /* Espacio inferior para los botones */
+}
+
+.dt-buttons .btn {
+    background-color: #007bff; /* Fondo azul para los botones */
+    color: white; /* Color blanco para el texto */
+    padding: 10px 15px; /* Padding alrededor del texto */
+    border: none;
+    border-radius: 5px; /* Bordes redondeados en los botones */
+    margin-right: 5px; /* Espacio entre los botones */
+    cursor: pointer;
+}
+
+.dt-buttons .btn:hover {
+    background-color: #0056b3; /* Fondo azul oscuro cuando se pasa el mouse */
+}
