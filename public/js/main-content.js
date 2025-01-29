@@ -10,6 +10,7 @@ document.body.addEventListener("click", function (event) {
     }
 });
 
+
 // Función para cargar contenido
 function loadContent(url) {
     fetch(url)

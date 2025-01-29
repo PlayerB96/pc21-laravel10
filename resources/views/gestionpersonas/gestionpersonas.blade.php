@@ -7,5 +7,6 @@
         <h2>GESTION PERSONAS</h2>
 
         <p>This is the content for the GESTION PERSONAS page.</p>
-    @endsection
-</div>
+
+    </div>
+@endsection

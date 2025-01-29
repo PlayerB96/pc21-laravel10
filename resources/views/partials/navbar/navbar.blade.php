@@ -1,12 +1,17 @@
 @include('partials.navbar.modal_login')
 
 <?php
-/* 
-$navItems = [['label' => 'eLearning', 'route' => '/elearning/cursos', 'subitems' => []], ['label' => 'Inducción', 'route' => '/induccion', 'subitems' => []], ['label' => 'Gestión de Personas', 'route' => '/services', 'subitems' => [['label' => 'Papeletas', 'route' => '/services/web']]], ['label' => 'Producción', 'route' => '/services', 'subitems' => [['label' => 'Fichas Técnicas', 'route' => '/services/web']]], ['label' => 'Inicio', 'route' => '/inicio', 'subitems' => []], ['label' => 'Identidad Corporativa', 'route' => '/inicio', 'subitems' => []], ['label' => 'Blog', 'route' => '/inicio', 'subitems' => []]];
-*/
-?>
-<?php
-$navItems = [['label' => 'Inicio', 'route' => '/inicio', 'subitems' => []], ['label' => 'Inducción', 'route' => '/induccion', 'subitems' => []], ['label' => 'Ecommerce', 'route' => '/ecommerce', 'subitems' => []], ['label' => 'Gestión de Personas', 'route' => '/gestionpersonas', 'subitems' => [['label' => 'Papeletas', 'route' => '/gestionpersonas/registro_papeletas']]], ['label' => 'Producción', 'route' => '/produccion', 'subitems' => [['label' => 'Fichas Técnicas', 'route' => '/produccion/fichas_produccion']]], ['label' => 'Identidad Corporativa', 'route' => '/identidadcorporativa', 'subitems' => []], ['label' => 'Empresas', 'route' => '/empresas', 'subitems' => []], ['label' => 'Productos', 'route' => '/productos', 'subitems' => []], ['label' => 'Blog', 'route' => '/blog', 'subitems' => []]];
+$navItems = [['label' => 'Inicio', 'route' => '/inicio', 'subitems' => []], 
+['label' => 'Inducción', 'route' => '/induccion', 'subitems' => []], 
+['label' => 'Ecommerce', 'route' => '/ecommerce', 'subitems' => []], 
+['label' => 'Gestión de Personas', 'route' => '/gestionpersonas', 'subitems' => 
+[['label' => 'Papeletas', 'route' => '/gestionpersonas/registro_papeletas'],
+['label' => 'Postulantes', 'route' => '/gestionpersonas/registro_postulante']]],
+ ['label' => 'Producción', 'route' => '/produccion', 'subitems' => [['label' => 'Fichas Técnicas', 'route' => '/produccion/fichas_produccion']]], 
+ ['label' => 'Identidad Corporativa', 'route' => '/identidadcorporativa', 'subitems' => []], 
+ ['label' => 'Empresas', 'route' => '/empresas', 'subitems' => []], 
+ ['label' => 'Productos', 'route' => '/productos', 'subitems' => []], 
+ ['label' => 'Blog', 'route' => '/blog', 'subitems' => []]];
 
 // VISTAS PARA CUANDO EXISTE UNA SESSION
 if (!Session::has('usuario_codigo')) {

@@ -1,7 +1,7 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<x-modal id="modalInsertPS" title="Registrar Papeleta" actionButton="Aceptar" econdButton="Cancelar" extraClass="wide-modal">
+<x-modal id="modalInsertPS" title="Registrar Papeleta" actionButton="Guardar" secondButton="Cancelar" extraClass="wide-modal">
     <div class="wide-content">
         <form id="formulario_papeletas_salida_registro" method="POST"
             action="{{ url('Papeletas/Insert_or_Update_Papeletas_Salida') }}">

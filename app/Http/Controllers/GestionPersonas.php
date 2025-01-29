@@ -55,7 +55,7 @@ class GestionPersonas extends Controller
         $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1);
         $dato['ultima_papeleta_salida_todo'] = count($this->Model_Solicitudes->get_list_papeletas_salida_uno());
 
-        return view('gestionpersonas.registro_papeletas', $dato);
+        return view('gestionpersonas.registro_papeletas.index', $dato);
     }
 
     public function buscar_papeletas(Request $request)
@@ -64,11 +64,8 @@ class GestionPersonas extends Controller
         $dato['id_nivel'] = $this->id_nivel;
         $dato['registro_masivo'] = $this->registro_masivo;
         $dato['ultima_papeleta_salida_todo'] = count($this->Model_Solicitudes->get_list_papeletas_salida_uno());
-
         $estado_solicitud = $request->estado_solicitud;
-
         $this->Model_Solicitudes->verificacion_papeletas();
-
         // Recuperamos las papeletas filtradas
         $list_papeletas_salida = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud);
         // dd($list_papeletas_salida);
@@ -78,17 +75,6 @@ class GestionPersonas extends Controller
         ]);
     }
 
-
-    public function modal_insert($parametro)
-    {
-        $dato['parametro'] = $parametro;
-        $centro_labores = session('usuario')->centro_labores;
-        $lista_puesto_gest_array = $this->Model_Permiso->permiso_pps_puestos_gest_dinamico();
-        $separado_por_comas_puestos = implode(",", array_column($lista_puesto_gest_array, 'id_puesto_permitido'));
-        dd($lista_puesto_gest_array);
-
-        return view('papeletas.modal_registrar', $dato);
-    }
 
 
     public function cambiar_motivo(Request $request)
@@ -185,36 +171,15 @@ class GestionPersonas extends Controller
         return response()->json(['message' => 'Solicitud registrada exitosamente.']);
     }
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function index_rpo()
     {
-        //
+        return view('gestionpersonas.postulantes.index');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function store_rpo()
     {
-        //
+        return view('gestionpersonas.postulantes.index');
     }
+    
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

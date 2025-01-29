@@ -7,6 +7,7 @@
         <div class="modal-body">
             {{ $slot }}
         </div>
+        @if ($actionButton || $secondButton)
         <div class="modal-footer">
             @if ($actionButton)
                 <button class="action-button" data-modal-id="{{ $id }}">{{ $actionButton }}</button>
@@ -15,6 +16,7 @@
                 <button class="second-button" data-modal-id="{{ $id }}">{{ $secondButton }}</button>
             @endif
         </div>
+        @endif
     </div>
 </div>
 
@@ -28,7 +30,7 @@
         /* Habilita el desplazamiento vertical */
         border: 2px solid #e1e1e1;
         border-radius: 12px;
-        padding-bottom: 50px;
+        margin-bottom: 2rem;
         /* Añadir un poco de espacio en la parte inferior */
     }
 

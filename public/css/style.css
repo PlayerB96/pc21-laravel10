@@ -1,25 +1,35 @@
+/* Personalización del CONTENIDO DE VISTAS */
+
 .services h1 {
     font-family: var(--font-family-playwrite);
 }
 
 body.dark .layout-container-section-content {
-    padding: 0;
+    padding: 1rem;
     margin: 0;
-    height: 100%;
     display: flex;
     flex-direction: column;
     background-color: var(--dark-secondary-bg);
 }
 
 body.light .layout-container-section-content {
-    padding: 0;
+    padding: 1rem;
     margin: 0;
-    height: 100%;
     display: flex;
     flex-direction: column;
     background-color: var(--light-bg);
 }
 
+.page-header {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.page-title h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
 
 .widget-container-section-content {
     padding: 20px;
@@ -31,8 +41,6 @@ body.light .layout-container-section-content {
     flex-direction: column;
 }
 
-
-
 .toolbar-section-content {
     /* background: red; */
     margin-bottom: 20px;
@@ -43,6 +51,44 @@ body.light .layout-container-section-content {
     gap: 10px;
     /* Espacio entre los elementos */
 }
+
+/* Estilos base del botón */
+.btn-section-content {
+    padding: 10px 20px;
+    /* Ajusta el padding según sea necesario */
+    background-color: #007bff;
+    /* Color de fondo azul (puedes cambiarlo) */
+    color: #fff;
+    /* Color del texto */
+    border: none;
+    /* Sin borde */
+    border-radius: 5px;
+    /* Bordes redondeados */
+    cursor: pointer;
+    /* Cambia el cursor al pasar el mouse */
+    font-size: 16px;
+    /* Tamaño de la fuente */
+    transition: background-color 0.3s ease;
+    /* Transición suave para el hover */
+}
+
+/* Estilos de hover */
+.btn-section-content:hover {
+    background-color: #0056b3;
+    /* Color de fondo más oscuro al pasar el mouse */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Sombra para un efecto elevado */
+}
+
+/* Estilos de focus (opcional) */
+.btn-section-content:focus {
+    outline: none;
+    /* Elimina el contorno predeterminado */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+    /* Sombra para resaltar el foco */
+}
+
+
 @media (max-width: 768px) {
     .toolbar-section-content {
         flex-direction: column;
@@ -52,71 +98,86 @@ body.light .layout-container-section-content {
     }
 }
 
-/* Estilos base del botón */
-.btn-section-content {
-    padding: 10px 20px; /* Ajusta el padding según sea necesario */
-    background-color: #007bff; /* Color de fondo azul (puedes cambiarlo) */
-    color: #fff; /* Color del texto */
-    border: none; /* Sin borde */
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer; /* Cambia el cursor al pasar el mouse */
-    font-size: 16px; /* Tamaño de la fuente */
-    transition: background-color 0.3s ease; /* Transición suave para el hover */
-}
 
-/* Estilos de hover */
-.btn-section-content:hover {
-    background-color: #0056b3; /* Color de fondo más oscuro al pasar el mouse */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para un efecto elevado */
-}
 
-/* Estilos de focus (opcional) */
-.btn-section-content:focus {
-    outline: none; /* Elimina el contorno predeterminado */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Sombra para resaltar el foco */
-}
 
-/* Personalización de la tabla */
+/* Personalización del DATATABLE */
 table.dataTable {
-    border: 1px solid #ddd; /* Borde de la tabla */
-    border-radius: 5px; /* Bordes redondeados */
+    border: 1px solid #ddd;
+    /* Borde de la tabla */
+    border-radius: 5px;
+    /* Bordes redondeados */
     overflow: hidden;
-    font-family: Arial, sans-serif; /* Tipografía personalizada */
+    font-family: Arial, sans-serif;
+    /* Tipografía personalizada */
 }
 
-table.dataTable th {
-    background-color: #4CAF50; /* Fondo verde para los encabezados */
-    color: white; /* Color blanco para el texto */
-    text-align: center; /* Centrado del texto */
+body.light table.dataTable th {
+    background-color: var(--light-primary-bg);
+    /* Fondo verde para los encabezados */
+    color: white;
+    /* Color blanco para el texto */
+    text-align: center;
+    /* Centrado del texto */
 }
+
+body.dark table.dataTable th {
+    background-color: var(--dark-primary-bg);
+    /* Fondo verde para los encabezados */
+    color: white;
+    /* Color blanco para el texto */
+    text-align: center;
+    /* Centrado del texto */
+}
+
 
 table.dataTable td {
-    text-align: center; /* Centrado del texto en las celdas */
+    text-align: center;
+    /* Centrado del texto en las celdas */
 }
 
-table.dataTable tbody tr:nth-child(even) {
-    background-color: #f2f2f2; /* Fondo gris claro para filas pares */
+body.light table.dataTable tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+    /* Fondo gris claro para filas pares */
 }
 
-table.dataTable tbody tr:hover {
-    background-color: #ddd; /* Fondo gris oscuro al pasar el mouse */
+body.dark table.dataTable tbody tr:nth-child(even) {
+    background-color: var(--dark-skeleton-primary);
+    /* Fondo gris claro para filas pares */
+}
+
+body.light table.dataTable tbody tr:hover {
+    background-color: #ddd;
+    /* Fondo gris oscuro al pasar el mouse */
+}
+
+body.dark table.dataTable tbody tr:hover {
+    background-color: var(--dark-skeleton-primary);
+    /* Fondo gris oscuro al pasar el mouse */
 }
 
 /* Estilo para los botones de DataTable */
 .dt-buttons {
-    margin-bottom: 15px; /* Espacio inferior para los botones */
+    margin-bottom: 15px;
+    /* Espacio inferior para los botones */
 }
 
 .dt-buttons .btn {
-    background-color: #007bff; /* Fondo azul para los botones */
-    color: white; /* Color blanco para el texto */
-    padding: 10px 15px; /* Padding alrededor del texto */
+    background-color: #007bff;
+    /* Fondo azul para los botones */
+    color: white;
+    /* Color blanco para el texto */
+    padding: 10px 15px;
+    /* Padding alrededor del texto */
     border: none;
-    border-radius: 5px; /* Bordes redondeados en los botones */
-    margin-right: 5px; /* Espacio entre los botones */
+    border-radius: 5px;
+    /* Bordes redondeados en los botones */
+    margin-right: 5px;
+    /* Espacio entre los botones */
     cursor: pointer;
 }
 
 .dt-buttons .btn:hover {
-    background-color: #0056b3; /* Fondo azul oscuro cuando se pasa el mouse */
+    background-color: #0056b3;
+    /* Fondo azul oscuro cuando se pasa el mouse */
 }
