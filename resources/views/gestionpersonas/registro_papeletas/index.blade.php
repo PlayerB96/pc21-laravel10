@@ -250,10 +250,7 @@
         }
 
         /* Estilos para el contenedor de la tabla */
-        .table-responsive {
-            flex-grow: 1;
-            overflow: auto;
-        }
+      
     </style>
 
 @endsection

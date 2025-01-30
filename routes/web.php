@@ -20,6 +20,7 @@ Route::controller(GestionPersonas::class)->group(function () {
     // REGISTRO DE POSTULANTE
     Route::get('gestionpersonas/registro_postulante', 'index_rpo')->name('gestionpersonas.registro_postulante');
     Route::post('gestionpersonas/store_rpo', 'store_rpo')->name('gestionpersonas.store_rpo');
+    Route::post('gestionpersonas/store_rpo', 'store_rpo')->name('gestionpersonas.store_rpo');
 
 
 });

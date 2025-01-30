@@ -167,18 +167,7 @@ h3 {
     cursor: pointer;
 }
 
-.btn-submit {
-    background-color: var(--light-secondary-bg);
-    color: white;
-    border: none;
-    box-shadow: 0 4px 6px rgba(255, 167, 0, 0.3);
-    margin-top: 1.5rem;
-}
 
-.btn-submit:hover {
-    background-color: var(--light-text);
-    transform: translateY(-2px);
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {

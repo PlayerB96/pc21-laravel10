@@ -88,6 +88,52 @@ body.light .layout-container-section-content {
     /* Sombra para resaltar el foco */
 }
 
+.btn-submit {
+    background-color: var(--light-secondary-bg);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 6px rgba(255, 167, 0, 0.3);
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: 10px;
+}
+
+.btn-submit:hover {
+    background-color: var(--light-text);
+    transform: translateY(-2px);
+}
+
+.btn-add {
+    background-color: var(--light-secondary-bg);
+    /* Color de fondo verde */
+    color: white;
+    /* Color del texto */
+    font-weight: bold;
+    /* Texto en negrita */
+    padding: 10px 20px;
+    /* Espaciado interior */
+    border-radius: 5px;
+    /* Bordes redondeados */
+    border: none;
+    /* Eliminar borde predeterminado */
+    cursor: pointer;
+    /* Cambio de cursor al pasar por encima */
+    transition: background-color 0.3s ease;
+    /* Transición suave al pasar el ratón */
+}
+
+.btn-add:hover {
+    background-color: var(--light-secondary-hover);
+    /* Color de fondo verde más oscuro al hacer hover */
+}
+
+.btn-add:focus {
+    outline: none;
+    /* Eliminar borde de enfoque */
+    box-shadow: 0 0 0 2px var(--light-secondary-bg);
+    /* Sombra alrededor al enfocar */
+}
+
 
 @media (max-width: 768px) {
     .toolbar-section-content {
@@ -110,6 +156,11 @@ table.dataTable {
     overflow: hidden;
     font-family: Arial, sans-serif;
     /* Tipografía personalizada */
+}
+
+.table-responsive {
+    flex-grow: 1;
+    overflow: auto;
 }
 
 body.light table.dataTable th {
