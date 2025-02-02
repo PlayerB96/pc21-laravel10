@@ -16,11 +16,10 @@
 
     /* DARK COLORS */
     --dark-primary-bg: #15171c;
-    --dark-secondary-bg: #26272f;
+    --dark-secondary-bg: #333;
     --dark-text: #FFFFFF;
     --dark-accent: #00b1f4;
 
-    --test-color: #333;
     /* SKELETON */
     --dark-skeleton-primary: #383a3f;
     --dark-skeleton-secondary: #616263;

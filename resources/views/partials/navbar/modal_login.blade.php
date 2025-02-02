@@ -1,7 +1,7 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
-<x-modal id="modal-{{ uniqid() }}" title="Iniciar sesión"  class="custom-modal" extraClass="">
+<x-modal id="modal-{{ uniqid() }}" title="Iniciar sesión" class="custom-modal" extraClass="">
     <div class="wide-content">
         <div class="login-card">
             <div class="brand">
@@ -46,6 +46,8 @@
         width: 100%;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
     }
+
+
 
 
     @media (max-width: 1370px) {

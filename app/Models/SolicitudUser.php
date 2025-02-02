@@ -11,7 +11,7 @@ class SolicitudUser extends Model
 {
     use HasFactory;
     protected $connection = 'mysql_intranet';
-    protected $table = 'solicitudes_user'; 
+    protected $table = 'solicitudes_user';
     protected $primaryKey = 'id_solicitudes_user';
 
     protected $fillable = [
@@ -130,16 +130,16 @@ class SolicitudUser extends Model
 
         // Construir la consulta usando Eloquent
         $solicitud = SolicitudUser::with([
-            'user.puesto.area.subGerencia.gerencia', 
+            'user.puesto.area.subGerencia.gerencia',
             'destino',
             'tramite'
         ])
-            ->where('estado', 1) 
-            ->where('estado_solicitud', 1) 
-            ->where('id_solicitudes', 2) 
-            ->where('id_usuario', $id_usuario) 
+            ->where('estado', 1)
+            ->where('estado_solicitud', 1)
+            ->where('id_solicitudes', 2)
+            ->where('id_usuario', $id_usuario)
             ->orderBy('fec_reg', 'DESC')
-            ->first(); 
+            ->first();
 
         // Si no se encuentra la solicitud, retornar un array vacío
         if (!$solicitud) {

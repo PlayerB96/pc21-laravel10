@@ -14,7 +14,7 @@
         <!-- Contenido sobre el video -->
         <div class="content">
             <!-- <h1>Bienvenido <label for=""></label></h1>
-            <p>Extranet - Lanúmerouno</p> -->
+                <p>Extranet - Lanúmerouno</p> -->
         </div>
     </section>
 
@@ -39,102 +39,8 @@
                 </div>
             </div>
         </div>
-        <div class="container mx-auto">
-            <div class="service-cards real-content hidden" id="real-content">
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 1</h3>
-                    <p class="mt-2">Accede a herramientas avanzadas para mejorar tu productividad.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 2</h3>
-                    <p class="mt-2">Conéctate con tu equipo de forma rápida y segura.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 3</h3>
-                    <p class="mt-2">Gestiona tus proyectos en tiempo real con facilidad.</p>
-                </div>
-            </div>
-        </div>
-        <div class="container mx-auto">
-            <div class="service-cards real-content hidden" id="real-content">
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 1</h3>
-                    <p class="mt-2">Accede a herramientas avanzadas para mejorar tu productividad.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 2</h3>
-                    <p class="mt-2">Conéctate con tu equipo de forma rápida y segura.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 3</h3>
-                    <p class="mt-2">Gestiona tus proyectos en tiempo real con facilidad.</p>
-                </div>
-            </div>
-        </div>
-        <div class="container mx-auto">
-            <div class="service-cards real-content hidden" id="real-content">
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 1</h3>
-                    <p class="mt-2">Accede a herramientas avanzadas para mejorar tu productividad.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 2</h3>
-                    <p class="mt-2">Conéctate con tu equipo de forma rápida y segura.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 3</h3>
-                    <p class="mt-2">Gestiona tus proyectos en tiempo real con facilidad.</p>
-                </div>
-            </div>
-        </div>
-        <div class="container mx-auto">
-            <div class="service-cards real-content hidden" id="real-content">
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 1</h3>
-                    <p class="mt-2">Accede a herramientas avanzadas para mejorar tu productividad.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 2</h3>
-                    <p class="mt-2">Conéctate con tu equipo de forma rápida y segura.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 3</h3>
-                    <p class="mt-2">Gestiona tus proyectos en tiempo real con facilidad.</p>
-                </div>
-            </div>
-        </div>
-        <div class="container mx-auto">
-            <div class="service-cards real-content hidden" id="real-content">
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 1</h3>
-                    <p class="mt-2">Accede a herramientas avanzadas para mejorar tu productividad.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 2</h3>
-                    <p class="mt-2">Conéctate con tu equipo de forma rápida y segura.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 3</h3>
-                    <p class="mt-2">Gestiona tus proyectos en tiempo real con facilidad.</p>
-                </div>
-            </div>
-        </div>
-        <div class="container mx-auto">
-            <div class="service-cards real-content hidden" id="real-content">
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 1</h3>
-                    <p class="mt-2">Accede a herramientas avanzadas para mejorar tu productividad.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 2</h3>
-                    <p class="mt-2">Conéctate con tu equipo de forma rápida y segura.</p>
-                </div>
-                <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                    <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 3</h3>
-                    <p class="mt-2">Gestiona tus proyectos en tiempo real con facilidad.</p>
-                </div>
-            </div>
-        </div>
+
+
     </section>
     <style>
         /* Contenedor general */

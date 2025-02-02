@@ -67,7 +67,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-let lastScrollTop = 0;
+var lastScrollTop = 0;
 window.addEventListener("scroll", function () {
     let navbar = document.querySelector(".navbar");
     let currentScroll =

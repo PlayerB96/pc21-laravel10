@@ -1,25 +1,40 @@
-const mainContent = document.getElementById("main-content");
+if (!window.mainContentInitialized) {
+    window.mainContentInitialized = true;
 
-// Delegación de eventos para enlaces y botones con data-route
-document.body.addEventListener("click", function (event) {
-    const target = event.target.closest("[data-route]");
-    if (target) {
-        event.preventDefault();
-        const url = target.getAttribute("data-route");
-        loadContent(url);
-    }
-});
+    var mainContent = document.getElementById("main-content");
 
+    document.body.addEventListener("click", function (event) {
+        const target = event.target.closest("[data-route]");
+        if (target) {
+            event.preventDefault();
+            const url = target.getAttribute("data-route");
+            loadContent(url);
+        }
+    });
 
-// Función para cargar contenido
-function loadContent(url) {
-    fetch(url)
-        .then((response) => response.text())
-        .then((data) => {
+    window.addEventListener("popstate", (event) => {
+        if (event.state && event.state.url) {
+            loadContent(event.state.url);
+        }
+    });
+
+    async function loadContent(url) {
+        try {
+            const response = await fetch(url, {
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+            });
+
+            if (!response.ok) {
+                throw new Error(
+                    `Error ${response.status}: ${response.statusText}`
+                );
+            }
+
+            const text = await response.text();
             const parser = new DOMParser();
-            const doc = parser.parseFromString(data, "text/html");
-            const newContent = doc.querySelector("#main-content");
+            const doc = parser.parseFromString(text, "text/html");
 
+            const newContent = doc.querySelector("#main-content");
             if (newContent) {
                 mainContent.innerHTML = newContent.innerHTML;
             }
@@ -29,31 +44,26 @@ function loadContent(url) {
                 document.title = newTitle.innerText;
             }
 
-            history.pushState(null, "", url);
+            if (window.location.href !== url) {
+                history.pushState({ url }, "", url);
+            }
+
             executeScripts(doc);
-        })
-        .catch((error) => console.error("Error loading content:", error));
-}
-
-// Función para ejecutar scripts dentro del contenido cargado
-function executeScripts(doc) {
-    const existingScripts = document.body.querySelectorAll(
-        "script[data-dynamic]"
-    );
-    existingScripts.forEach((script) => script.remove()); // Eliminar scripts anteriores para evitar duplicados
-
-    const scripts = doc.querySelectorAll("script");
-    scripts.forEach((script) => {
-        const newScript = document.createElement("script");
-        newScript.setAttribute("data-dynamic", "true");
-
-        if (script.src) {
-            newScript.src = script.src;
-            newScript.async = true;
-        } else {
-            newScript.textContent = script.textContent;
+        } catch (error) {
+            console.error("Error cargando contenido:", error);
         }
+    }
 
-        document.body.appendChild(newScript);
-    });
+    function executeScripts(doc) {
+        doc.querySelectorAll("script").forEach((script) => {
+            const newScript = document.createElement("script");
+            if (script.src) {
+                newScript.src = script.src;
+                newScript.async = true;
+            } else {
+                newScript.textContent = script.textContent;
+            }
+            document.body.appendChild(newScript);
+        });
+    }
 }

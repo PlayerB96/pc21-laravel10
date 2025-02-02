@@ -54,9 +54,7 @@
     <script src="{{ asset('js/main-content.js') }}"></script>
     {{-- <script src="{{ asset('js/gestionpersonas/registro_papeletras.js') }}"></script> --}}
 
-    <!-- Inicializar DataTable -->
 
-    {{-- <script src="{{ asset('js/datatable-init.js') }}"></script> --}}
 
 </body>
 

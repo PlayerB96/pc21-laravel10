@@ -47,6 +47,49 @@ class GestionPersonas extends Controller
         return view('gestionpersonas.gestionpersonas');
     }
 
+    public function getPapeletas()
+    {
+        // dd("##1");   
+        // Datos en duro para prueba
+        $papeletas = [
+            [
+                'usuario_nombres' => 'Juan',
+                'usuario_apater' => 'Pérez',
+                'usuario_amater' => 'Gómez',
+                'centro_labores' => 'Centro 1',
+                'nom_area' => 'Área 1',
+                'destino' => 'Destino A',
+                'tramite' => 'Trámite X',
+                'fec_reg' => '2025-01-30',
+                'estado_solicitud' => 'Pendiente'
+            ],
+            [
+                'usuario_nombres' => 'Ana',
+                'usuario_apater' => 'Lopez',
+                'usuario_amater' => 'Mendoza',
+                'centro_labores' => 'Centro 2',
+                'nom_area' => 'Área 2',
+                'destino' => 'Destino B',
+                'tramite' => 'Trámite Y',
+                'fec_reg' => '2025-01-29',
+                'estado_solicitud' => 'Aprobada'
+            ]
+        ];
+
+        // Devolver los datos como JSON
+        return response()->json($papeletas);
+    }
+
+
+    // public function getPapeletas()
+    // {
+    //     dump('Solicitud llegada al controlador');
+
+    //     $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1);
+
+    //     return response()->json($dato['list_papeletas_salida']);
+    // }
+
     public function registro_papeletas()
     {
         $dato['id_puesto'] = $this->id_puesto;
@@ -180,6 +223,4 @@ class GestionPersonas extends Controller
     {
         return view('gestionpersonas.postulantes.index');
     }
-    
-
 }
