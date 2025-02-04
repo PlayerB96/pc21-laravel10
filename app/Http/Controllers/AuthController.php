@@ -50,7 +50,7 @@ class AuthController extends Controller
             Session::put('emailp', $user->emailp);
             Session::put('foto', $user->foto);
             Session::put('registro_masivo', $registroMasivo);
-            Session::put('cod_ubi', $codUbiUbicacion); 
+            Session::put('cod_ubi', $codUbiUbicacion);
             // $sessionData = Session::all();
             // dd($sessionData);
             // Respuesta exitosa
@@ -125,5 +125,3 @@ class AuthController extends Controller
         //
     }
 }
-
-

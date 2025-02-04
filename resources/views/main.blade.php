@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laravel with Vue</title>
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.css">
 </head>
 
@@ -16,6 +18,8 @@
 
     <!-- Cargar jQuery primero -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <!-- Cargar DataTables JS después de jQuery -->
     <script type="text/javascript" src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
@@ -24,7 +28,6 @@
     <script src="{{ mix('js/app.js') }}"></script> <!-- Incluir el script compilado de Vue -->
 
     <!-- SweetAlert -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 <style>

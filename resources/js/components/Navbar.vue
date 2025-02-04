@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar primarybg">
+    <nav class="navbar">
         <!-- Imagen a la derecha -->
         <div class="navbar-logo">
             <img src="/assets/imgs/Grupo-LN1.png" alt="Grupo LN1 Logo" />
@@ -13,7 +13,7 @@
                     @click="setActiveLink($event)">
                     {{ item.label }}
                 </router-link>
-                <ul v-if="item.subitems.length > 0" class="sub-menu primarybg" :id="'sub-menu-' + index">
+                <ul v-if="item.subitems.length > 0" class="sub-menu" :id="'sub-menu-' + index">
                     <li v-for="(subitem, subIndex) in item.subitems" :key="subIndex">
                         <router-link :to="subitem.route" class="navbar-link" @click="setActiveLink($event)">
                             {{ subitem.label }}
@@ -48,12 +48,13 @@
                             <span>Configuración</span>
                         </router-link>
                     </div>
-                    <div class="dropdown-item" id="logoutBtn">
-                        <a href="javascript:void(0);" @click="handleLogout">
+                    <div class="dropdown-item" id="logoutBtn" @click="handleLogout">
+                        <a href="javascript:void(0);">
                             <img :src="assetsUrl + 'icons/quit.svg'" alt="Salir" />
                             <span>Salir</span>
                         </a>
                     </div>
+
                 </div>
             </div>
 
@@ -124,6 +125,16 @@ export default {
             showModal: false // Definir aquí el estado del modal
         };
     },
+    mounted() {
+        const storedSession = localStorage.getItem('userSession');
+        if (storedSession) {
+            console.log('Sesión almacenada:', storedSession);
+            this.userSession = JSON.parse(storedSession);
+        } else {
+            console.log('No se encontró ninguna sesión almacenada.');
+        }
+    },
+
     computed: {
         filteredNavItems() {
             // if (!this.userSession) {
@@ -144,10 +155,17 @@ export default {
             this.showModal = true;
             console.log(this.showModal); // Verifica si se actualiza el estado
         },
+
         handleLogout() {
-            // Lógica para manejar el logout
-            this.userSession = null; // Simula el logout
-        },
+            console.log("####111");
+            localStorage.removeItem('userSession');
+            console.log("####222");
+            this.userSession = null;
+            console.log("####333");
+            // window.location.reload();
+
+        }
+        ,
         toggleDarkMode() {
             this.isDarkMode = !this.isDarkMode;
         }

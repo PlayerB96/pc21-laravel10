@@ -1,5 +1,16 @@
 <template>
     <div>
+        <!-- Filtro de Estado de Solicitud -->
+        <div class="toolbar-col mb-4">
+            <label class="control-label text-bold">Estado Solicitud:</label>
+            <select v-model="estadoSeleccionado" @change="buscarRegistroPapeleta" class="form-control">
+                <option value="0">Todos</option>
+                <option value="1">En Proceso de aprobación</option>
+                <option value="2">Aprobados</option>
+                <option value="3">Denegados</option>
+            </select>
+        </div>
+        <!-- Tabla de Papeletas -->
         <table id="tablaPapeletas" class="display">
             <thead>
                 <tr>
@@ -35,26 +46,50 @@ export default {
     name: 'RegistroPapeletasPage',
     data() {
         return {
-            papeletas: [], // Aquí almacenaremos los datos de la tabla
+            papeletas: [],
+            estadoSeleccionado: '1', // Por defecto "En Proceso de aprobación"
         };
     },
     mounted() {
-        this.fetchPapeletas(); // Llamamos a la función para obtener los datos
+        this.buscarRegistroPapeleta(); // Cargar datos iniciales
     },
     methods: {
-        fetchPapeletas() {
-            axios.get('http://localhost:8000/api/papeletas')
+        obtenerTextoEstado(estado) {
+            switch (estado) {
+                case 1:
+                    return 'En Proceso de aprobación';
+                case 2:
+                    return 'Aprobados';
+                case 3:
+                    return 'Denegados';
+                default:
+                    return 'Desconocido';
+            }
+        },
+
+        async buscarRegistroPapeleta() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+            await axios.post('http://localhost:8000/api/gestionpersonas/buscar_papeletas', {
+                estado_solicitud: this.estadoSeleccionado
+            }, {
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
                 .then(response => {
-                    console.log("###11")
-                    console.log(response.data)
-                    this.papeletas = response.data; // Guardamos los datos en papeletas
+                    console.log(response);
+                    console.log("####111")
+                    this.papeletas = response.data.list_papeletas_salida;
                     this.$nextTick(() => {
-                        // Inicializamos DataTable después de que los datos estén listos
-                        $('#tablaPapeletas').DataTable();
+
+                        // Destruir y volver a inicializar DataTable para actualizar datos
+                        const table = $('#tablaPapeletas').DataTable();
+                        table.clear();
+                        table.rows.add($('#tablaPapeletas tbody tr')).draw();
                     });
                 })
                 .catch(error => {
-                    console.error('Hubo un error al obtener los datos:', error);
+                    console.error('Error al buscar papeletas:', error);
                 });
         }
     }

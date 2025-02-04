@@ -8,6 +8,8 @@ use App\Models\SolicitudUser;
 use App\Models\PermisoPapeletasSalida;
 use App\Models\Destino;
 use App\Models\Tramite;
+use Illuminate\Support\Facades\Log;
+
 
 class GestionPersonas extends Controller
 {
@@ -47,48 +49,46 @@ class GestionPersonas extends Controller
         return view('gestionpersonas.gestionpersonas');
     }
 
-    public function getPapeletas()
-    {
-        // dd("##1");   
-        // Datos en duro para prueba
-        $papeletas = [
-            [
-                'usuario_nombres' => 'Juan',
-                'usuario_apater' => 'Pérez',
-                'usuario_amater' => 'Gómez',
-                'centro_labores' => 'Centro 1',
-                'nom_area' => 'Área 1',
-                'destino' => 'Destino A',
-                'tramite' => 'Trámite X',
-                'fec_reg' => '2025-01-30',
-                'estado_solicitud' => 'Pendiente'
-            ],
-            [
-                'usuario_nombres' => 'Ana',
-                'usuario_apater' => 'Lopez',
-                'usuario_amater' => 'Mendoza',
-                'centro_labores' => 'Centro 2',
-                'nom_area' => 'Área 2',
-                'destino' => 'Destino B',
-                'tramite' => 'Trámite Y',
-                'fec_reg' => '2025-01-29',
-                'estado_solicitud' => 'Aprobada'
-            ]
-        ];
-
-        // Devolver los datos como JSON
-        return response()->json($papeletas);
-    }
-
-
     // public function getPapeletas()
     // {
-    //     dump('Solicitud llegada al controlador');
+    //     // dd("##1");   
+    //     // Datos en duro para prueba
+    //     $papeletas = [
+    //         [
+    //             'usuario_nombres' => 'Juan',
+    //             'usuario_apater' => 'Pérez',
+    //             'usuario_amater' => 'Gómez',
+    //             'centro_labores' => 'Centro 1',
+    //             'nom_area' => 'Área 1',
+    //             'destino' => 'Destino A',
+    //             'tramite' => 'Trámite X',
+    //             'fec_reg' => '2025-01-30',
+    //             'estado_solicitud' => 'Pendiente'
+    //         ],
+    //         [
+    //             'usuario_nombres' => 'Ana',
+    //             'usuario_apater' => 'Lopez',
+    //             'usuario_amater' => 'Mendoza',
+    //             'centro_labores' => 'Centro 2',
+    //             'nom_area' => 'Área 2',
+    //             'destino' => 'Destino B',
+    //             'tramite' => 'Trámite Y',
+    //             'fec_reg' => '2025-01-29',
+    //             'estado_solicitud' => 'Aprobada'
+    //         ]
+    //     ];
 
-    //     $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1);
-
-    //     return response()->json($dato['list_papeletas_salida']);
+    //     // Devolver los datos como JSON
+    //     return response()->json($papeletas);
     // }
+
+
+    public function getPapeletas()
+    {
+        // dump('Solicitud llegada al controlador');
+        $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1);
+        return response()->json($dato['list_papeletas_salida']);
+    }
 
     public function registro_papeletas()
     {
@@ -97,7 +97,6 @@ class GestionPersonas extends Controller
         $dato['registro_masivo'] = $this->registro_masivo;
         $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1);
         $dato['ultima_papeleta_salida_todo'] = count($this->Model_Solicitudes->get_list_papeletas_salida_uno());
-
         return view('gestionpersonas.registro_papeletas.index', $dato);
     }
 
@@ -108,6 +107,7 @@ class GestionPersonas extends Controller
         $dato['registro_masivo'] = $this->registro_masivo;
         $dato['ultima_papeleta_salida_todo'] = count($this->Model_Solicitudes->get_list_papeletas_salida_uno());
         $estado_solicitud = $request->estado_solicitud;
+        Log::info('Estado de la solicitud:', ['dato' => $dato]);
         $this->Model_Solicitudes->verificacion_papeletas();
         // Recuperamos las papeletas filtradas
         $list_papeletas_salida = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud);

@@ -6,16 +6,28 @@
             </div>
             <h2>Iniciar sesión</h2>
             <form @submit.prevent="handleLogin" class="login-form">
-                <input type="email" v-model="email" placeholder="Correo electrónico" required class="input-field" />
-                <input type="password" v-model="password" placeholder="Contraseña" required class="input-field" />
-                <button type="submit" class="submit-button">Iniciar sesión</button>
+                <input type="text" v-model="dni" placeholder="Ingrese su DNI" required class="input-field"
+                    @input="validateDNI" autocomplete="off" />
+                <input type="password" v-model="password" placeholder="Contraseña" required class="input-field"
+                    autocomplete="off" />
+                <button type="submit" class="submit-button" :disabled="loading">
+                    <!-- Mostrar spinner cuando loading es true -->
+                    <span v-if="loading" class="spinner"></span>
+                    <span v-else>Iniciar sesión</span>
+                </button>
             </form>
+
+            <p id="mensajeError" class="error-message"></p> <!-- Mensaje de error -->
+
             <button @click="closeModal" class="close-button">Cerrar</button>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+import Swal from 'sweetalert2';
+
 export default {
     props: {
         isVisible: {
@@ -25,22 +37,86 @@ export default {
     },
     data() {
         return {
-            email: '',
-            password: ''
+            dni: '',
+            password: '',
+            loading: false // Estado para el spinner
         };
     },
     methods: {
         closeModal() {
-            this.$emit('update:isVisible', false); // Emitir evento para cerrar el modal
+            this.$emit('update:isVisible', false);
         },
-        handleLogin() {
-            // Aquí iría la lógica de autenticación
-            console.log('Iniciar sesión con', this.email, this.password);
-            this.closeModal();
+        validateDNI() {
+            this.dni = this.dni.replace(/\D/g, ''); // Solo números
+        },
+        async handleLogin() {
+            if (this.dni.length < 8 || isNaN(this.dni)) {
+                alert('Por favor, ingrese un DNI válido (8 dígitos).');
+                return;
+            }
+            const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfMetaTag) {
+                alert('No se encontró el token CSRF en el documento.');
+                return;
+            }
+            const csrfToken = csrfMetaTag.getAttribute('content');
+            this.loading = true; // Activar el spinner
+            try {
+                const response = await axios.post('http://localhost:8000/api/auth/validate_user', {
+                    username: this.dni,
+                    password: this.password
+                }, {
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                });
+                // Éxito en la autenticación
+                Swal.fire({
+                    icon: 'success',
+                    title: `¡Bienvenido, ${response.data.nombre_completo}!`,
+                    text: response.data.message,
+                    imageUrl: response.data.foto,
+                    imageWidth: 100,
+                    imageHeight: 100,
+                    imageAlt: 'Foto de perfil',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    // Almacenar la sesión en localStorage
+                    const userSessionData = {
+                        fullName: response.data.nombre_completo,
+                        photo: response.data.foto,
+                        email: response.data.email, // Otros datos de sesión
+                    };
+                    localStorage.setItem('userSession', JSON.stringify(userSessionData));
+                    window.location.reload();
+                });
+
+                this.closeModal(); // Cerrar el modal
+
+            } catch (error) {
+                console.log('Respuesta completa:', error);
+
+                if (error.response && error.response.data) {
+                    // Verificamos que la respuesta contenga el mensaje de error
+                    const responseData = error.response.data;
+                    const errorMessage = responseData.error || 'Ocurrió un error desconocido.';
+                    document.getElementById('mensajeError').innerText = errorMessage;
+                } else if (error.request) {
+                    // Error de red o el servidor no respondió
+                    document.getElementById('mensajeError').innerText = 'Error de conexión al servidor. Verifique su conexión a Internet.';
+                } else {
+                    // Otros errores
+                    document.getElementById('mensajeError').innerText = `Error inesperado: ${error.message}`;
+                }
+            } finally {
+                this.loading = false; // Desactivar el spinner
+            }
         }
     }
 };
 </script>
+
+
 
 <style scoped>
 .modal-overlay {
@@ -63,6 +139,10 @@ export default {
     width: 350px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content .p {
+    color: #0056b3;
 }
 
 .logo-container {
@@ -132,5 +212,39 @@ h2 {
 
 .close-button:hover {
     background-color: #bbb;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    /* Gris claro */
+    border-top: 4px solid #3498db;
+    /* Azul */
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+/* Animación de rotación */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* El botón estará deshabilitado mientras se carga */
+.submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#mensajeError {
+    color: black;
 }
 </style>
