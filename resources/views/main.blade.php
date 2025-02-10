@@ -13,22 +13,20 @@
 
 <body>
     <div id="app">
-        <!-- Aquí montará Vue -->
+        <!-- Aquí Vue montará los componentes -->
     </div>
 
     <!-- Cargar jQuery primero -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
     <!-- Cargar DataTables JS después de jQuery -->
     <script type="text/javascript" src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
-    <!-- Luego carga tu script de Vue y demás -->
-    <script src="{{ mix('js/app.js') }}"></script> <!-- Incluir el script compilado de Vue -->
-
-    <!-- SweetAlert -->
+    <!-- 🔥 Mover Vue al final del body para evitar problemas -->
+    <script src="{{ mix('js/app.js') }}" defer></script>
 </body>
+
 
 <style>
     /* Elimina el margen y padding por defecto del body */

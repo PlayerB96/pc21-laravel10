@@ -38,7 +38,7 @@
                     <div class="user-profile-section">
                         <div class="media mx-auto">
                             <div class="media-body">
-                                <h5>{{ userSession.fullName }}</h5>
+                                <h5>{{ userSession.nombre_completo }}</h5>
                             </div>
                         </div>
                     </div>

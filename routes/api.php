@@ -8,14 +8,14 @@ use App\Http\Controllers\GestionPersonas;
 
 use App\Http\Controllers\AuthController; // Asegúrate de importar tu controlador
 
-Route::middleware(['api'])->group(function () {
-    // Ruta para obtener las papeletas (GET)
-    Route::get('/papeletas', [GestionPersonas::class, 'getPapeletas'])->withoutMiddleware([VerifyCsrfToken::class]);
+use Illuminate\Session\Middleware\StartSession;
 
-    // Ruta para validar el usuario (POST)
+Route::middleware(['api', StartSession::class])->group(function () {
     Route::post('/auth/validate_user', [AuthController::class, 'auth'])->withoutMiddleware([VerifyCsrfToken::class]);
+    Route::get('/papeletas', [GestionPersonas::class, 'getPapeletas'])->withoutMiddleware([VerifyCsrfToken::class]);
     Route::post('/gestionpersonas/buscar_papeletas', [GestionPersonas::class, 'buscar_papeletas']);
 });
+
 
 
 

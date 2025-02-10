@@ -77,9 +77,9 @@ class SolicitudUser extends Model
         return $this->belongsTo(Tramite::class, 'tramite', 'id_tramite');
     }
 
-    public function get_list_papeletas_salida($estado_solicitud = null)
+    public function get_list_papeletas_salida($estado_solicitud = null, $id_usuario)
     {
-        $id_usuario = Session::get('id_usuario');
+        // $id_usuario = Session::get('id_usuario');
 
         // Construir la consulta usando Eloquent
         $query = SolicitudUser::with(['user', 'destino', 'tramite'])

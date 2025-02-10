@@ -26,6 +26,11 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Session\Middleware\StartSession::class, // Habilita sesiones en API
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \App\Http\Middleware\UserSessionMiddleware::class, // Agrega el Middleware aquí
+
         ],
     ];
 }

@@ -54,40 +54,37 @@ export default {
                 alert('Por favor, ingrese un DNI válido (8 dígitos).');
                 return;
             }
+
             const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
             if (!csrfMetaTag) {
                 alert('No se encontró el token CSRF en el documento.');
                 return;
             }
+
             const csrfToken = csrfMetaTag.getAttribute('content');
             this.loading = true; // Activar el spinner
+
             try {
                 const response = await axios.post('http://localhost:8000/api/auth/validate_user', {
                     username: this.dni,
                     password: this.password
                 }, {
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    }
+                    headers: { 'X-CSRF-TOKEN': csrfToken }
                 });
+
                 // Éxito en la autenticación
                 Swal.fire({
                     icon: 'success',
-                    title: `¡Bienvenido, ${response.data.nombre_completo}!`,
+                    title: `¡Bienvenido, ${response.data.sessionData.nombre_completo}!`,
                     text: response.data.message,
-                    imageUrl: response.data.foto,
+                    imageUrl: response.data.sessionData.foto,
                     imageWidth: 100,
                     imageHeight: 100,
                     imageAlt: 'Foto de perfil',
                     confirmButtonText: 'Aceptar'
                 }).then(() => {
-                    // Almacenar la sesión en localStorage
-                    const userSessionData = {
-                        fullName: response.data.nombre_completo,
-                        photo: response.data.foto,
-                        email: response.data.email, // Otros datos de sesión
-                    };
-                    localStorage.setItem('userSession', JSON.stringify(userSessionData));
+                    // Almacenar toda la sesión en localStorage
+                    localStorage.setItem('userSession', JSON.stringify(response.data.sessionData));
                     window.location.reload();
                 });
 
@@ -96,22 +93,85 @@ export default {
             } catch (error) {
                 console.log('Respuesta completa:', error);
 
+                let errorMessage = 'Ocurrió un error desconocido.';
                 if (error.response && error.response.data) {
-                    // Verificamos que la respuesta contenga el mensaje de error
-                    const responseData = error.response.data;
-                    const errorMessage = responseData.error || 'Ocurrió un error desconocido.';
-                    document.getElementById('mensajeError').innerText = errorMessage;
+                    errorMessage = error.response.data.error || errorMessage;
                 } else if (error.request) {
-                    // Error de red o el servidor no respondió
-                    document.getElementById('mensajeError').innerText = 'Error de conexión al servidor. Verifique su conexión a Internet.';
+                    errorMessage = 'Error de conexión al servidor. Verifique su conexión a Internet.';
                 } else {
-                    // Otros errores
-                    document.getElementById('mensajeError').innerText = `Error inesperado: ${error.message}`;
+                    errorMessage = `Error inesperado: ${error.message}`;
                 }
+
+                document.getElementById('mensajeError').innerText = errorMessage;
             } finally {
                 this.loading = false; // Desactivar el spinner
             }
         }
+
+        // async handleLogin() {
+        //     if (this.dni.length < 8 || isNaN(this.dni)) {
+        //         alert('Por favor, ingrese un DNI válido (8 dígitos).');
+        //         return;
+        //     }
+        //     const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
+        //     if (!csrfMetaTag) {
+        //         alert('No se encontró el token CSRF en el documento.');
+        //         return;
+        //     }
+        //     const csrfToken = csrfMetaTag.getAttribute('content');
+        //     this.loading = true; // Activar el spinner
+        //     try {
+        //         const response = await axios.post('http://localhost:8000/api/auth/validate_user', {
+        //             username: this.dni,
+        //             password: this.password
+        //         }, {
+
+        //             headers: {
+        //                 'X-CSRF-TOKEN': csrfToken
+        //             }
+        //         });
+        //         // Éxito en la autenticación
+        //         Swal.fire({
+        //             icon: 'success',
+        //             title: `¡Bienvenido, ${response.data.nombre_completo}!`,
+        //             text: response.data.message,
+        //             imageUrl: response.data.foto,
+        //             imageWidth: 100,
+        //             imageHeight: 100,
+        //             imageAlt: 'Foto de perfil',
+        //             confirmButtonText: 'Aceptar'
+        //         }).then(() => {
+        //             // Almacenar la sesión en localStorage
+        //             const userSessionData = {
+        //                 fullName: response.data.nombre_completo,
+        //                 photo: response.data.foto,
+        //                 email: response.data.email, // Otros datos de sesión
+        //             };
+        //             localStorage.setItem('userSession', JSON.stringify(userSessionData));
+        //             window.location.reload();
+        //         });
+
+        //         this.closeModal(); // Cerrar el modal
+
+        //     } catch (error) {
+        //         console.log('Respuesta completa:', error);
+
+        //         if (error.response && error.response.data) {
+        //             // Verificamos que la respuesta contenga el mensaje de error
+        //             const responseData = error.response.data;
+        //             const errorMessage = responseData.error || 'Ocurrió un error desconocido.';
+        //             document.getElementById('mensajeError').innerText = errorMessage;
+        //         } else if (error.request) {
+        //             // Error de red o el servidor no respondió
+        //             document.getElementById('mensajeError').innerText = 'Error de conexión al servidor. Verifique su conexión a Internet.';
+        //         } else {
+        //             // Otros errores
+        //             document.getElementById('mensajeError').innerText = `Error inesperado: ${error.message}`;
+        //         }
+        //     } finally {
+        //         this.loading = false; // Desactivar el spinner
+        //     }
+        // }
     }
 };
 </script>

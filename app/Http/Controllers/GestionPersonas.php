@@ -13,33 +13,17 @@ use Illuminate\Support\Facades\Log;
 
 class GestionPersonas extends Controller
 {
-    // Modelos utilizados en el controlador
     protected $Model_Solicitudes;
     protected $Model_Permiso;
 
-    // Variables de sesión utilizadas en el controlador
-    protected $id_puesto;
-    protected $id_nivel;
-    protected $registro_masivo;
-    protected $id_usuario;
-    protected $cod_ubi;
-    protected $id_gerencia;
 
-    // Constructor: inyección de dependencias y asignación de variables de sesión
     public function __construct(SolicitudUser $Model_Solicitudes, PermisoPapeletasSalida $Model_Permiso)
     {
-        // Inyección de los modelos en el controlador
         $this->Model_Solicitudes = $Model_Solicitudes;
         $this->Model_Permiso = $Model_Permiso;
-
-        // Asignación de las variables de sesión a las propiedades del controlador
-        $this->id_puesto = Session::get('id_puesto');
-        $this->id_usuario = Session::get('id_usuario');
-        $this->id_nivel = Session::get('id_nivel');
-        $this->registro_masivo = Session::get('registro_masivo');
-        $this->cod_ubi = Session::get('cod_ubi');
-        $this->id_gerencia = Session::get('id_gerencia');
     }
+
+
 
     /**
      * Display a listing of the resource.
@@ -49,69 +33,39 @@ class GestionPersonas extends Controller
         return view('gestionpersonas.gestionpersonas');
     }
 
-    // public function getPapeletas()
-    // {
-    //     // dd("##1");   
-    //     // Datos en duro para prueba
-    //     $papeletas = [
-    //         [
-    //             'usuario_nombres' => 'Juan',
-    //             'usuario_apater' => 'Pérez',
-    //             'usuario_amater' => 'Gómez',
-    //             'centro_labores' => 'Centro 1',
-    //             'nom_area' => 'Área 1',
-    //             'destino' => 'Destino A',
-    //             'tramite' => 'Trámite X',
-    //             'fec_reg' => '2025-01-30',
-    //             'estado_solicitud' => 'Pendiente'
-    //         ],
-    //         [
-    //             'usuario_nombres' => 'Ana',
-    //             'usuario_apater' => 'Lopez',
-    //             'usuario_amater' => 'Mendoza',
-    //             'centro_labores' => 'Centro 2',
-    //             'nom_area' => 'Área 2',
-    //             'destino' => 'Destino B',
-    //             'tramite' => 'Trámite Y',
-    //             'fec_reg' => '2025-01-29',
-    //             'estado_solicitud' => 'Aprobada'
-    //         ]
-    //     ];
 
-    //     // Devolver los datos como JSON
-    //     return response()->json($papeletas);
-    // }
-
-
-    public function getPapeletas()
+    public function getPapeletas(Request $request)
     {
+        $id_usuario = $request->id_usuario; // Se obtiene del Middleware automáticamente
+
         // dump('Solicitud llegada al controlador');
-        $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1);
+        $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1, $id_usuario);
         return response()->json($dato['list_papeletas_salida']);
     }
 
-    public function registro_papeletas()
+    public function registro_papeletas(Request $request)
     {
-        $dato['id_puesto'] = $this->id_puesto;
-        $dato['id_nivel'] = $this->id_nivel;
-        $dato['registro_masivo'] = $this->registro_masivo;
-        $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1);
+        $dato['id_puesto'] = $request->id_puesto;
+        $dato['id_nivel'] = $request->id_nivel;
+        $dato['registro_masivo'] = $request->registro_masivo;
+        $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1, $request->id_usuario);
         $dato['ultima_papeleta_salida_todo'] = count($this->Model_Solicitudes->get_list_papeletas_salida_uno());
+
         return view('gestionpersonas.registro_papeletas.index', $dato);
     }
 
+
     public function buscar_papeletas(Request $request)
     {
-        $dato['id_puesto'] = $this->id_puesto;
-        $dato['id_nivel'] = $this->id_nivel;
-        $dato['registro_masivo'] = $this->registro_masivo;
-        $dato['ultima_papeleta_salida_todo'] = count($this->Model_Solicitudes->get_list_papeletas_salida_uno());
         $estado_solicitud = $request->estado_solicitud;
-        Log::info('Estado de la solicitud:', ['dato' => $dato]);
+        $id_usuario = $request->id_usuario;
         $this->Model_Solicitudes->verificacion_papeletas();
         // Recuperamos las papeletas filtradas
-        $list_papeletas_salida = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud);
+        $list_papeletas_salida = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud, $id_usuario);
         // dd($list_papeletas_salida);
+
+        Log::info('📢 Datos enviados a Vue:', $list_papeletas_salida);
+
         // Retornar los datos en formato JSON
         return response()->json([
             'list_papeletas_salida' => $list_papeletas_salida
@@ -145,72 +99,72 @@ class GestionPersonas extends Controller
 
     public function store(Request $request)
     {
-        $cod_ubi = $this->cod_ubi;
-        $id_usuario = $this->id_usuario;
-        $id_gerencia = $this->id_gerencia;
+        // $cod_ubi = $this->cod_ubi;
+        // $id_usuario = $this->id_usuario;
+        // $id_gerencia = $this->id_gerencia;
 
-        // GENERAR cod_solicitud
-        $totalt = $this->Model_Solicitudes::where('id_solicitudes', 2)
-            ->whereRaw("SUBSTR(cod_solicitud, 3, 4) = ?", [date('Y')])
-            ->count();
-        $aniof = date('Y');
-        if ($totalt < 9) {
-            $codigofinal = 'PP' . $aniof . "0000" . ($totalt + 1);
-        }
-        if ($totalt > 8 && $totalt < 99) {
-            $codigofinal = 'PP' . $aniof . "000" . ($totalt + 1);
-        }
-        if ($totalt > 98 && $totalt < 999) {
-            $codigofinal = 'PP' . $aniof . "00" . ($totalt + 1);
-        }
-        if ($totalt > 998 && $totalt < 9999) {
-            $codigofinal = 'PP' . $aniof . "0" . ($totalt + 1);
-        }
-        if ($totalt > 9998) {
-            $codigofinal = 'PP' . $aniof . ($totalt + 1);
-        }
+        // // GENERAR cod_solicitud
+        // $totalt = $this->Model_Solicitudes::where('id_solicitudes', 2)
+        //     ->whereRaw("SUBSTR(cod_solicitud, 3, 4) = ?", [date('Y')])
+        //     ->count();
+        // $aniof = date('Y');
+        // if ($totalt < 9) {
+        //     $codigofinal = 'PP' . $aniof . "0000" . ($totalt + 1);
+        // }
+        // if ($totalt > 8 && $totalt < 99) {
+        //     $codigofinal = 'PP' . $aniof . "000" . ($totalt + 1);
+        // }
+        // if ($totalt > 98 && $totalt < 999) {
+        //     $codigofinal = 'PP' . $aniof . "00" . ($totalt + 1);
+        // }
+        // if ($totalt > 998 && $totalt < 9999) {
+        //     $codigofinal = 'PP' . $aniof . "0" . ($totalt + 1);
+        // }
+        // if ($totalt > 9998) {
+        //     $codigofinal = 'PP' . $aniof . ($totalt + 1);
+        // }
 
-        // ASIGNAR ESTADO DE LA SOLICITUD EN BASE AL MOTIVO
-        if ($request['id_motivo'] == 1) {
-            $estado_solicitud = 2;
-        } else {
-            $estado_solicitud = 4;
-        }
-        // Asignamos los datos a un arreglo para insertar
-        $data = [
-            'dif_dias' => 0.0,
-            'user_horar_salida' => 0,
-            'user_horar_entrada' => 0,
-            'user_aprob' => 0,
-            'mediodia' => 0,
-            'observacion' => '0',
-            'id_usuario' => $id_usuario,
-            'id_solicitudes' => 2,
-            'cod_solicitud' => $codigofinal,
-            'cod_base' => $cod_ubi,
-            'fec_solicitud' => $request['fec_solicitud'],
-            'id_gerencia' => $id_gerencia,
-            'hora_salida' => $request['hora_salida'],
-            'hora_retorno' => $request['hora_retorno'],
-            'id_motivo' => $request['id_motivo'],
-            'motivo' => '',
-            'destino' => $request['destino'],
-            'tramite' => $request['tramite'],
-            'especificacion_destino' => $request['especificacion_destino'],
-            'especificacion_tramite' => $request['especificacion_tramite'],
-            'estado_solicitud' => $estado_solicitud,
-            'sin_ingreso' => $request['sin_ingreso'] ?: 0,
-            'sin_retorno' => $request['sin_retorno'] ?: 0,
-            'fec_reg' => now(),
-            'user_reg' => $id_usuario,  // Aquí usas el id_usuario
-            'estado' => 1,
-            'fec_act' => now(),
-            'user_act' => $id_usuario, // Usamos el id_usuario para el cambio
-        ];
-        // dump($data);
-        // Inserción utilizando Eloquent
-        SolicitudUser::create($data);
-        // Retornar respuesta (puedes hacer algo como redirigir o devolver un mensaje)
+        // // ASIGNAR ESTADO DE LA SOLICITUD EN BASE AL MOTIVO
+        // if ($request['id_motivo'] == 1) {
+        //     $estado_solicitud = 2;
+        // } else {
+        //     $estado_solicitud = 4;
+        // }
+        // // Asignamos los datos a un arreglo para insertar
+        // $data = [
+        //     'dif_dias' => 0.0,
+        //     'user_horar_salida' => 0,
+        //     'user_horar_entrada' => 0,
+        //     'user_aprob' => 0,
+        //     'mediodia' => 0,
+        //     'observacion' => '0',
+        //     'id_usuario' => $id_usuario,
+        //     'id_solicitudes' => 2,
+        //     'cod_solicitud' => $codigofinal,
+        //     'cod_base' => $cod_ubi,
+        //     'fec_solicitud' => $request['fec_solicitud'],
+        //     'id_gerencia' => $id_gerencia,
+        //     'hora_salida' => $request['hora_salida'],
+        //     'hora_retorno' => $request['hora_retorno'],
+        //     'id_motivo' => $request['id_motivo'],
+        //     'motivo' => '',
+        //     'destino' => $request['destino'],
+        //     'tramite' => $request['tramite'],
+        //     'especificacion_destino' => $request['especificacion_destino'],
+        //     'especificacion_tramite' => $request['especificacion_tramite'],
+        //     'estado_solicitud' => $estado_solicitud,
+        //     'sin_ingreso' => $request['sin_ingreso'] ?: 0,
+        //     'sin_retorno' => $request['sin_retorno'] ?: 0,
+        //     'fec_reg' => now(),
+        //     'user_reg' => $id_usuario,  // Aquí usas el id_usuario
+        //     'estado' => 1,
+        //     'fec_act' => now(),
+        //     'user_act' => $id_usuario, // Usamos el id_usuario para el cambio
+        // ];
+        // // dump($data);
+        // // Inserción utilizando Eloquent
+        // SolicitudUser::create($data);
+        // // Retornar respuesta (puedes hacer algo como redirigir o devolver un mensaje)
         return response()->json(['message' => 'Solicitud registrada exitosamente.']);
     }
 
