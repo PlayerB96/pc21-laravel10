@@ -11,9 +11,12 @@ use App\Http\Controllers\AuthController; // Asegúrate de importar tu controlado
 use Illuminate\Session\Middleware\StartSession;
 
 Route::middleware(['api', StartSession::class])->group(function () {
-    Route::post('/auth/validate_user', [AuthController::class, 'auth'])->withoutMiddleware([VerifyCsrfToken::class]);
-    Route::get('/papeletas', [GestionPersonas::class, 'getPapeletas'])->withoutMiddleware([VerifyCsrfToken::class]);
+    Route::post('/auth/validate_user', [AuthController::class, 'auth']);
+    Route::get('/papeletas', [GestionPersonas::class, 'getPapeletas']);
     Route::post('/gestionpersonas/buscar_papeletas', [GestionPersonas::class, 'buscar_papeletas']);
+    Route::get('/gestionpersonas/cambiar_motivo', [GestionPersonas::class, 'cambiar_motivo']);
+    Route::get('/gestionpersonas/traer_tramite', [GestionPersonas::class, 'traer_tramite']); // Cambiado a GET
+    Route::post('/gestionpersonas/store',  [GestionPersonas::class, 'store']);
 });
 
 

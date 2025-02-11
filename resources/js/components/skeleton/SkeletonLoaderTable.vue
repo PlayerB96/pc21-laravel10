@@ -19,6 +19,7 @@ export default {
 <style scoped>
 /* 📌 Estilos para Skeleton Loader */
 .skeleton-loader {
+    margin: 1rem 0;
     width: 100%;
     display: flex;
     flex-direction: column;

@@ -10,6 +10,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'checkSession' => \App\Http\Middleware\CheckSession::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
     ];
 
     protected $middlewareGroups = [

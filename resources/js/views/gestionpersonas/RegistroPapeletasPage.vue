@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- Filtro de Estado de Solicitud -->
         <div class="toolbar-col mb-4">
             <label class="control-label text-bold">Estado Solicitud:</label>
             <select v-model="estadoSeleccionado" @change="buscarRegistroPapeleta" class="form-control">
@@ -12,16 +11,13 @@
         </div>
 
         <div>
-            <button class="btn-primary" @click="handleLoginClick">Registrar Papeleta</button>
+            <button class="btn-primary" @click="showModal = true">Registrar Papeleta</button>
         </div>
-        <!-- Modal -->
-        <registrar-papeleta-modal :isVisible="showModal" @update:isVisible="showModal = $event" />
 
-        <!-- 📌 Usamos el componente SkeletonLoader -->
+        <registrar-papeleta-modal :isVisible="showModal" @update:isVisible="showModal = $event" />
         <SkeletonLoaderTable v-if="cargando" :rows="10" />
 
-        <!-- 📌 Tabla de Papeletas -->
-        <div v-else>
+        <div v-if="!cargando && papeletas.length">
             <table id="tablaPapeletas" class="display">
                 <thead>
                     <tr>
@@ -42,16 +38,17 @@
                         <td>{{ papeleta.usuario_nombres }} {{ papeleta.usuario_apater }} {{ papeleta.usuario_amater }}
                         </td>
                         <td>{{ papeleta.nom_area }}</td>
-                        <td>{{ papeleta.destino ? papeleta.destino.nom_destino : 'Sin destino' }}</td>
-                        <td>{{ papeleta.tramite ? papeleta.tramite.nom_tramite : 'Sin tramite' }}</td>
+                        <td>{{ papeleta.destino }}</td>
+                        <td>{{ papeleta.tramite }}</td>
                         <td>{{ papeleta.fec_solicitud }}</td>
-                        <td align="center">{{ getHoraSalida(papeleta.sin_ingreso, papeleta.hora_salida) }}</td>
-                        <td align="center">{{ getHoraRetorno(papeleta.sin_retorno, papeleta.hora_retorno) }}</td>
-                        <td v-html="getEstadoSolicitud(papeleta.estado_solicitud)"></td>
+                        <td align="center">{{ papeleta.hora_salida }}</td>
+                        <td align="center">{{ papeleta.hora_retorno }}</td>
+                        <td v-html="papeleta.estado_solicitud"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <h1 v-else-if="!cargando">No hay registros disponibles.</h1>
     </div>
 </template>
 
@@ -72,120 +69,65 @@ export default {
         };
     },
     mounted() {
-        this.buscarRegistroPapeleta();
+        const userSession = localStorage.getItem('userSession');
+        if (!userSession) {
+            this.$router.push('/inicio'); // Redirigir a la vista de inicio si no hay sesión
+        } else {
+            this.buscarRegistroPapeleta();
+        }
     },
     methods: {
-
         async buscarRegistroPapeleta() {
-            this.cargando = true; // ✅ Activar Skeleton antes de hacer la petición
+            this.cargando = true;
             try {
                 const userSession = JSON.parse(localStorage.getItem('userSession'));
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
 
-                const response = await axios.post('http://localhost:8000/api/gestionpersonas/buscar_papeletas', {
+                const { data } = await axios.post('gestionpersonas/buscar_papeletas', {
                     estado_solicitud: this.estadoSeleccionado,
-                    id_puesto: userSession.id_puesto,
-                    id_nivel: userSession.id_nivel,
-                    registro_masivo: userSession.registro_masivo,
                     id_usuario: userSession.id_usuario,
-                    cod_ubi: userSession.cod_ubi,
-                    id_gerencia: userSession.id_gerencia
                 }, {
                     headers: { 'X-CSRF-TOKEN': csrfToken }
                 });
 
-                console.log("Respuesta API:", response.data);
-
-                if (!response.data.list_papeletas_salida || response.data.list_papeletas_salida.length === 0) {
-                    console.warn("⚠ No se encontraron datos de papeletas");
-                    this.cargando = false; // ✅ Ocultar Skeleton aunque no haya datos
-                    return;
-                }
-
-                this.papeletas = response.data.list_papeletas_salida.map(papeleta => ({
-                    id_motivo: papeleta.id_motivo || 0,
-                    motivo: this.getMotivo(papeleta.id_motivo, papeleta.motivo),
-                    usuario_nombres: papeleta.usuario_nombres || "Sin nombre",
-                    usuario_apater: papeleta.usuario_apater || "",
-                    usuario_amater: papeleta.usuario_amater || "",
-                    nom_area: papeleta.nom_area || "Sin área",
-                    destino: papeleta.destino ? papeleta.destino.nom_destino : "Sin destino",
-                    tramite: papeleta.tramite ? papeleta.tramite.nom_tramite : "Sin trámite",
-                    fec_solicitud: papeleta.fec_solicitud || "Sin fecha",
+                this.papeletas = data.list_papeletas_salida?.map(papeleta => ({
+                    ...papeleta,
+                    destino: papeleta.destino?.nom_destino || "Sin destino",
+                    tramite: papeleta.tramite?.nom_tramite || "Sin trámite",
                     hora_salida: this.getHoraSalida(papeleta.sin_ingreso, papeleta.hora_salida),
                     hora_retorno: this.getHoraRetorno(papeleta.sin_retorno, papeleta.hora_retorno),
                     estado_solicitud: this.getEstadoSolicitud(papeleta.estado_solicitud),
-                }));
+                })) || [];
 
-                setTimeout(() => {
-                    this.initDataTable();
-                    this.cargando = false; // ✅ Ocultar Skeleton una vez que la tabla está lista
-                }, 2000);
-
+                this.$nextTick(this.initDataTable);
             } catch (error) {
                 console.error('Error al buscar papeletas:', error);
-                this.cargando = false; // ✅ Ocultar Skeleton si hay un error
+            } finally {
+                this.cargando = false;
             }
         },
-        async initDataTable() {
-            console.log("✅ initDataTable");
-
+        initDataTable() {
+            if (!this.papeletas.length) return;
             this.$nextTick(() => {
-                console.log("✅ nextTick");
-
-                setTimeout(() => {
-                    let tableElement = document.querySelector("#tablaPapeletas");
-                    console.log("✅tableElement");
-                    console.log(tableElement);
-
-                    if (!tableElement || this.papeletas.length === 0) {
-                        console.warn("⚠ La tabla aún no está lista, reintentando...");
-                        return; // No ejecutamos DataTables si la tabla aún no existe
+                if ($.fn.DataTable.isDataTable("#tablaPapeletas")) {
+                    $('#tablaPapeletas').DataTable().destroy();
+                }
+                $('#tablaPapeletas').DataTable({
+                    responsive: true,
+                    autoWidth: false,
+                    scrollX: true,
+                    pageLength: 10,
+                    language: {
+                        lengthMenu: "Mostrar _MENU_ registros por página",
+                        zeroRecords: "No hay datos disponibles",
+                        info: "Mostrando página _PAGE_ de _PAGES_",
+                        search: "Buscar:",
+                        paginate: { next: "Siguiente", previous: "Anterior" }
                     }
-
-                    // 🔥 Destruir instancia previa para evitar duplicados
-                    if ($.fn.DataTable.isDataTable("#tablaPapeletas")) {
-                        $('#tablaPapeletas').DataTable().destroy();
-                    }
-
-                    $('#tablaPapeletas').DataTable({
-                        data: this.papeletas,
-                        columns: [
-                            { data: "motivo" },
-                            { data: "usuario_nombres" },
-                            { data: "nom_area" },
-                            { data: "destino" },
-                            { data: "tramite" },
-                            { data: "fec_solicitud" },
-                            { data: "hora_salida" },
-                            { data: "hora_retorno" },
-                            { data: "estado_solicitud" }
-                        ],
-                        responsive: true,
-                        autoWidth: false,
-                        scrollX: true,
-                        pageLength: 10,
-                        language: {
-                            lengthMenu: "Mostrar _MENU_ registros por página",
-                            zeroRecords: "No se encontraron resultados",
-                            info: "Mostrando página _PAGE_ de _PAGES_",
-                            infoEmpty: "No hay registros disponibles",
-                            infoFiltered: "(filtrado de _MAX_ registros totales)",
-                            search: "Buscar:",
-                            paginate: {
-                                first: "Primero",
-                                last: "Último",
-                                next: "Siguiente",
-                                previous: "Anterior"
-                            }
-                        }
-                    });
-
-                    console.log("✅ DataTable inicializado correctamente");
-
-                }, 500); // ⏳ Esperar 500ms antes de inicializar DataTables
+                });
             });
         },
+
         handleLoginClick() {
             console.log("Botón Iniciar sesión presionado"); // Verificar si se ejecuta
             this.showModal = true;
@@ -244,4 +186,42 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Estilos para la etiqueta */
+.control-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Estilos para el select */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+/* Cambia el borde y color al enfocar el select */
+.form-control:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 5px rgba(0, 91, 187, 0.5);
+}
+
+/* Ajusta el tamaño del texto en las opciones */
+.form-control option {
+    font-size: 14px;
+    padding: 10px;
+}
+
+/* Cambia el fondo cuando el usuario selecciona una opción */
+.form-control:active {
+    background-color: #f0f8ff;
+}
+</style>

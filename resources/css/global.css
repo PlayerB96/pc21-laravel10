@@ -1,0 +1,114 @@
+/* GENERALES */
+h1 {
+    font-size: x-large;
+}
+/* CONTENEDOR DE WIDGETS */
+.layout-container-section-content {
+    padding: 20px;
+}
+.widget-container-section-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* BUTTON */
+.btn-primary {
+    background-color: var(--light-secondary-bg);
+    /* Azul primario */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--light-secondary-hover);
+    /* Azul más oscuro al pasar el mouse */
+    transform: scale(1.05);
+}
+
+.btn-primary:active {
+    background-color: var(--light-secondary-bg);
+    /* Azul más oscuro al hacer clic */
+    transform: scale(0.98);
+}
+
+.btn-secondary {
+    background-color: var(--dark-accent);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+
+}
+
+.btn-secondary:hover {
+    background-color: var(--dark-accent);
+    /* Azul más oscuro al pasar el mouse */
+    transform: scale(1.05);
+}
+
+/* DROPDOWN - SELECT */
+.toolbar-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* MODALES */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.wide-content {
+    margin: 1rem;
+}
+
+/* Formulario */
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-actions {
+    margin: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.footer-content {
+    border-top: 1px solid #ccc;
+}
+

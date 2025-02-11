@@ -137,9 +137,9 @@ export default {
 
     computed: {
         filteredNavItems() {
-            // if (!this.userSession) {
-            // return this.navItems.filter(item => !['Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
-            // }
+            if (!this.userSession) {
+                return this.navItems.filter(item => !['Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
+            }
             return this.navItems;
         }
     },
@@ -157,15 +157,10 @@ export default {
         },
 
         handleLogout() {
-            console.log("####111");
             localStorage.removeItem('userSession');
-            console.log("####222");
             this.userSession = null;
-            console.log("####333");
-            // window.location.reload();
-
-        }
-        ,
+            this.$router.push('/inicio'); // Redirigir a la vista de inicio
+        },
         toggleDarkMode() {
             this.isDarkMode = !this.isDarkMode;
         }
@@ -349,6 +344,69 @@ export default {
     .navbar-right {
         flex-direction: column;
         margin-top: 1rem;
+    }
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar-logo {
+        margin-bottom: 1rem;
+    }
+
+    .navbar-menu {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar-item {
+        margin-right: 0;
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+
+    .navbar-link {
+        width: 100%;
+        text-align: left;
+    }
+
+    .navbar-right {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .theme-toggle {
+        margin-top: 1rem;
+    }
+}
+
+/* Media queries for very small screens */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.5rem 1rem;
+    }
+
+    .navbar-logo img {
+        max-height: 30px;
+    }
+
+    .navbar-link {
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+
+    .dropdown-item {
+        padding: 0.5rem;
+    }
+
+    .dropdown-item img {
+        max-width: 16px;
+        margin-right: 0.5rem;
     }
 }
 </style>

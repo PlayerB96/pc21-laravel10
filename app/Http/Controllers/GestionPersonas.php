@@ -24,10 +24,6 @@ class GestionPersonas extends Controller
     }
 
 
-
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view('gestionpersonas.gestionpersonas');
@@ -47,7 +43,6 @@ class GestionPersonas extends Controller
     {
         $dato['id_puesto'] = $request->id_puesto;
         $dato['id_nivel'] = $request->id_nivel;
-        $dato['registro_masivo'] = $request->registro_masivo;
         $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1, $request->id_usuario);
         $dato['ultima_papeleta_salida_todo'] = count($this->Model_Solicitudes->get_list_papeletas_salida_uno());
 
@@ -62,111 +57,88 @@ class GestionPersonas extends Controller
         $this->Model_Solicitudes->verificacion_papeletas();
         // Recuperamos las papeletas filtradas
         $list_papeletas_salida = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud, $id_usuario);
-        // dd($list_papeletas_salida);
-
-        Log::info('📢 Datos enviados a Vue:', $list_papeletas_salida);
-
         // Retornar los datos en formato JSON
         return response()->json([
             'list_papeletas_salida' => $list_papeletas_salida
         ]);
     }
 
-
-
     public function cambiar_motivo(Request $request)
     {
-        $dato['id_motivo'] = $request->id_motivo;
-        $dato['list_destino'] = Destino::where('id_motivo', $dato['id_motivo'])->get();
-        $options = '';
-        foreach ($dato['list_destino'] as $destino) {
-            $options .= '<option value="' . $destino->id_destino . '">' . $destino->nom_destino . '</option>';
-        }
-        return response($options);
+        $motivo = $request->query('motivo'); 
+        $destinos = Destino::where('id_motivo', $motivo)->get(['id_destino as id', 'nom_destino as nombre']);
+        return response()->json($destinos);
     }
-
-
+  
     public function traer_tramite(Request $request)
     {
-        $id_destino = $request->id_destino;
-        $tramites = Tramite::where('id_destino', $id_destino)->get();
-        $options = '';
-        foreach ($tramites as $tramite) {
-            $options .= '<option value="' . $tramite->id_tramite . '">' . $tramite->nom_tramite . '</option>';
-        }
-        return response($options);
+        $id_destino = $request->query('id_destino'); 
+        $tramites = Tramite::where('id_destino', $id_destino)->get(['id_tramite as id', 'nom_tramite as nombre']);
+        return response()->json($tramites);
     }
+
 
     public function store(Request $request)
     {
-        // $cod_ubi = $this->cod_ubi;
-        // $id_usuario = $this->id_usuario;
-        // $id_gerencia = $this->id_gerencia;
+        $cod_ubi = $request->cod_ubi;
+        $id_usuario = $request->id_usuario;
+        $id_gerencia = $request->id_gerencia;
+        $form = $request->formulario;
+        
+        // GENERAR cod_solicitud
+        $totalt = $this->Model_Solicitudes::where('id_solicitudes', 2)
+            ->whereRaw("SUBSTR(cod_solicitud, 3, 4) = ?", [date('Y')])
+            ->count();
+        $aniof = date('Y');
+        if ($totalt < 9) {
+            $codigofinal = 'PP' . $aniof . "0000" . ($totalt + 1);
+        } elseif ($totalt > 8 && $totalt < 99) {
+            $codigofinal = 'PP' . $aniof . "000" . ($totalt + 1);
+        } elseif ($totalt > 98 && $totalt < 999) {
+            $codigofinal = 'PP' . $aniof . "00" . ($totalt + 1);
+        } elseif ($totalt > 998 && $totalt < 9999) {
+            $codigofinal = 'PP' . $aniof . "0" . ($totalt + 1);
+        } else {
+            $codigofinal = 'PP' . $aniof . ($totalt + 1);
+        }
 
-        // // GENERAR cod_solicitud
-        // $totalt = $this->Model_Solicitudes::where('id_solicitudes', 2)
-        //     ->whereRaw("SUBSTR(cod_solicitud, 3, 4) = ?", [date('Y')])
-        //     ->count();
-        // $aniof = date('Y');
-        // if ($totalt < 9) {
-        //     $codigofinal = 'PP' . $aniof . "0000" . ($totalt + 1);
-        // }
-        // if ($totalt > 8 && $totalt < 99) {
-        //     $codigofinal = 'PP' . $aniof . "000" . ($totalt + 1);
-        // }
-        // if ($totalt > 98 && $totalt < 999) {
-        //     $codigofinal = 'PP' . $aniof . "00" . ($totalt + 1);
-        // }
-        // if ($totalt > 998 && $totalt < 9999) {
-        //     $codigofinal = 'PP' . $aniof . "0" . ($totalt + 1);
-        // }
-        // if ($totalt > 9998) {
-        //     $codigofinal = 'PP' . $aniof . ($totalt + 1);
-        // }
+        // ASIGNAR ESTADO DE LA SOLICITUD EN BASE AL MOTIVO
+        $estado_solicitud = $request['id_motivo'] == 1 ? 2 : 4;
 
-        // // ASIGNAR ESTADO DE LA SOLICITUD EN BASE AL MOTIVO
-        // if ($request['id_motivo'] == 1) {
-        //     $estado_solicitud = 2;
-        // } else {
-        //     $estado_solicitud = 4;
-        // }
-        // // Asignamos los datos a un arreglo para insertar
-        // $data = [
-        //     'dif_dias' => 0.0,
-        //     'user_horar_salida' => 0,
-        //     'user_horar_entrada' => 0,
-        //     'user_aprob' => 0,
-        //     'mediodia' => 0,
-        //     'observacion' => '0',
-        //     'id_usuario' => $id_usuario,
-        //     'id_solicitudes' => 2,
-        //     'cod_solicitud' => $codigofinal,
-        //     'cod_base' => $cod_ubi,
-        //     'fec_solicitud' => $request['fec_solicitud'],
-        //     'id_gerencia' => $id_gerencia,
-        //     'hora_salida' => $request['hora_salida'],
-        //     'hora_retorno' => $request['hora_retorno'],
-        //     'id_motivo' => $request['id_motivo'],
-        //     'motivo' => '',
-        //     'destino' => $request['destino'],
-        //     'tramite' => $request['tramite'],
-        //     'especificacion_destino' => $request['especificacion_destino'],
-        //     'especificacion_tramite' => $request['especificacion_tramite'],
-        //     'estado_solicitud' => $estado_solicitud,
-        //     'sin_ingreso' => $request['sin_ingreso'] ?: 0,
-        //     'sin_retorno' => $request['sin_retorno'] ?: 0,
-        //     'fec_reg' => now(),
-        //     'user_reg' => $id_usuario,  // Aquí usas el id_usuario
-        //     'estado' => 1,
-        //     'fec_act' => now(),
-        //     'user_act' => $id_usuario, // Usamos el id_usuario para el cambio
-        // ];
-        // // dump($data);
-        // // Inserción utilizando Eloquent
-        // SolicitudUser::create($data);
-        // // Retornar respuesta (puedes hacer algo como redirigir o devolver un mensaje)
-        return response()->json(['message' => 'Solicitud registrada exitosamente.']);
+        // Asignamos los datos a un arreglo para insertar
+        $data = [
+            'dif_dias' => 0.0,
+            'user_horar_salida' => 0,
+            'user_horar_entrada' => 0,
+            'user_aprob' => 0,
+            'mediodia' => 0,
+            'observacion' => '0',
+            'id_usuario' => $id_usuario,
+            'id_solicitudes' => 2,
+            'cod_solicitud' => $codigofinal,
+            'cod_base' => $cod_ubi,
+            'fec_solicitud' => $form['fec_solicitud'],
+            'id_gerencia' => $id_gerencia,
+            'hora_salida' => $form['hora_salida'],
+            'hora_retorno' => $form['hora_retorno'],
+            'id_motivo' => $form['id_motivo'],
+            'motivo' => '',
+            'destino' => $form['destino'],
+            'tramite' => $form['tramite'],
+            'especificacion_destino' => $form['especificacion_destino'],
+            'especificacion_tramite' => $form['especificacion_tramite'],
+            'estado_solicitud' => $estado_solicitud,
+            'sin_ingreso' => $form['sin_ingreso'] ?: 0,
+            'sin_retorno' => $form['sin_retorno'] ?: 0,
+            'fec_reg' => now(),
+            'user_reg' => $id_usuario,  // Aquí usas el id_usuario
+            'estado' => 1,
+            'fec_act' => now(),
+            'user_act' => $id_usuario, // Usamos el id_usuario para el cambio
+        ];
+        SolicitudUser::create($data);
     }
+
 
     public function index_rpo()
     {

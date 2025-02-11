@@ -520,7 +520,6 @@
                     </div>
                 </div>
 
-
                 <!-- Conocimientos de Office -->
                 <div class="section-container">
                     <div class="section-title">Conocimientos de Office</div>

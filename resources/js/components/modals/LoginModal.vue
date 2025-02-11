@@ -1,6 +1,6 @@
 <template>
     <div v-if="isVisible" class="modal-overlay" @click.self="closeModal">
-        <div class="modal-content">
+        <div class="modal-content-login">
             <div class="logo-container">
                 <img src="/assets/imgs/Grupo.LN1NegroFTransp.png" alt="Grupo LN1 Logo" class="logo" />
             </div>
@@ -60,18 +60,15 @@ export default {
                 alert('No se encontró el token CSRF en el documento.');
                 return;
             }
-
             const csrfToken = csrfMetaTag.getAttribute('content');
             this.loading = true; // Activar el spinner
-
             try {
-                const response = await axios.post('http://localhost:8000/api/auth/validate_user', {
+                const response = await axios.post('auth/validate_user', {
                     username: this.dni,
                     password: this.password
                 }, {
                     headers: { 'X-CSRF-TOKEN': csrfToken }
                 });
-
                 // Éxito en la autenticación
                 Swal.fire({
                     icon: 'success',
@@ -85,6 +82,10 @@ export default {
                 }).then(() => {
                     // Almacenar toda la sesión en localStorage
                     localStorage.setItem('userSession', JSON.stringify(response.data.sessionData));
+                    localStorage.setItem('authToken', response.data.token);
+
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+
                     window.location.reload();
                 });
 
@@ -92,7 +93,6 @@ export default {
 
             } catch (error) {
                 console.log('Respuesta completa:', error);
-
                 let errorMessage = 'Ocurrió un error desconocido.';
                 if (error.response && error.response.data) {
                     errorMessage = error.response.data.error || errorMessage;
@@ -108,70 +108,6 @@ export default {
             }
         }
 
-        // async handleLogin() {
-        //     if (this.dni.length < 8 || isNaN(this.dni)) {
-        //         alert('Por favor, ingrese un DNI válido (8 dígitos).');
-        //         return;
-        //     }
-        //     const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
-        //     if (!csrfMetaTag) {
-        //         alert('No se encontró el token CSRF en el documento.');
-        //         return;
-        //     }
-        //     const csrfToken = csrfMetaTag.getAttribute('content');
-        //     this.loading = true; // Activar el spinner
-        //     try {
-        //         const response = await axios.post('http://localhost:8000/api/auth/validate_user', {
-        //             username: this.dni,
-        //             password: this.password
-        //         }, {
-
-        //             headers: {
-        //                 'X-CSRF-TOKEN': csrfToken
-        //             }
-        //         });
-        //         // Éxito en la autenticación
-        //         Swal.fire({
-        //             icon: 'success',
-        //             title: `¡Bienvenido, ${response.data.nombre_completo}!`,
-        //             text: response.data.message,
-        //             imageUrl: response.data.foto,
-        //             imageWidth: 100,
-        //             imageHeight: 100,
-        //             imageAlt: 'Foto de perfil',
-        //             confirmButtonText: 'Aceptar'
-        //         }).then(() => {
-        //             // Almacenar la sesión en localStorage
-        //             const userSessionData = {
-        //                 fullName: response.data.nombre_completo,
-        //                 photo: response.data.foto,
-        //                 email: response.data.email, // Otros datos de sesión
-        //             };
-        //             localStorage.setItem('userSession', JSON.stringify(userSessionData));
-        //             window.location.reload();
-        //         });
-
-        //         this.closeModal(); // Cerrar el modal
-
-        //     } catch (error) {
-        //         console.log('Respuesta completa:', error);
-
-        //         if (error.response && error.response.data) {
-        //             // Verificamos que la respuesta contenga el mensaje de error
-        //             const responseData = error.response.data;
-        //             const errorMessage = responseData.error || 'Ocurrió un error desconocido.';
-        //             document.getElementById('mensajeError').innerText = errorMessage;
-        //         } else if (error.request) {
-        //             // Error de red o el servidor no respondió
-        //             document.getElementById('mensajeError').innerText = 'Error de conexión al servidor. Verifique su conexión a Internet.';
-        //         } else {
-        //             // Otros errores
-        //             document.getElementById('mensajeError').innerText = `Error inesperado: ${error.message}`;
-        //         }
-        //     } finally {
-        //         this.loading = false; // Desactivar el spinner
-        //     }
-        // }
     }
 };
 </script>
@@ -179,20 +115,7 @@ export default {
 
 
 <style scoped>
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.modal-content {
+.modal-content-login {
     background: #fff;
     padding: 30px 20px;
     border-radius: 10px;
@@ -201,7 +124,7 @@ export default {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.modal-content .p {
+.modal-content-login .p {
     color: #0056b3;
 }
 
