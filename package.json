@@ -6,7 +6,9 @@
         "prod": "mix --production",
         "development": "npm run dev",
         "production": "npm run prod",
-        "start": "browser-sync start --server --files 'index.html, css/*.css, js/*.js' --port 8000"
+        "start": "browser-sync start --server --files 'index.html, css/*.css, js/*.js' --port 8000",
+        "build": "npm run prod"
+
     },
     "devDependencies": {
         "autoprefixer": "^10.4.20",
@@ -25,6 +27,7 @@
         "webpack": "^5.97.1",
         "webpack-cli": "^6.0.1"
     },
+
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.7.2",
         "sweetalert2": "^11.15.10",
@@ -32,3 +35,4 @@
         "vue-router": "^4.0.13"
     }
 }
+

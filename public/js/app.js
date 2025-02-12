@@ -20431,12 +20431,71 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
+    validarYAgregarIdioma: function validarYAgregarIdioma() {
+      var _this3 = this;
+      var camposValidos = this.section.fields.every(function (field) {
+        if (field.required) {
+          return _this3.model[field.name] && _this3.model[field.name] !== 'Seleccione';
+        }
+        return true;
+      });
+      if (camposValidos) {
+        this.$emit('agregar-idioma');
+      } else {
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+          icon: 'warning',
+          title: 'Campos incompletos',
+          text: 'Por favor, complete todos los campos requeridos.'
+        });
+      }
+    },
+    validarYAgregarCurso: function validarYAgregarCurso() {
+      var _this4 = this;
+      var camposValidos = this.section.fields.every(function (field) {
+        if (field.required) {
+          return _this4.model[field.name] && _this4.model[field.name] !== 'Seleccione';
+        }
+        return true;
+      });
+      if (camposValidos) {
+        this.$emit('agregar-curso');
+      } else {
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+          icon: 'warning',
+          title: 'Campos incompletos',
+          text: 'Por favor, complete todos los campos requeridos.'
+        });
+      }
+    },
+    validarYAgregarExperiencia: function validarYAgregarExperiencia() {
+      var _this5 = this;
+      var camposValidos = this.section.fields.every(function (field) {
+        if (field.required) {
+          return _this5.model[field.name] && _this5.model[field.name] !== 'Seleccione';
+        }
+        return true;
+      });
+      if (camposValidos) {
+        this.$emit('agregar-experiencia');
+      } else {
+        sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+          icon: 'warning',
+          title: 'Campos incompletos',
+          text: 'Por favor, complete todos los campos requeridos.'
+        });
+      }
+    },
     handleFileUpload: function handleFileUpload(event, fieldName) {
       var file = event.target.files[0];
-      this.$emit('file-upload', {
-        file: file,
-        fieldName: fieldName
-      });
+      if (file) {
+        // 🔹 Guarda el nombre del archivo en el modelo directamente
+        this.model[fieldName] = file.name;
+        // 🔹 Opcionalmente, emite el evento para notificar al componente padre
+        this.$emit('file-upload', {
+          file: file,
+          fieldName: fieldName
+        });
+      }
     }
   }
 });
@@ -21347,6 +21406,32 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
           nivel_excel: '',
           nivel_word: '',
           nivel_powerpoint: ''
+        },
+        idiomas: [],
+        nuevoIdioma: {
+          idioma: '',
+          lectura: '',
+          escritura: '',
+          conversacion: ''
+        },
+        cursos: [],
+        nuevoCurso: {
+          curso: '',
+          anio: '',
+          certificado: ''
+        },
+        experienciasLaborales: [],
+        nuevaExperienciaLaboral: {
+          empresa: '',
+          cargo: '',
+          fecha_inicio: '',
+          fecha_fin: '',
+          descripcion: '',
+          motivo_salida: '',
+          importe_remuneracion: '',
+          nombre_referencia: '',
+          numero_contacto_referencia: '',
+          constancia: ''
         }
       },
       sections: [{
@@ -21681,6 +21766,108 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
           options: ['Básico', 'Intermedio', 'Avanzado'],
           required: true
         }]
+      }, {
+        title: 'Conocimientos de Idiomas',
+        model: 'nuevoIdioma',
+        fields: [{
+          label: 'Idioma',
+          name: 'idioma',
+          type: 'select',
+          options: ['Inglés', 'Francés', 'Alemán', 'Italiano', 'Portugués', 'Otro'],
+          required: true
+        }, {
+          label: 'Lectura',
+          name: 'lectura',
+          type: 'select',
+          options: ['Básico', 'Intermedio', 'Avanzado'],
+          required: true
+        }, {
+          label: 'Escritura',
+          name: 'escritura',
+          type: 'select',
+          options: ['Básico', 'Intermedio', 'Avanzado'],
+          required: true
+        }, {
+          label: 'Conversación',
+          name: 'conversacion',
+          type: 'select',
+          options: ['Básico', 'Intermedio', 'Avanzado'],
+          required: true
+        }]
+      }, {
+        title: 'Cursos Complementarios',
+        model: 'nuevoCurso',
+        fields: [{
+          label: 'Curso',
+          name: 'curso',
+          type: 'text',
+          required: true
+        }, {
+          label: 'Año',
+          name: 'anio',
+          type: 'select',
+          options: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          required: true
+        }, {
+          label: 'Adjuntar Certificado',
+          name: 'certificado',
+          type: 'file',
+          onchange: 'handleFileUpload'
+        }]
+      }, {
+        title: 'Experiencia Laboral',
+        model: 'nuevaExperienciaLaboral',
+        fields: [{
+          label: 'Empresa',
+          name: 'empresa',
+          type: 'text',
+          required: true
+        }, {
+          label: 'Cargo',
+          name: 'cargo',
+          type: 'text',
+          required: true
+        }, {
+          label: 'Fecha de Inicio',
+          name: 'fecha_inicio',
+          type: 'date',
+          required: true
+        }, {
+          label: 'Fecha de Fin',
+          name: 'fecha_fin',
+          type: 'date',
+          required: true
+        }, {
+          label: 'Descripción',
+          name: 'descripcion',
+          type: 'text',
+          required: true
+        }, {
+          label: 'Motivo de Salida',
+          name: 'motivo_salida',
+          type: 'text',
+          required: true
+        }, {
+          label: 'Importe de Remuneración',
+          name: 'importe_remuneracion',
+          type: 'number',
+          required: true
+        }, {
+          label: 'Nombre Referencia',
+          name: 'nombre_referencia',
+          type: 'text',
+          required: true
+        }, {
+          label: 'Número Contacto Referencia',
+          name: 'numero_contacto_referencia',
+          type: 'number',
+          required: true
+        }, {
+          label: 'Adjuntar Constancia',
+          name: 'constancia',
+          type: 'file',
+          required: true
+        }]
       }]
     };
   },
@@ -21737,6 +21924,57 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
     eliminarContactoEmergencia: function eliminarContactoEmergencia(index, event) {
       event.preventDefault();
       this.form.contactosEmergencia.splice(index, 1);
+    },
+    agregarIdioma: function agregarIdioma() {
+      this.form.idiomas.push(_objectSpread({}, this.form.nuevoIdioma));
+      this.form.nuevoIdioma = {
+        idioma: '',
+        lectura: '',
+        escritura: '',
+        conversacion: ''
+      };
+    },
+    eliminarIdioma: function eliminarIdioma(index, event) {
+      event.preventDefault();
+      this.form.idiomas.splice(index, 1);
+    },
+    handleFileUpload: function handleFileUpload(event) {
+      console.log("###111");
+      var file = event.target.files[0];
+      if (file) {
+        this.form.nuevoCurso.certificado = file.name; // Guarda solo el nombre del archivo
+      }
+    },
+    agregarCurso: function agregarCurso() {
+      this.form.cursos.push(_objectSpread({}, this.form.nuevoCurso));
+      this.form.nuevoCurso = {
+        curso: '',
+        anio: '',
+        certificado: ''
+      };
+    },
+    eliminarCurso: function eliminarCurso(index, event) {
+      event.preventDefault();
+      this.form.cursos.splice(index, 1);
+    },
+    agregarExperiencia: function agregarExperiencia() {
+      this.form.experienciasLaborales.push(_objectSpread({}, this.form.nuevaExperienciaLaboral));
+      this.form.nuevaExperienciaLaboral = {
+        empresa: '',
+        cargo: '',
+        fecha_inicio: '',
+        fecha_fin: '',
+        descripcion: '',
+        motivo_salida: '',
+        importe_remuneracion: '',
+        nombre_referencia: '',
+        numero_contacto_referencia: '',
+        constancia: ''
+      };
+    },
+    eliminarExperiencia: function eliminarExperiencia(index, event) {
+      event.preventDefault();
+      this.form.experienciasLaborales.splice(index, 1);
     }
   }
 });
@@ -22022,17 +22260,26 @@ var _hoisted_3 = {
   key: 1
 };
 var _hoisted_4 = {
-  "class": "section-title"
+  key: 2
 };
 var _hoisted_5 = {
+  key: 3
+};
+var _hoisted_6 = {
+  key: 4
+};
+var _hoisted_7 = {
+  "class": "section-title"
+};
+var _hoisted_8 = {
   "class": "form-container"
 };
-var _hoisted_6 = ["onUpdate:modelValue", "required"];
-var _hoisted_7 = ["onUpdate:modelValue", "required"];
-var _hoisted_8 = ["onUpdate:modelValue", "required"];
-var _hoisted_9 = ["onChange", "required"];
+var _hoisted_9 = ["onUpdate:modelValue", "required"];
 var _hoisted_10 = ["onUpdate:modelValue", "required"];
-var _hoisted_11 = ["value"];
+var _hoisted_11 = ["onUpdate:modelValue", "required"];
+var _hoisted_12 = ["onChange", "required"];
+var _hoisted_13 = ["onUpdate:modelValue", "required"];
+var _hoisted_14 = ["value"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [$props.section.title === 'Referencias Familiares' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
@@ -22046,7 +22293,25 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.validarYAgregarContactoEmergencia && $options.validarYAgregarContactoEmergencia.apply($options, arguments);
     }),
     "class": "btn-add"
-  }, "Agregar Contacto de Emergencia")])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.section.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.section.fields, function (field, index) {
+  }, "Agregar Contacto de Emergencia")])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.section.title === 'Conocimientos de Idiomas' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    onClick: _cache[2] || (_cache[2] = function () {
+      return $options.validarYAgregarIdioma && $options.validarYAgregarIdioma.apply($options, arguments);
+    }),
+    "class": "btn-add"
+  }, "Agregar Idioma")])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.section.title === 'Cursos Complementarios' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    onClick: _cache[3] || (_cache[3] = function () {
+      return $options.validarYAgregarCurso && $options.validarYAgregarCurso.apply($options, arguments);
+    }),
+    "class": "btn-add"
+  }, "Agregar Curso")])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.section.title === 'Experiencia Laboral' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    onClick: _cache[4] || (_cache[4] = function () {
+      return $options.validarYAgregarExperiencia && $options.validarYAgregarExperiencia.apply($options, arguments);
+    }),
+    "class": "btn-add"
+  }, "Agregar Experiencia")])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.section.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.section.fields, function (field, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       key: index,
       "class": "form-group form-group-3col"
@@ -22057,28 +22322,28 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return $props.model[field.name] = $event;
       },
       required: field.required
-    }, null, 8 /* PROPS */, _hoisted_6)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.model[field.name]]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), field.type === 'number' ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
+    }, null, 8 /* PROPS */, _hoisted_9)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.model[field.name]]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), field.type === 'number' ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
       key: 1,
       type: "number",
       "onUpdate:modelValue": function onUpdateModelValue($event) {
         return $props.model[field.name] = $event;
       },
       required: field.required
-    }, null, 8 /* PROPS */, _hoisted_7)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.model[field.name]]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), field.type === 'date' ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
+    }, null, 8 /* PROPS */, _hoisted_10)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.model[field.name]]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), field.type === 'date' ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
       key: 2,
       type: "date",
       "onUpdate:modelValue": function onUpdateModelValue($event) {
         return $props.model[field.name] = $event;
       },
       required: field.required
-    }, null, 8 /* PROPS */, _hoisted_8)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.model[field.name]]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), field.type === 'file' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
+    }, null, 8 /* PROPS */, _hoisted_11)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $props.model[field.name]]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), field.type === 'file' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
       key: 3,
       type: "file",
       onChange: function onChange($event) {
         return $options.handleFileUpload($event, field.name);
       },
       required: field.required
-    }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_9)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), field.type === 'select' ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("select", {
+    }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_12)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), field.type === 'select' ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("select", {
       key: 4,
       "onUpdate:modelValue": function onUpdateModelValue($event) {
         return $props.model[field.name] = $event;
@@ -22088,8 +22353,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
         key: option,
         value: option
-      }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(option), 9 /* TEXT, PROPS */, _hoisted_11);
-    }), 128 /* KEYED_FRAGMENT */))], 8 /* PROPS */, _hoisted_10)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $props.model[field.name]]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
+      }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(option), 9 /* TEXT, PROPS */, _hoisted_14);
+    }), 128 /* KEYED_FRAGMENT */))], 8 /* PROPS */, _hoisted_13)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $props.model[field.name]]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
   }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(_ctx.$slots, "default", {}, undefined, true)]);
 }
 
@@ -22798,9 +23063,33 @@ var _hoisted_9 = {
   "class": "table"
 };
 var _hoisted_10 = ["onClick"];
+var _hoisted_11 = {
+  key: 0,
+  "class": "table-responsive"
+};
+var _hoisted_12 = {
+  "class": "table"
+};
+var _hoisted_13 = ["onClick"];
+var _hoisted_14 = {
+  key: 0,
+  "class": "table-responsive"
+};
+var _hoisted_15 = {
+  "class": "table"
+};
+var _hoisted_16 = ["onClick"];
+var _hoisted_17 = {
+  key: 0,
+  "class": "table-responsive"
+};
+var _hoisted_18 = {
+  "class": "table"
+};
+var _hoisted_19 = ["onClick"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_FormSection = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("FormSection");
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [_cache[6] || (_cache[6] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", null, "Registro de POSTULANTES", -1 /* HOISTED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [_cache[9] || (_cache[9] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", null, "Registro de POSTULANTES", -1 /* HOISTED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "file",
     id: "foto",
     name: "foto",
@@ -22818,7 +23107,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       section: section,
       model: $data.form[section.model],
       onAgregarReferencia: $options.agregarReferencia,
-      onAgregarContactoEmergencia: $options.agregarContactoEmergencia
+      onAgregarContactoEmergencia: $options.agregarContactoEmergencia,
+      onAgregarIdioma: $options.agregarIdioma,
+      onAgregarCurso: $options.agregarCurso,
+      onAgregarExperiencia: $options.agregarExperiencia
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createSlots)({
       _: 2 /* DYNAMIC */
     }, [section.model === 'nuevaReferencia' ? {
@@ -22849,8 +23141,50 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         }), 128 /* KEYED_FRAGMENT */))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
       }),
       key: "1"
-    } : undefined]), 1032 /* PROPS, DYNAMIC_SLOTS */, ["section", "model", "onAgregarReferencia", "onAgregarContactoEmergencia"]);
-  }), 128 /* KEYED_FRAGMENT */))]), _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    } : undefined, section.model === 'nuevoIdioma' ? {
+      name: "default",
+      fn: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+        return [$data.form.idiomas.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_12, [_cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Idioma"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Lectura"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Escritura"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Conversación"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Acciones")])], -1 /* HOISTED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.form.idiomas, function (idioma, index) {
+          return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
+            key: index
+          }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(idioma.idioma), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(idioma.lectura), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(idioma.escritura), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(idioma.conversacion), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+            onClick: function onClick($event) {
+              return $options.eliminarIdioma(index, $event);
+            }
+          }, "Eliminar", 8 /* PROPS */, _hoisted_13)])]);
+        }), 128 /* KEYED_FRAGMENT */))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
+      }),
+      key: "2"
+    } : undefined, section.model === 'nuevoCurso' ? {
+      name: "default",
+      fn: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+        return [$data.form.cursos.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_15, [_cache[6] || (_cache[6] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Curso"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Año"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Certificado"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Acciones")])], -1 /* HOISTED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.form.cursos, function (curso, index) {
+          return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
+            key: index
+          }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(curso.curso), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(curso.anio), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(curso.certificado), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+            onClick: function onClick($event) {
+              return $options.eliminarIdioma(index, $event);
+            }
+          }, "Eliminar", 8 /* PROPS */, _hoisted_16)])]);
+        }), 128 /* KEYED_FRAGMENT */))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
+      }),
+      key: "3"
+    } : undefined, section.model === 'nuevaExperienciaLaboral' ? {
+      name: "default",
+      fn: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+        return [$data.form.experienciasLaborales.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_18, [_cache[7] || (_cache[7] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Empresa"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Cargo"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Fecha de Inicio"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Fecha de Fin"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Descripción"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Motivo de Salida"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Importe de Remuneración"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Nombre Referencia"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Número Contacto Referencia"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Constancia"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Acciones")])], -1 /* HOISTED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.form.experienciasLaborales, function (experiencia, index) {
+          return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
+            key: index
+          }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.empresa), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.cargo), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.fecha_inicio), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.fecha_fin), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.descripcion), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.motivo_salida), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.importe_remuneracion), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.nombre_referencia), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.numero_contacto_referencia), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(experiencia.constancia), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+            onClick: function onClick($event) {
+              return $options.eliminarExperiencia(index, $event);
+            }
+          }, "Eliminar", 8 /* PROPS */, _hoisted_19)])]);
+        }), 128 /* KEYED_FRAGMENT */))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
+      }),
+      key: "4"
+    } : undefined]), 1032 /* PROPS, DYNAMIC_SLOTS */, ["section", "model", "onAgregarReferencia", "onAgregarContactoEmergencia", "onAgregarIdioma", "onAgregarCurso", "onAgregarExperiencia"]);
+  }), 128 /* KEYED_FRAGMENT */))]), _cache[8] || (_cache[8] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "submit",
     "class": "btn-primary-postulante"
   }, "Registrar Postulante", -1 /* HOISTED */))], 32 /* NEED_HYDRATION */)])]);
@@ -25264,7 +25598,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.upload-container[data-v-0d8ba9cc] {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    margin-bottom: 20px;\n}\n.upload-container input[type=\"file\"][data-v-0d8ba9cc] {\n    display: none;\n}\n.upload-container p[data-v-0d8ba9cc] {\n    margin: 0;\n    cursor: pointer;\n    color: #007bff;\n}\n.form-container-postulante[data-v-0d8ba9cc] {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 20px;\n}\n.btn-primary-postulante[data-v-0d8ba9cc] {\n    display: block;\n    width: 100%;\n    padding: 10px;\n    background-color: #007bff;\n    color: #fff;\n    border: none;\n    border-radius: 4px;\n    cursor: pointer;\n    font-size: 16px;\n    margin-top: 20px;\n}\n.btn-primary-postulante[data-v-0d8ba9cc]:hover {\n    background-color: #0056b3;\n}\n.table-responsive[data-v-0d8ba9cc] {\n    margin-top: 20px;\n}\n.table[data-v-0d8ba9cc] {\n    width: 100%;\n    border-collapse: collapse;\n}\n.table th[data-v-0d8ba9cc], .table td[data-v-0d8ba9cc] {\n    border: 1px solid #ddd;\n    padding: 8px;\n}\n.table th[data-v-0d8ba9cc] {\n    background-color: #f2f2f2;\n    text-align: left;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.upload-container[data-v-0d8ba9cc] {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    margin-bottom: 20px;\n}\n.upload-container input[type=\"file\"][data-v-0d8ba9cc] {\n    display: none;\n}\n.upload-container p[data-v-0d8ba9cc] {\n    margin: 0;\n    cursor: pointer;\n    color: #007bff;\n}\n.form-container-postulante[data-v-0d8ba9cc] {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 20px;\n}\n.btn-primary-postulante[data-v-0d8ba9cc] {\n    display: block;\n    width: 100%;\n    padding: 10px;\n    background-color: #007bff;\n    color: #fff;\n    border: none;\n    border-radius: 4px;\n    cursor: pointer;\n    font-size: 16px;\n    margin-top: 20px;\n}\n.btn-primary-postulante[data-v-0d8ba9cc]:hover {\n    background-color: #0056b3;\n}\n.table-responsive[data-v-0d8ba9cc] {\n    margin-top: 20px;\n    overflow-x: auto;\n}\n.table[data-v-0d8ba9cc] {\n    width: 100%;\n    border-collapse: collapse;\n}\n.table th[data-v-0d8ba9cc],\n.table td[data-v-0d8ba9cc] {\n    border: 1px solid #ddd;\n    padding: 8px;\n}\n.table th[data-v-0d8ba9cc] {\n    background-color: #f2f2f2;\n    text-align: left;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

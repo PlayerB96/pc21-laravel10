@@ -10,14 +10,10 @@
 
             <form @submit.prevent="submitForm">
                 <div class="form-container-postulante">
-                    <FormSection 
-                        v-for="(section, index) in sections" 
-                        :key="index" 
-                        :section="section" 
-                        :model="form[section.model]" 
-                        @agregar-referencia="agregarReferencia" 
-                        @agregar-contacto-emergencia="agregarContactoEmergencia"
-                    >
+                    <FormSection v-for="(section, index) in sections" :key="index" :section="section"
+                        :model="form[section.model]" @agregar-referencia="agregarReferencia"
+                        @agregar-contacto-emergencia="agregarContactoEmergencia" @agregar-idioma="agregarIdioma"
+                        @agregar-curso="agregarCurso" @agregar-experiencia="agregarExperiencia">
                         <template v-if="section.model === 'nuevaReferencia'" #default>
                             <div v-if="form.referenciasFamiliares.length > 0" class="table-responsive">
                                 <table class="table">
@@ -69,7 +65,97 @@
                                             <td>{{ contacto.celular2_contacto_emergencia }}</td>
                                             <td>{{ contacto.telefono_fijo_contacto_emergencia }}</td>
                                             <td>
-                                                <button @click="eliminarContactoEmergencia(index, $event)">Eliminar</button>
+                                                <button
+                                                    @click="eliminarContactoEmergencia(index, $event)">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                        <template v-if="section.model === 'nuevoIdioma'" #default>
+                            <div v-if="form.idiomas.length > 0" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Idioma</th>
+                                            <th>Lectura</th>
+                                            <th>Escritura</th>
+                                            <th>Conversación</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(idioma, index) in form.idiomas" :key="index">
+                                            <td>{{ idioma.idioma }}</td>
+                                            <td>{{ idioma.lectura }}</td>
+                                            <td>{{ idioma.escritura }}</td>
+                                            <td>{{ idioma.conversacion }}</td>
+                                            <td>
+                                                <button @click="eliminarIdioma(index, $event)">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                        <template v-if="section.model === 'nuevoCurso'" #default>
+                            <div v-if="form.cursos.length > 0" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Curso</th>
+                                            <th>Año</th>
+                                            <th>Certificado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(curso, index) in form.cursos" :key="index">
+                                            <td>{{ curso.curso }}</td>
+                                            <td>{{ curso.anio }}</td>
+                                            <td>{{ curso.certificado }}</td>
+                                            <td>
+                                                <button @click="eliminarIdioma(index, $event)">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                        <template v-if="section.model === 'nuevaExperienciaLaboral'" #default>
+                            <div v-if="form.experienciasLaborales.length > 0" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Empresa</th>
+                                            <th>Cargo</th>
+                                            <th>Fecha de Inicio</th>
+                                            <th>Fecha de Fin</th>
+                                            <th>Descripción</th>
+                                            <th>Motivo de Salida</th>
+                                            <th>Importe de Remuneración</th>
+                                            <th>Nombre Referencia</th>
+                                            <th>Número Contacto Referencia</th>
+                                            <th>Constancia</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(experiencia, index) in form.experienciasLaborales" :key="index">
+                                            <td>{{ experiencia.empresa }}</td>
+                                            <td>{{ experiencia.cargo }}</td>
+                                            <td>{{ experiencia.fecha_inicio }}</td>
+                                            <td>{{ experiencia.fecha_fin }}</td>
+                                            <td>{{ experiencia.descripcion }}</td>
+                                            <td>{{ experiencia.motivo_salida }}</td>
+                                            <td>{{ experiencia.importe_remuneracion }}</td>
+                                            <td>{{ experiencia.nombre_referencia }}</td>
+                                            <td>{{ experiencia.numero_contacto_referencia }}
+                                            </td>
+                                            <td>{{ experiencia.constancia }}</td>
+                                            <td>
+                                                <button @click="eliminarExperiencia(index, $event)">Eliminar</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -170,6 +256,33 @@ export default {
                     nivel_word: '',
                     nivel_powerpoint: '',
                 },
+                idiomas: [],
+                nuevoIdioma: {
+                    idioma: '',
+                    lectura: '',
+                    escritura: '',
+                    conversacion: '',
+
+                },
+                cursos: [],
+                nuevoCurso: {
+                    curso: '',
+                    anio: '',
+                    certificado: '',
+                },
+                experienciasLaborales: [],
+                nuevaExperienciaLaboral: {
+                    empresa: '',
+                    cargo: '',
+                    fecha_inicio: '',
+                    fecha_fin: '',
+                    descripcion: '',
+                    motivo_salida: '',
+                    importe_remuneracion: '',
+                    nombre_referencia: '',
+                    numero_contacto_referencia: '',
+                    constancia: ''
+                }
             },
             sections: [
                 {
@@ -268,12 +381,48 @@ export default {
                     title: 'Conocimientos de Office',
                     model: 'conocimientoOffice',
                     fields: [
-                        { label: '¿Nivel de Excel?', name: 'nivel_excel', type: 'select', options: [ 'Básico', 'Intermedio','Avanzado'], required: true },
-                        { label: '¿Nivel de Word?', name: 'nivel_word', type: 'select', options:  [ 'Básico', 'Intermedio','Avanzado'], required: true },
-                        { label: '¿Nivel de PowerPoint?', name: 'nivel_powerpoint', type: 'select', options:  [ 'Básico', 'Intermedio','Avanzado'], required: true },
-
-                    
+                        { label: '¿Nivel de Excel?', name: 'nivel_excel', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: true },
+                        { label: '¿Nivel de Word?', name: 'nivel_word', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: true },
+                        { label: '¿Nivel de PowerPoint?', name: 'nivel_powerpoint', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: true },
                     ]
+                },
+                {
+                    title: 'Conocimientos de Idiomas',
+                    model: 'nuevoIdioma',
+                    fields: [
+                        { label: 'Idioma', name: 'idioma', type: 'select', options: ['Inglés', 'Francés', 'Alemán', 'Italiano', 'Portugués', 'Otro'], required: true },
+                        { label: 'Lectura', name: 'lectura', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: true },
+                        { label: 'Escritura', name: 'escritura', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: true },
+                        { label: 'Conversación', name: 'conversacion', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: true },
+
+                    ]
+                },
+                {
+                    title: 'Cursos Complementarios',
+                    model: 'nuevoCurso',
+                    fields: [
+                        { label: 'Curso', name: 'curso', type: 'text', required: true },
+                        { label: 'Año', name: 'anio', type: 'select', options: ['2020', '2021', '2022', '2023', '2024', '2025'], required: true },
+                        { label: 'Adjuntar Certificado', name: 'certificado', type: 'file', onchange: 'handleFileUpload' }
+
+                    ]
+                },
+                {
+                    title: 'Experiencia Laboral',
+                    model: 'nuevaExperienciaLaboral',
+                    fields: [
+                        { label: 'Empresa', name: 'empresa', type: 'text', required: true },
+                        { label: 'Cargo', name: 'cargo', type: 'text', required: true },
+                        { label: 'Fecha de Inicio', name: 'fecha_inicio', type: 'date', required: true },
+                        { label: 'Fecha de Fin', name: 'fecha_fin', type: 'date', required: true },
+                        { label: 'Descripción', name: 'descripcion', type: 'text', required: true },
+                        { label: 'Motivo de Salida', name: 'motivo_salida', type: 'text', required: true },
+                        { label: 'Importe de Remuneración', name: 'importe_remuneracion', type: 'number', required: true },
+                        { label: 'Nombre Referencia', name: 'nombre_referencia', type: 'text', required: true },
+                        { label: 'Número Contacto Referencia', name: 'numero_contacto_referencia', type: 'number', required: true },
+                        { label: 'Adjuntar Constancia', name: 'constancia', type: 'file', required: true }
+                    ]
+
                 },
             ]
         };
@@ -331,6 +480,57 @@ export default {
         eliminarContactoEmergencia(index, event) {
             event.preventDefault();
             this.form.contactosEmergencia.splice(index, 1);
+        },
+        agregarIdioma() {
+            this.form.idiomas.push({ ...this.form.nuevoIdioma });
+            this.form.nuevoIdioma = {
+                idioma: '',
+                lectura: '',
+                escritura: '',
+                conversacion: ''
+            };
+        },
+        eliminarIdioma(index, event) {
+            event.preventDefault();
+            this.form.idiomas.splice(index, 1);
+        },
+        handleFileUpload(event) {
+            console.log("###111")
+            const file = event.target.files[0];
+            if (file) {
+                this.form.nuevoCurso.certificado = file.name; // Guarda solo el nombre del archivo
+            }
+        },
+        agregarCurso() {
+            this.form.cursos.push({ ...this.form.nuevoCurso });
+            this.form.nuevoCurso = {
+                curso: '',
+                anio: '',
+                certificado: '',
+            };
+        },
+        eliminarCurso(index, event) {
+            event.preventDefault();
+            this.form.cursos.splice(index, 1);
+        },
+        agregarExperiencia() {
+            this.form.experienciasLaborales.push({ ...this.form.nuevaExperienciaLaboral });
+            this.form.nuevaExperienciaLaboral = {
+                empresa: '',
+                cargo: '',
+                fecha_inicio: '',
+                fecha_fin: '',
+                descripcion: '',
+                motivo_salida: '',
+                importe_remuneracion: '',
+                nombre_referencia: '',
+                numero_contacto_referencia: '',
+                constancia: ''
+            };
+        },
+        eliminarExperiencia(index, event) {
+            event.preventDefault();
+            this.form.experienciasLaborales.splice(index, 1);
         }
     }
 };
@@ -379,6 +579,8 @@ export default {
 
 .table-responsive {
     margin-top: 20px;
+    overflow-x: auto;
+
 }
 
 .table {
@@ -386,7 +588,8 @@ export default {
     border-collapse: collapse;
 }
 
-.table th, .table td {
+.table th,
+.table td {
     border: 1px solid #ddd;
     padding: 8px;
 }

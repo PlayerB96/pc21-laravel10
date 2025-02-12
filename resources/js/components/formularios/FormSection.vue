@@ -6,6 +6,15 @@
         <div v-if="section.title === 'Contacto de Emergencia'">
             <button type="button" @click="validarYAgregarContactoEmergencia" class="btn-add">Agregar Contacto de Emergencia</button>
         </div>
+        <div v-if="section.title === 'Conocimientos de Idiomas'">
+            <button type="button" @click="validarYAgregarIdioma" class="btn-add">Agregar Idioma</button>
+        </div>
+        <div v-if="section.title === 'Cursos Complementarios'">
+            <button type="button" @click="validarYAgregarCurso" class="btn-add">Agregar Curso</button>
+        </div>
+        <div v-if="section.title === 'Experiencia Laboral'">
+            <button type="button" @click="validarYAgregarExperiencia" class="btn-add">Agregar Experiencia</button>
+        </div>
         <div class="section-title">{{ section.title }}</div>
         <div class="form-container">
             <div v-for="(field, index) in section.fields" :key="index" class="form-group form-group-3col">
@@ -74,9 +83,68 @@ export default {
                 });
             }
         },
+        validarYAgregarIdioma() {
+            const camposValidos = this.section.fields.every(field => {
+                if (field.required) {
+                    return this.model[field.name] && this.model[field.name] !== 'Seleccione';
+                }
+                return true;
+            });
+
+            if (camposValidos) {
+                this.$emit('agregar-idioma');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Por favor, complete todos los campos requeridos.',
+                });
+            }
+        },
+        validarYAgregarCurso() {
+            const camposValidos = this.section.fields.every(field => {
+                if (field.required) {
+                    return this.model[field.name] && this.model[field.name] !== 'Seleccione';
+                }
+                return true;
+            });
+
+            if (camposValidos) {
+                this.$emit('agregar-curso');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Por favor, complete todos los campos requeridos.',
+                });
+            }
+        },
+        validarYAgregarExperiencia() {
+            const camposValidos = this.section.fields.every(field => {
+                if (field.required) {
+                    return this.model[field.name] && this.model[field.name] !== 'Seleccione';
+                }
+                return true;
+            });
+
+            if (camposValidos) {
+                this.$emit('agregar-experiencia');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Por favor, complete todos los campos requeridos.',
+                });
+            }
+        },
         handleFileUpload(event, fieldName) {
             const file = event.target.files[0];
-            this.$emit('file-upload', { file, fieldName });
+            if (file) {
+                // 🔹 Guarda el nombre del archivo en el modelo directamente
+                this.model[fieldName] = file.name;
+                // 🔹 Opcionalmente, emite el evento para notificar al componente padre
+                this.$emit('file-upload', { file, fieldName });
+            }
         }
     }
 };
