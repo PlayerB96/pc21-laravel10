@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import FormSection from '../../components/FormSection.vue';
+import FormSection from '../../components/formularios/FormSection.vue';
 
 export default {
     components: {

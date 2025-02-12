@@ -330,22 +330,18 @@ export default {
     height: 24px;
 }
 
-/* Media queries para pantallas pequeñas */
-@media (max-width: 768px) {
-    .navbar-menu {
-        flex-direction: column;
+@media (max-width: 1380px) {
+    .navbar-link {
+        text-decoration: none;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: bold;
+        padding: 0.5rem 0.8rem;
+        display: inline-block;
     }
 
-    .navbar-item {
-        margin-right: 0;
-        margin-bottom: 1rem;
-    }
-
-    .navbar-right {
-        flex-direction: column;
-        margin-top: 1rem;
-    }
 }
+
 
 /* Media queries for responsive design */
 @media (max-width: 768px) {

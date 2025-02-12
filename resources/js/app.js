@@ -8,7 +8,9 @@ import axios from 'axios';
 import '../css/global.css'; 
 
 // Configura la URL base para Axios
-axios.defaults.baseURL = 'http://localhost:8000/api/';
+// axios.defaults.baseURL = 'http://localhost:8000/api/';
+axios.defaults.baseURL = `${window.location.origin}/api/`;
+
 
 // Crea la instancia de la aplicación Vue
 const app = createApp(MainComponent);

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GestionPersonas;
 
 use App\Http\Controllers\AuthController; // Asegúrate de importar tu controlador
-
+use App\Http\Controllers\ProduccionController;
 use Illuminate\Session\Middleware\StartSession;
 
 Route::middleware(['api', StartSession::class])->group(function () {
@@ -17,6 +17,8 @@ Route::middleware(['api', StartSession::class])->group(function () {
     Route::get('/gestionpersonas/cambiar_motivo', [GestionPersonas::class, 'cambiar_motivo']);
     Route::get('/gestionpersonas/traer_tramite', [GestionPersonas::class, 'traer_tramite']); // Cambiado a GET
     Route::post('/gestionpersonas/store',  [GestionPersonas::class, 'store']);
+    // PRODUCCIÓN
+    Route::post('/produccion/buscar_fichas_tecnicas',  [ProduccionController::class, 'buscar_fichas_tecnicas']);
 });
 
 

@@ -1,6 +1,8 @@
 <template>
     <div class="skeleton-loader">
-        <div class="skeleton-row" v-for="n in rows" :key="n"></div>
+        <div class="skeleton-row" v-for="n in rows" :key="n">
+            <div class="skeleton-cell" v-for="i in columns" :key="i"></div>
+        </div>
     </div>
 </template>
 
@@ -11,6 +13,10 @@ export default {
         rows: {
             type: Number,
             default: 10 // 🔥 Número de filas por defecto
+        },
+        columns: {
+            type: Number,
+            default: 5 // 🔥 Número de columnas por defecto
         }
     }
 };
@@ -27,7 +33,12 @@ export default {
 }
 
 .skeleton-row {
-    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.skeleton-cell {
+    flex: 1;
     height: 40px;
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;

@@ -48,7 +48,7 @@
                 </tbody>
             </table>
         </div>
-        <h1 v-else-if="!cargando">No hay registros disponibles.</h1>
+        <h1 v-else-if="!cargando">{{ messageError }}</h1>
     </div>
 </template>
 
@@ -65,7 +65,8 @@ export default {
             papeletas: [],
             estadoSeleccionado: '1',
             showModal: false,
-            cargando: true,  // 🔥 Estado inicial para mostrar el skeleton
+            cargando: true,  // Estado inicial para mostrar el skeleton
+            messageError: 'No hay registros disponibles.' 
         };
     },
     mounted() {
@@ -102,6 +103,8 @@ export default {
                 this.$nextTick(this.initDataTable);
             } catch (error) {
                 console.error('Error al buscar papeletas:', error);
+                this.messageError = error.response.data.message;
+
             } finally {
                 this.cargando = false;
             }
