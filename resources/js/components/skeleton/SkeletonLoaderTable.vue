@@ -1,7 +1,9 @@
 <template>
     <div class="skeleton-loader">
         <div class="skeleton-row" v-for="n in rows" :key="n">
-            <div class="skeleton-cell" v-for="i in columns" :key="i"></div>
+            <div v-if="n === 1" class="skeleton-cell first-row"></div>
+            <div v-if="n === 1" class="skeleton-cell first-row"></div>
+            <div v-else class="skeleton-cell" v-for="i in columns" :key="i"></div>
         </div>
     </div>
 </template>
@@ -44,6 +46,11 @@ export default {
     background-size: 200% 100%;
     animation: skeleton-loading 1.5s infinite;
     border-radius: 4px;
+}
+
+.first-row {
+    flex: 0 0 35%; /* Ajusta el tamaño para que haya más espacio en medio */
+    margin-right: 40%; /* Añade espacio en el medio */
 }
 
 @keyframes skeleton-loading {

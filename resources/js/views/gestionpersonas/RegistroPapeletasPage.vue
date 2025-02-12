@@ -15,7 +15,7 @@
         </div>
 
         <registrar-papeleta-modal :isVisible="showModal" @update:isVisible="showModal = $event" />
-        <SkeletonLoaderTable v-if="cargando" :rows="10" />
+        <SkeletonLoaderTable v-if="cargando" :rows="10" :columns="9" />
 
         <div v-if="!cargando && papeletas.length">
             <table id="tablaPapeletas" class="display">

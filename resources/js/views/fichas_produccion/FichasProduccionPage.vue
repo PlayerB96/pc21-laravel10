@@ -1,7 +1,7 @@
 <template>
     <div>
         <h2>Fichas Técnicas</h2>
-        <SkeletonLoaderTable v-if="cargando" :rows="10" />
+        <SkeletonLoaderTable v-if="cargando" :rows="10" :columns="4" />
 
         <div v-if="!cargando && fichasTecnicas.length">
             <table id="tablaFichasTecnicas" class="display">
