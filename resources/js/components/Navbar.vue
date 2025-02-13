@@ -311,4 +311,83 @@ export default {
 .dropdown-item:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
+
+
+@media (max-width: 1380px) {
+    .navbar-link {
+        text-decoration: none;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: bold;
+        padding: 0.5rem 0.8rem;
+        display: inline-block;
+    }
+
+}
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        position: static; /* Elimina el efecto de sticky/fixed */
+    }
+
+    .navbar-logo {
+        margin-bottom: 1rem;
+    }
+
+    .navbar-menu {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar-item {
+        margin-right: 0;
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+
+    .navbar-link {
+        width: 100%;
+        text-align: left;
+    }
+
+    .navbar-right {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .theme-toggle {
+        margin-top: 1rem;
+    }
+}
+
+/* Media queries for very small screens */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.5rem 1rem;
+        position: static; /* Asegura que no sea sticky/fixed */
+    }
+
+    .navbar-logo img {
+        max-height: 30px;
+    }
+
+    .navbar-link {
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+
+    .dropdown-item {
+        padding: 0.5rem;
+    }
+
+    .dropdown-item img {
+        max-width: 16px;
+        margin-right: 0.5rem;
+    }
+}
+
+
 </style>
