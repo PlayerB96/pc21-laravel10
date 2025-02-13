@@ -313,6 +313,7 @@ class SolicitudUser extends Model
         // Seleccionar los campos necesarios
         $result = $query->orderBy('fec_reg', 'DESC')->get()->map(function ($solicitud) {
             return $solicitud->toArray() + [
+                'id_solicitudes_user' => $solicitud->id_solicitudes_user,
                 'usuario_nombres' => $solicitud->user->usuario_nombres ?? null,
                 'usuario_apater' => $solicitud->user->usuario_apater ?? null,
                 'usuario_amater' => $solicitud->user->usuario_amater ?? null,
@@ -326,6 +327,8 @@ class SolicitudUser extends Model
                 'tramite' => $solicitud->id_motivo == 1 || $solicitud->id_motivo == 2
                     ? ($solicitud->tramite->nom_tramite ?? $solicitud->tramite)
                     : $solicitud->tramite,
+                'estado_solicitud' => $solicitud->estado_solicitud,
+
             ];
         });
 

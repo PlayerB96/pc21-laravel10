@@ -161,7 +161,8 @@ export default {
                     hora_retorno: this.getHoraRetorno(papeleta.sin_retorno, papeleta.hora_retorno),
                     estado_solicitud: this.getEstadoSolicitud(papeleta.estado_solicitud),
                 })) || [];
-
+                console.log(this.papeletas)
+                console.log("#papeletas")
                 this.$nextTick(this.initDataTable);
             } catch (error) {
                 console.error('Error al buscar papeletas:', error);

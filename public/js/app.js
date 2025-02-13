@@ -21294,23 +21294,25 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
                   estado_solicitud: _this3.getEstadoSolicitud(papeleta.estado_solicitud)
                 });
               })) || [];
+              console.log(_this3.papeletas);
+              console.log("#papeletas");
               _this3.$nextTick(_this3.initDataTable);
-              _context4.next = 17;
+              _context4.next = 19;
               break;
-            case 13:
-              _context4.prev = 13;
+            case 15:
+              _context4.prev = 15;
               _context4.t0 = _context4["catch"](2);
               console.error('Error al buscar papeletas:', _context4.t0);
               _this3.messageError = ((_error$response$data = _context4.t0.response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message) || "Error al obtener datos.";
-            case 17:
-              _context4.prev = 17;
+            case 19:
+              _context4.prev = 19;
               _this3.busquedaManual = false; // 🔹 Desactiva el skeleton después de la búsqueda manual
-              return _context4.finish(17);
-            case 20:
+              return _context4.finish(19);
+            case 22:
             case "end":
               return _context4.stop();
           }
-        }, _callee4, null, [[2, 13, 17, 20]]);
+        }, _callee4, null, [[2, 15, 19, 22]]);
       }))();
     },
     initDataTable: function initDataTable() {
