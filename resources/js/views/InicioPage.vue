@@ -1,37 +1,39 @@
 <template>
     <div>
         <!-- Fondo del video -->
-        <section class="video-background-container">
+        <section id="inicio" class="video-background-container">
             <div class="gradient-overlay"></div>
             <video autoplay loop muted class="video-background">
                 <source :src="videoSrc" type="video/mp4">
             </video>
-            <!-- Contenido sobre el video -->
             <div class="content">
-                <!-- Aquí puedes agregar más contenido si lo deseas -->
+                <h1>Bienvenido a LN1</h1>
             </div>
         </section>
+        <!-- Secciones -->
+        <section id="ecommerce" class="section">
+            <h2>Ecommerce</h2>
+            <p>Explora nuestra plataforma de comercio electrónico.</p>
+        </section>
 
-        <button class="button px-4 py-2 rounded mt-6" @click="handleButtonClick">Botón de ejemplo</button>
+        <section id="identidadcorporativa" class="section">
+            <h2>Identidad Corporativa</h2>
+            <p>Descubre nuestra imagen y valores de marca.</p>
+        </section>
 
-        <!-- Servicios -->
-        <section class="services mt-10">
-            <div class="container mx-auto">
-                <div class="service-cards real-content hidden" id="real-content">
-                    <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                        <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 1</h3>
-                        <p class="mt-2">Accede a herramientas avanzadas para mejorar tu productividad.</p>
-                    </div>
-                    <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                        <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 2</h3>
-                        <p class="mt-2">Conéctate con tu equipo de forma rápida y segura.</p>
-                    </div>
-                    <div class="card p-4 rounded light:bg-white dark:bg-gray-700 shadow">
-                        <h3 class="font-bold light:text-blue-600 dark:text-blue-300">Servicio 3</h3>
-                        <p class="mt-2">Gestiona tus proyectos en tiempo real con facilidad.</p>
-                    </div>
-                </div>
-            </div>
+        <section id="empresas" class="section">
+            <h2>Empresas</h2>
+            <p>Conoce nuestras empresas y aliados estratégicos.</p>
+        </section>
+
+        <section id="productos" class="section">
+            <h2>Productos</h2>
+            <p>Explora nuestro catálogo de productos.</p>
+        </section>
+
+        <section id="blog" class="section">
+            <h2>Blog</h2>
+            <p>Lee nuestros artículos y novedades.</p>
         </section>
     </div>
 </template>
@@ -41,26 +43,23 @@ export default {
     name: "InicioPage",
     data() {
         return {
-            videoSrc: '/assets/videos/induccion.mp4', // Ruta del video
+            videoSrc: '/assets/videos/RETAIL_LN1.mp4',
         };
     },
     methods: {
         handleButtonClick() {
-            // Aquí puedes agregar la lógica para el botón
             alert("Botón de ejemplo clickeado");
-        },
-    },
+        }
+    }
 };
 </script>
 
-
-
 <style scoped>
-/* Estilos locales si los necesitas */
+/* Estilos de la página */
 .video-background-container {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 80px); /* Ajusta 80px según la altura del navbar */
     overflow: hidden;
 }
 
@@ -80,7 +79,6 @@ export default {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    /* Gradiente oscuro */
 }
 
 .content {
@@ -92,22 +90,25 @@ export default {
     text-align: center;
 }
 
-.services .service-cards {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-}
-
-.card {
-    width: 300px;
+/* Secciones */
+.section {
+    padding: 100px 20px;
     text-align: center;
+    background: #f4f4f4;
+    margin-bottom: 20px;
+    min-height: 50rem;
 }
 
-.card h3 {
-    font-size: 1.5rem;
+.section:nth-child(even) {
+    background: #ddd;
 }
 
-.card p {
-    font-size: 1rem;
+.section h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.section p {
+    font-size: 1.2rem;
 }
 </style>

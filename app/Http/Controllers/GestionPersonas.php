@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use App\Models\SolicitudUser;
 use App\Models\PermisoPapeletasSalida;
 use App\Models\Destino;
@@ -29,34 +28,30 @@ class GestionPersonas extends Controller
         return view('gestionpersonas.gestionpersonas');
     }
 
-
     public function getPapeletas(Request $request)
     {
         $id_usuario = $request->id_usuario; // Se obtiene del Middleware automáticamente
-
         // dump('Solicitud llegada al controlador');
         $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1, $id_usuario);
         return response()->json($dato['list_papeletas_salida']);
     }
 
-    public function registro_papeletas(Request $request)
-    {
-        $dato['id_puesto'] = $request->id_puesto;
-        $dato['id_nivel'] = $request->id_nivel;
-        $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1, $request->id_usuario);
-        $dato['ultima_papeleta_salida_todo'] = count($this->Model_Solicitudes->get_list_papeletas_salida_uno());
-
-        return view('gestionpersonas.registro_papeletas.index', $dato);
-    }
-
-
     public function buscar_papeletas(Request $request)
     {
+
         $estado_solicitud = $request->estado_solicitud;
-        $id_usuario = $request->id_usuario;
+        $id_nivel = $request->id_nivel;
+        $id_puesto = $request->id_puesto;
+        $cod_ubi = $request->cod_ubi;
+        $fecha_inicio = $request->fecha_inicio;
+        $fecha_fin = $request->fecha_fin;
+        Log::info('Contenido del request:', $request->all());
+
         $this->Model_Solicitudes->verificacion_papeletas();
-        // Recuperamos las papeletas filtradas
-        $list_papeletas_salida = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud, $id_usuario);
+        // $list_papeletas_salida = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud, $id_usuario);
+        $list_papeletas_salida = $this->Model_Solicitudes->get_list_papeletas_salida_gestion($estado_solicitud, $id_nivel, $id_puesto, $cod_ubi, $fecha_inicio, $fecha_fin);
+        // Log::error('list_papeletas_salida:',$list_papeletas_salida);
+
         // Retornar los datos en formato JSON
         return response()->json([
             'list_papeletas_salida' => $list_papeletas_salida
@@ -65,14 +60,14 @@ class GestionPersonas extends Controller
 
     public function cambiar_motivo(Request $request)
     {
-        $motivo = $request->query('motivo'); 
+        $motivo = $request->query('motivo');
         $destinos = Destino::where('id_motivo', $motivo)->get(['id_destino as id', 'nom_destino as nombre']);
         return response()->json($destinos);
     }
-  
+
     public function traer_tramite(Request $request)
     {
-        $id_destino = $request->query('id_destino'); 
+        $id_destino = $request->query('id_destino');
         $tramites = Tramite::where('id_destino', $id_destino)->get(['id_tramite as id', 'nom_tramite as nombre']);
         return response()->json($tramites);
     }
@@ -80,11 +75,22 @@ class GestionPersonas extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'cod_ubi' => 'required',
+            'id_usuario' => 'required',
+            'id_gerencia' => 'required',
+            'formulario.fec_solicitud' => 'required',
+            'formulario.id_motivo' => 'required',
+            'formulario.destino' => 'required',
+            'formulario.tramite' => 'required',
+            'formulario.especificacion_destino' => 'required',
+            'formulario.especificacion_tramite' => 'required',
+        ]);
         $cod_ubi = $request->cod_ubi;
         $id_usuario = $request->id_usuario;
         $id_gerencia = $request->id_gerencia;
         $form = $request->formulario;
-        
+
         // GENERAR cod_solicitud
         $totalt = $this->Model_Solicitudes::where('id_solicitudes', 2)
             ->whereRaw("SUBSTR(cod_solicitud, 3, 4) = ?", [date('Y')])
@@ -138,6 +144,34 @@ class GestionPersonas extends Controller
         ];
         SolicitudUser::create($data);
     }
+
+    public function aprobado_papeletas_salida(Request $request)
+    {
+        try {
+            $id_solicitudes_user = $request->id_solicitudes_user;
+            $id_usuario = $request->id_usuario;
+            $solicitud = SolicitudUser::findOrFail($id_solicitudes_user);
+            $dato = [
+                'id_solicitudes_user' => $solicitud->id_solicitudes_user,
+                'id_motivo' => $solicitud->id_motivo,
+                'id_modalidad_laboral' => $solicitud->user->id_modalidad_laboral,
+                'sin_ingreso' => $solicitud->sin_ingreso,
+                'sin_retorno' => $solicitud->sin_retorno,
+                'num_doc' => $solicitud->user->num_doc,
+                'horario' => [
+                    [
+                        'hora_entrada' => $solicitud->hora_salida,
+                        'hora_salida' => $solicitud->hora_retorno
+                    ]
+                ]
+            ];
+            SolicitudUser::aprobado_papeletas_salida($dato, $id_usuario);
+            return response()->json(['message' => 'Papeleta aprobada exitosamente.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al aprobar papeleta.', 'error' => $e->getMessage()], 400);
+        }
+    }
+
 
 
     public function index_rpo()

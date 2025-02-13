@@ -5,20 +5,30 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use App\Http\Controllers\PapeletaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GestionPersonas;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\AuthController; // Asegúrate de importar tu controlador
 use App\Http\Controllers\ProduccionController;
 use Illuminate\Session\Middleware\StartSession;
+use App\Models\UserPermission;
 
 Route::middleware(['api', StartSession::class])->group(function () {
     Route::post('/auth/validate_user', [AuthController::class, 'auth']);
+    // GESTIÓN PERSONAS: Papeletas de Salida
     Route::get('/papeletas', [GestionPersonas::class, 'getPapeletas']);
     Route::post('/gestionpersonas/buscar_papeletas', [GestionPersonas::class, 'buscar_papeletas']);
     Route::get('/gestionpersonas/cambiar_motivo', [GestionPersonas::class, 'cambiar_motivo']);
-    Route::get('/gestionpersonas/traer_tramite', [GestionPersonas::class, 'traer_tramite']); // Cambiado a GET
+    Route::get('/gestionpersonas/traer_tramite', [GestionPersonas::class, 'traer_tramite']);
     Route::post('/gestionpersonas/store',  [GestionPersonas::class, 'store']);
-    // PRODUCCIÓN
+    Route::post('/gestionpersonas/aprobado_papeletas_salida',  [GestionPersonas::class, 'aprobado_papeletas_salida']);
+
+    // PRODUCCIÓN: Fichas Técnicas
     Route::post('/produccion/buscar_fichas_tecnicas',  [ProduccionController::class, 'buscar_fichas_tecnicas']);
+
+    // VERIFICACIÓN DE PERMISOS
+    Route::post('/verificar-permisos',  [AuthController::class, 'verificar_permisos']);
+
+
 });
 
 

@@ -80,13 +80,11 @@
                                 :disabled="formulario.sin_retorno">
                         </div>
                        
-
-                       
                     </div>
                 </form>
             </div>
             <div class="footer-content">
-                <p>{{ errorMessage }}</p>
+                <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
                 <div class="form-actions">
                     <button type="button" class="btn-primary" @click="enviarFormulario">Guardar</button>
                     <button type="button" class="btn-secondary" @click="closeModal">Cancelar</button>
@@ -130,26 +128,18 @@ export default {
     watch: {
         'formulario.sin_retorno'(newVal) {
             if (newVal) {
-                this.formulario.hora_salida = '';
+                this.formulario.hora_retorno = '';
             }
         },
         'formulario.sin_ingreso'(newVal) {
             if (newVal) {
-                this.formulario.hora_retorno = '';
+                this.formulario.hora_salida = '';
             }
         }
     },
     methods: {
         closeModal() {
             this.$emit('update:isVisible', false);
-        },
-        async guardarPapeleta() {
-            // Simulación de envío al backend
-            setTimeout(() => {
-
-                alert("Papeleta guardada correctamente.");
-                this.closeModal(); // Cerrar el modal después de guardar
-            }, 1000);
         },
         async fetchDestinos(motivo) {
             try {
@@ -179,34 +169,36 @@ export default {
                 }, {
                     headers: { 'X-CSRF-TOKEN': csrfToken }
                 });
-
                 Swal.fire({
                     icon: 'success',
                     title: 'Papeleta guardada correctamente.',
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1000
                 });
+                this.$emit('papeletaGuardada');
                 this.closeModal();
             } catch (error) {
                 this.handleError(error, "Error al guardar la papeleta.");
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error al guardar la papeleta.',
-                });
+
             }
         },
         handleError(error, message) {
             // Mostrar un mensaje de error al usuario
-            this.errorMessage = message;
-            // Registrar el error (puedes usar una herramienta como Sentry aquí)
-            console.error(message, error);
+            this.errorMessage = error.response.data.message || message;
         }
     }
 };
 </script>
 
 <style scoped>
+.error-message {
+    color: #ff0000; /* Color rojo para el texto del mensaje de error */
+    background-color: #ffe6e6; /* Fondo ligeramente rojo */
+    border: 1px solid #ff0000; /* Borde rojo */
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
 .control-label {
     font-weight: bold;
     display: block;

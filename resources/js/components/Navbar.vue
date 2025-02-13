@@ -1,21 +1,27 @@
 <template>
     <nav class="navbar">
-        <!-- Imagen a la derecha -->
         <div class="navbar-logo">
             <img src="/assets/imgs/Grupo-LN1.png" alt="Grupo LN1 Logo" />
         </div>
 
-        <!-- Menú de navegación -->
         <ul class="navbar-menu">
-            <li v-for="(item, index) in filteredNavItems" :key="index" class="navbar-item"
-                @click="toggleSubMenu(index)">
-                <router-link :to="item.route" class="navbar-link" active-class="active-link"
-                    @click="setActiveLink($event)">
+            <li v-for="(item, index) in filteredNavItems" :key="index" class="navbar-item">
+                <!-- Si es una sección interna, usa scroll -->
+                <a v-if="isInternalSection(item.label)" class="navbar-link"
+                    :class="{ 'active-link': activeSection === getSectionId(item.label) }"
+                    @click="scrollToSection(getSectionId(item.label))">
+                    {{ item.label }}
+                </a>
+
+                <!-- Si no es interna, usa router-link -->
+                <router-link v-else :to="item.route" class="navbar-link" active-class="active-link">
                     {{ item.label }}
                 </router-link>
-                <ul v-if="item.subitems.length > 0" class="sub-menu" :id="'sub-menu-' + index">
+
+                <!-- Submenús solo si no es una sección interna -->
+                <ul v-if="item.subitems.length > 0 && !isInternalSection(item.label)" class="sub-menu">
                     <li v-for="(subitem, subIndex) in item.subitems" :key="subIndex">
-                        <router-link :to="subitem.route" class="navbar-link" @click="setActiveLink($event)">
+                        <router-link :to="subitem.route" class="navbar-link">
                             {{ subitem.label }}
                         </router-link>
                     </li>
@@ -24,29 +30,18 @@
         </ul>
 
         <div class="navbar-right">
-            <!-- Mostrar el perfil del usuario si hay sesión -->
+            <!-- Si hay sesión, mostrar perfil -->
             <div v-if="userSession" class="nav-item dropdown">
-                <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown"
-                    data-toggle="dropdown">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="white" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                 </a>
-                <div class="dropdown-menu" aria-labelledby="userProfileDropdown">
+                <div class="dropdown-menu">
                     <div class="user-profile-section">
-                        <div class="media mx-auto">
-                            <div class="media-body">
-                                <h5>{{ userSession.nombre_completo }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dropdown-item">
-                        <router-link :to="'/configuracion'">
-                            <img :src="assetsUrl + 'icons/setting.svg'" alt="Configuración" />
-                            <span>Configuración</span>
-                        </router-link>
+                        <h5>{{ userSession.nombre_completo }}</h5>
                     </div>
                     <div class="dropdown-item" id="logoutBtn" @click="handleLogout">
                         <a href="javascript:void(0);">
@@ -54,35 +49,16 @@
                             <span>Salir</span>
                         </a>
                     </div>
-
                 </div>
             </div>
 
-            <!-- Mostrar el botón de login si no hay sesión -->
-            <button v-if="!userSession" id="login-btn" class="btn-primary" @click="handleLoginClick">
-                <span class="btn-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                    </svg>
-                </span>
+            <!-- Si NO hay sesión, mostrar login -->
+            <button v-if="!userSession" id="btn-primary" class="btn-secondary" @click="handleLoginClick">
                 Iniciar sesión
             </button>
 
             <!-- Modal -->
             <login-modal :isVisible="showModal" @update:isVisible="showModal = $event" />
-
-            <!-- Icono para cambiar el modo -->
-            <div class="theme-toggle">
-                <button @click="toggleDarkMode" class="theme-toggle-button">
-                    <div class="theme-icons">
-                        <img v-if="isDarkMode" :src="assetsUrl + 'icons/sun-icon.svg'" alt="Sol Icono"
-                            class="theme-icon" />
-                        <img v-else :src="assetsUrl + 'icons/moon-icon.svg'" alt="Luna Icono" class="theme-icon" />
-                    </div>
-                </button>
-            </div>
         </div>
     </nav>
 </template>
@@ -97,7 +73,7 @@ export default {
     data() {
         return {
             navItems: [
-                { label: 'Inicio', route: '/inicio', subitems: [] },
+                { label: 'Inicio', route: 'inicio', subitems: [] },
                 { label: 'Inducción', route: '/induccion', subitems: [] },
                 { label: 'Ecommerce', route: '/ecommerce', subitems: [] },
                 {
@@ -114,66 +90,97 @@ export default {
                         { label: 'Fichas Técnicas', route: '/produccion/fichas_produccion' }
                     ]
                 },
-                { label: 'Identidad Corporativa', route: '/identidadcorporativa', subitems: [] },
-                { label: 'Empresas', route: '/empresas', subitems: [] },
-                { label: 'Productos', route: '/productos', subitems: [] },
-                { label: 'Blog', route: '/blog', subitems: [] }
+                { label: 'Identidad Corporativa', route: 'identidadcorporativa', subitems: [] },
+                { label: 'Empresas', route: 'empresas', subitems: [] },
+                { label: 'Productos', route: 'productos', subitems: [] },
+                { label: 'Blog', route: 'blog', subitems: [] }
             ],
-            userSession: null, // Esto lo debes manejar desde tu lógica de autenticación
-            assetsUrl: '/assets/', // URL para acceder a los assets, ajústalo según tu configuración
-            isDarkMode: false, // Variable para el tema oscuro
-            showModal: false // Definir aquí el estado del modal
+            userSession: null, // Se obtiene desde el localStorage
+            assetsUrl: '/assets/', // Ruta de assets
+            isDarkMode: false, // Control de modo oscuro
+            showModal: false,
+            activeSection: null,
         };
     },
     mounted() {
+        window.addEventListener("scroll", this.updateActiveSection);
         const storedSession = localStorage.getItem('userSession');
         if (storedSession) {
-            console.log('Sesión almacenada:', storedSession);
             this.userSession = JSON.parse(storedSession);
-        } else {
-            console.log('No se encontró ninguna sesión almacenada.');
         }
     },
-
+    beforeDestroy() {
+        window.removeEventListener("scroll", this.updateActiveSection);
+    },
     computed: {
         filteredNavItems() {
-            if (!this.userSession) {
-                return this.navItems.filter(item => !['Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
-            }
-            return this.navItems;
+            return this.userSession
+                ? this.navItems.filter(item => ['Inducción', 'Gestión de Personas', 'Producción'].includes(item.label))
+                : this.navItems.filter(item => !['Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
         }
     },
     methods: {
-        setActiveLink(event) {
-            // Lógica para cambiar el enlace activo
+        updateActiveSection() {
+            const sections = document.querySelectorAll("section");
+            let currentSection = "";
+
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) { // Detectar la sección visible
+                    currentSection = section.id;
+                }
+            });
+
+            this.activeSection = currentSection;
         },
-        toggleSubMenu(index) {
-            // Lógica para mostrar/ocultar submenús
+        isInternalSection(label) {
+            return ['Inicio', 'Ecommerce', 'Identidad Corporativa', 'Empresas', 'Productos', 'Blog'].includes(label);
+        },
+        getSectionId(label) {
+            // Asigna los valores correctos para los IDs de las secciones en `InicioPage.vue`
+            const sectionMap = {
+                'Inicio': 'inicio',
+                'Ecommerce': 'ecommerce',
+                'Identidad Corporativa': 'identidadcorporativa',
+                'Empresas': 'empresas',
+                'Productos': 'productos',
+                'Blog': 'blog'
+            };
+            return sectionMap[label] || '';
+        },
+        scrollToSection(sectionId) {
+            this.$nextTick(() => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.scrollIntoView({ behavior: "smooth" });
+                }
+            });
         },
         handleLoginClick() {
-            console.log("Botón Iniciar sesión presionado"); // Verificar si se ejecuta
             this.showModal = true;
-            console.log(this.showModal); // Verifica si se actualiza el estado
         },
-
         handleLogout() {
             localStorage.removeItem('userSession');
             this.userSession = null;
-            this.$router.push('/inicio'); // Redirigir a la vista de inicio
-        },
-        toggleDarkMode() {
-            this.isDarkMode = !this.isDarkMode;
+            this.$router.push('/inicio');
         }
     }
 };
 </script>
 
 <style>
+/* Activo: mismo estilo de active para router-link y scroll interno */
 .active-link {
+    color: #00aaff !important;
     font-weight: bold;
-    color: #ffcc00;
-    /* Puedes cambiar el color para que se vea resaltado */
-    border-bottom: 2px solid #ffcc00;
+    border-bottom: 2px solid #00aaff;
+    padding-bottom: 2px;
+}
+
+/* Efecto para hacer que se note más la transición */
+.active-link,
+.navbar-link:hover {
+    transition: all 0.3s ease-in-out;
 }
 
 /* Estilos globales para la barra de navegación */
@@ -185,6 +192,13 @@ export default {
     background-color: var(--dark-secondary-bg);
     /* Fondo oscuro, cambia según tu tema */
     color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+
+
 }
 
 /* Estilos de la imagen de logo */
@@ -221,6 +235,10 @@ export default {
     border-radius: 5px;
 }
 
+.navbar-item:hover .sub-menu {
+    display: block;
+}
+
 /* Submenú */
 .sub-menu {
     list-style: none;
@@ -232,10 +250,6 @@ export default {
     padding: 0;
     margin: 0;
     z-index: 10;
-}
-
-.navbar-item:hover .sub-menu {
-    display: block;
 }
 
 .sub-menu li {
@@ -256,25 +270,6 @@ export default {
     align-items: center;
 }
 
-/* Estilos para el botón de login */
-#login-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
-
-#login-btn:hover {
-    background-color: #0056b3;
-}
-
-#login-btn .btn-icon {
-    margin-right: 0.5rem;
-}
 
 /* Icono de usuario y dropdown */
 .nav-item.dropdown {
@@ -315,94 +310,5 @@ export default {
 
 .dropdown-item:hover {
     background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Estilos del toggle para el modo oscuro */
-.theme-toggle-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-}
-
-.theme-icon {
-    width: 24px;
-    height: 24px;
-}
-
-@media (max-width: 1380px) {
-    .navbar-link {
-        text-decoration: none;
-        color: white;
-        font-size: 0.8rem;
-        font-weight: bold;
-        padding: 0.5rem 0.8rem;
-        display: inline-block;
-    }
-
-}
-
-
-/* Media queries for responsive design */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .navbar-logo {
-        margin-bottom: 1rem;
-    }
-
-    .navbar-menu {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .navbar-item {
-        margin-right: 0;
-        margin-bottom: 1rem;
-        width: 100%;
-    }
-
-    .navbar-link {
-        width: 100%;
-        text-align: left;
-    }
-
-    .navbar-right {
-        flex-direction: column;
-        width: 100%;
-        margin-top: 1rem;
-    }
-
-    .theme-toggle {
-        margin-top: 1rem;
-    }
-}
-
-/* Media queries for very small screens */
-@media (max-width: 480px) {
-    .navbar {
-        padding: 0.5rem 1rem;
-    }
-
-    .navbar-logo img {
-        max-height: 30px;
-    }
-
-    .navbar-link {
-        font-size: 0.875rem;
-        padding: 0.5rem;
-    }
-
-    .dropdown-item {
-        padding: 0.5rem;
-    }
-
-    .dropdown-item img {
-        max-width: 16px;
-        margin-right: 0.5rem;
-    }
 }
 </style>

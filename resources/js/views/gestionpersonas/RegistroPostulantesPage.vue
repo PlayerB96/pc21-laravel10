@@ -424,6 +424,14 @@ export default {
                     ]
 
                 },
+                // {
+                //     title: 'Enfermedades',
+                //     model: 'enfermedades',
+                //     fields: [
+                //         { label: 'Indique si padece alguna enfermedad', name: 'padece_enfermedad', type: 'select', options: ['Sí', 'No'], required: true },
+                //         { label: 'Especifique', name: 'motivo_salida', type: 'text', required: true },
+                //     ]
+                // },
             ]
         };
     },

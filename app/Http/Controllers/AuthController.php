@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\UserIntranet;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Permission;
+use App\Models\UserPermission;
+
 
 use Illuminate\Support\Facades\Log;
 
@@ -69,51 +72,50 @@ class AuthController extends Controller
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function verificar_permisos(Request $request)
     {
-        //
-    }
+        Log::error('request papeleta:', ['request' => ($request->all())]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $request->validate([
+            'permiso' => 'required|string',
+            'id_puesto' => 'required|integer',
+            'id_nivel' => 'required|integer',
+            'id_area' => 'required|integer',
+            'id_sub_gerencia' => 'required|integer',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // Buscar el permiso por su nombre
+        $permission = Permission::where('name_permission', $request->permiso)->first();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        if (!$permission) {
+            return response()->json(['acceso' => false, 'message' => 'Permiso no encontrado'], 404);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        // Construir la consulta
+        $query = UserPermission::where('id_permission', $permission->id_permission)
+            ->where(function ($query) use ($request) {
+                $query->where('id_puesto', $request->id_puesto)
+                    ->orWhere('id_nivel', $request->id_nivel)
+                    ->orWhere('id_area', $request->id_area)
+                    ->orWhere('id_sub_gerencia', $request->id_sub_gerencia);
+            });
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        // Verificar si existe coincidencia
+        $exists = $query->exists();
+
+        // Log de la consulta generada
+        Log::info('Consulta generada:', ['query' => $query->toSql()]);
+
+        // Log de los valores utilizados en la consulta
+        Log::info('Valores de la consulta:', [
+            'id_permission' => $permission->id_permission,
+            'id_puesto' => $request->id_puesto,
+            'id_nivel' => $request->id_nivel,
+            'id_area' => $request->id_area,
+            'id_sub_gerencia' => $request->id_sub_gerencia,
+            'exists' => $exists
+        ]);
+
+        return response()->json(['acceso' => $exists]);
     }
 }

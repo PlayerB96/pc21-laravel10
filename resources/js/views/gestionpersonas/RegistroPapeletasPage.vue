@@ -1,23 +1,36 @@
 <template>
     <div>
-        <div class="toolbar-col mb-4">
-            <label class="control-label text-bold">Estado Solicitud:</label>
-            <select v-model="estadoSeleccionado" @change="buscarRegistroPapeleta" class="form-control">
-                <option value="0">Todos</option>
-                <option value="1">En Proceso de aprobación</option>
-                <option value="2">Aprobados</option>
-                <option value="3">Denegados</option>
-            </select>
+        <div class="mb-4 toolbar-row">
+            <div class="toolbar-item">
+                <label class="control-label text-bold">Estado Solicitud:</label>
+                <select v-model="estadoSeleccionado" @change="buscar_papeletas" class="form-control">
+                    <option value="0">Todos</option>
+                    <option value="1">En Proceso de aprobación</option>
+                    <option value="2">Aprobados</option>
+                    <option value="3">Denegados</option>
+                </select>
+            </div>
+            <div class="toolbar-item">
+                <label class="control-label text-bold">Fecha Inicio:</label>
+                <input type="date" v-model="fechaInicio" class="form-control" @change="buscar_papeletas" />
+            </div>
+
+            <div class="toolbar-item">
+                <label class="control-label text-bold">Fecha Fin:</label>
+                <input type="date" v-model="fechaFin" class="form-control" @change="buscar_papeletas" />
+            </div>
+
         </div>
 
         <div>
             <button class="btn-primary" @click="showModal = true">Registrar Papeleta</button>
         </div>
 
-        <registrar-papeleta-modal :isVisible="showModal" @update:isVisible="showModal = $event" />
-        <SkeletonLoaderTable v-if="cargando" :rows="10" :columns="9" />
+        <registrar-papeleta-modal :isVisible="showModal" @update:isVisible="showModal = $event"
+            @papeletaGuardada="buscar_papeletas" />
+        <SkeletonLoaderTable v-if="busquedaManual" :rows="10" :columns="10" />
 
-        <div v-if="!cargando && papeletas.length">
+        <div v-if="!busquedaManual && papeletas.length">
             <table id="tablaPapeletas" class="display">
                 <thead>
                     <tr>
@@ -30,6 +43,7 @@
                         <th>Hora Salida</th>
                         <th>Hora Retorno</th>
                         <th>Estado Solicitud</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,17 +57,26 @@
                         <td>{{ papeleta.fec_solicitud }}</td>
                         <td align="center">{{ papeleta.hora_salida }}</td>
                         <td align="center">{{ papeleta.hora_retorno }}</td>
-                        <td v-html="papeleta.estado_solicitud"></td>
+                        <td v-html="papeleta.estado_solicitud.html"></td>
+                        <td>
+                            <button
+                                v-if="canApprove || (papeleta.estado_solicitud.value === 1 || papeleta.estado_solicitud.value === 4 || papeleta.estado_solicitud.value === 5)"
+                                class="action-button" @click="confirmarAccionPapeleta(papeleta.id_solicitudes_user)">
+                                <img :src="assetsUrl + 'icons/saved.svg'" alt="Aprobar" title="Aprobar"
+                                    class="theme-icon" />
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <h1 v-else-if="!cargando">{{ messageError }}</h1>
+        <h1 v-else-if="!busquedaManual">{{ messageError }}</h1>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import RegistrarPapeletaModal from '../../components/modals/RegistrarPapeletaModal.vue';
 import SkeletonLoaderTable from '../../components/skeleton/SkeletonLoaderTable.vue'; // 📌 Importamos el nuevo componente
 
@@ -61,25 +84,59 @@ export default {
     components: { RegistrarPapeletaModal, SkeletonLoaderTable },
     name: 'RegistroPapeletasPage',
     data() {
+        const today = new Date();
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
         return {
             papeletas: [],
             estadoSeleccionado: '1',
             showModal: false,
-            cargando: true,  // Estado inicial para mostrar el skeleton
-            messageError: 'No hay registros disponibles.' 
+            busquedaManual: false, // 🔹 Nuevo estado para diferenciar búsqueda manual vs automática
+            messageError: 'No hay registros disponibles.',
+            assetsUrl: '/assets/',
+            intervalId: null,
+            canApprove: false,
+            fechaInicio: firstDayOfMonth.toISOString().split('T')[0],
+            fechaFin: today.toISOString().split('T')[0],
         };
     },
-    mounted() {
-        const userSession = localStorage.getItem('userSession');
+
+    async mounted() {
+        const userSession = JSON.parse(localStorage.getItem('userSession'));
         if (!userSession) {
-            this.$router.push('/inicio'); // Redirigir a la vista de inicio si no hay sesión
+            this.$router.push('/inicio');
         } else {
-            this.buscarRegistroPapeleta();
+            await this.buscar_papeletas(true); // 🔹 Primera búsqueda manual con skeleton
+            await this.permissions(userSession); // 🔹 Validar Permisos para Aprobar
+            this.intervalId = setInterval(async() => {
+                // itera solamenta si se está activo en la página
+                if (!document.hidden) {
+                    await  this.buscar_papeletas(false); // 🔹 Llamada automática sin skeleton
+                }
+            }, 50000);
         }
     },
+
     methods: {
-        async buscarRegistroPapeleta() {
-            this.cargando = true;
+        async permissions(userSession) {
+            try {
+                const data = await axios.post('/verificar-permisos',
+                    {
+                        permiso: 'Aprobar_Papeletas',
+                        id_puesto: userSession.id_puesto,
+                        id_nivel: userSession.id_nivel,
+                        id_area: -1,
+                        id_sub_gerencia: -1
+                    });
+                this.canApprove = data.acceso;
+            } catch (error) {
+                console.error('No tiene permiso:', error);
+            }
+        },
+        async buscar_papeletas(manual = false) {
+            if (manual) {
+                this.busquedaManual = true; // 🔹 Activa el skeleton solo para búsqueda manual
+            }
             try {
                 const userSession = JSON.parse(localStorage.getItem('userSession'));
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
@@ -87,6 +144,11 @@ export default {
                 const { data } = await axios.post('gestionpersonas/buscar_papeletas', {
                     estado_solicitud: this.estadoSeleccionado,
                     id_usuario: userSession.id_usuario,
+                    id_puesto: userSession.id_puesto,
+                    id_nivel: userSession.id_nivel,
+                    cod_ubi: userSession.cod_ubi,
+                    fecha_inicio: this.fechaInicio,
+                    fecha_fin: this.fechaFin,
                 }, {
                     headers: { 'X-CSRF-TOKEN': csrfToken }
                 });
@@ -103,12 +165,12 @@ export default {
                 this.$nextTick(this.initDataTable);
             } catch (error) {
                 console.error('Error al buscar papeletas:', error);
-                this.messageError = error.response.data.message;
-
+                this.messageError = error.response.data?.message || "Error al obtener datos.";
             } finally {
-                this.cargando = false;
+                this.busquedaManual = false; // 🔹 Desactiva el skeleton después de la búsqueda manual
             }
         },
+
         initDataTable() {
             if (!this.papeletas.length) return;
             this.$nextTick(() => {
@@ -130,11 +192,59 @@ export default {
                 });
             });
         },
+        confirmarAccionPapeleta(id_solicitudes_user) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, aprobar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.aprobado_papeletas_salida(id_solicitudes_user);
+                }
+            });
+        },
+        async aprobado_papeletas_salida(id_solicitudes_user) {
+            try {
+                const userSession = JSON.parse(localStorage.getItem('userSession'));
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                const response = await axios.post('/gestionpersonas/aprobado_papeletas_salida',
+                    {
+                        id_solicitudes_user: id_solicitudes_user,
+                        id_usuario: userSession.id_usuario
+                    },
+                    {
+                        headers: { 'X-CSRF-TOKEN': csrfToken }
+                    });
 
+                if (response.status === 200) {
+                    console.log('Acción realizada:', response.data);
+                    Swal.fire({
+                        title: 'Aprobado',
+                        text: 'La papeleta ha sido aprobada correctamente.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        this.buscar_papeletas(false); // 🔹 Llamamos a la función para actualizar la tabla
+                    });
+                } else {
+                    throw new Error(response.data.message || 'Error desconocido');
+                }
+            } catch (error) {
+                console.error('Error al realizar la acción:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: error.response?.data?.error || 'Hubo un problema al aprobar la papeleta.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        },
         handleLoginClick() {
-            console.log("Botón Iniciar sesión presionado"); // Verificar si se ejecuta
             this.showModal = true;
-            console.log(this.showModal); // Verifica si se actualiza el estado
         },
         getHoraSalida(sinIngreso, horaSalida) {
             if (sinIngreso == 1) {
@@ -151,17 +261,17 @@ export default {
         getEstadoSolicitud(estado) {
             switch (estado) {
                 case 1:
-                    return "<span style='background-color: #ffc107; color: #fff;'>En proceso</span>";
+                    return { value: 1, html: "<span style='background-color: #ffc107; color: #fff; padding: 5px 10px; border-radius: 5px;'>En proceso</span>" };
                 case 2:
-                    return "<span style='background-color: #007bff; color: #fff;  padding: 5px 10px; border-radius: 5px;'>Aprobado</span>";
+                    return { value: 2, html: "<span style='background-color: #007bff; color: #fff; padding: 5px 10px; border-radius: 5px;'>Aprobado</span>" };
                 case 3:
-                    return "<span style='background-color: #dc3545; color: #fff;  padding: 5px 10px; border-radius: 5px;'>Denegado</span>";
+                    return { value: 3, html: "<span style='background-color: #dc3545; color: #fff; padding: 5px 10px; border-radius: 5px;'>Denegado</span>" };
                 case 4:
-                    return "<span style='background-color: #ffc107; color: #fff;  padding: 5px 10px; border-radius: 5px;'>En proceso - Aprobación Gerencia</span>";
+                    return { value: 4, html: "<span style='background-color: #ffc107; color: #fff; padding: 5px 10px; border-radius: 5px;'>En proceso - Aprobación Gerencia</span>" };
                 case 5:
-                    return "<span style='background-color: #ffc107; color: #fff;  padding: 5px 10px; border-radius: 5px;'>En proceso - Aprobación RRHH</span>";
+                    return { value: 5, html: "<span style='background-color: #ffc107; color: #fff; padding: 5px 10px; border-radius: 5px;'>En proceso - Aprobación RRHH</span>" };
                 default:
-                    return "<span class='shadow-none badge badge-primary'>Error</span>";
+                    return { value: 'error', html: "<span class='shadow-none badge badge-primary'>Error</span>" };
             }
         },
         getMotivo(idMotivo, motivo) {
@@ -190,6 +300,30 @@ export default {
 </script>
 
 <style scoped>
+.toolbar-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-direction: row;
+}
+
+.toolbar-item {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .toolbar-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .toolbar-item {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+}
+
 /* Estilos para la etiqueta */
 .control-label {
     font-size: 16px;
@@ -226,5 +360,23 @@ export default {
 /* Cambia el fondo cuando el usuario selecciona una opción */
 .form-control:active {
     background-color: #f0f8ff;
+}
+
+/* Estilos para el botón de acción */
+.action-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.action-button:hover .theme-icon {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+
+.action-button:active .theme-icon {
+    transform: scale(0.9);
+    transition: transform 0.2s;
 }
 </style>

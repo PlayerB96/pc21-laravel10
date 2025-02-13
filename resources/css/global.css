@@ -57,6 +57,26 @@ h1 {
     transform: scale(1.05);
 }
 
+/* Estilos para el botón de acción */
+.action-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.action-button:hover .theme-icon {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+
+.action-button:active .theme-icon {
+    transform: scale(0.9);
+    transition: transform 0.2s;
+}
+
+
+
 /* DROPDOWN - SELECT */
 .toolbar-col {
     display: flex;

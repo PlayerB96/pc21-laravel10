@@ -78,6 +78,20 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+        'zkbiotime' => [
+            'driver' => 'mysql',
+            'host' => env('DB_SECOND_HOST', '172.16.0.134'),
+            'port' => env('DB_SECOND_PORT', '3306'),
+            'database' => env('DB_SECOND_DATABASE', 'zkbiotime'),
+            'username' => env('DB_SECOND_USERNAME', 'developer'),
+            'password' => env('DB_SECOND_PASSWORD', 'L4num3r01'),
+            'unix_socket' => env('DB_SECOND_SOCKET', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_general_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
 
         'mariadb' => [
             'driver' => 'mariadb',
