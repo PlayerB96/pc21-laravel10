@@ -74,6 +74,7 @@ export default {
         return {
             navItems: [
                 { label: 'Inicio', route: 'inicio', subitems: [] },
+                { label: 'Home', route: 'home', subitems: [] },
                 { label: 'Inducción', route: '/induccion', subitems: [] },
                 { label: 'Ecommerce', route: '/ecommerce', subitems: [] },
                 {
@@ -115,8 +116,8 @@ export default {
     computed: {
         filteredNavItems() {
             return this.userSession
-                ? this.navItems.filter(item => ['Inducción', 'Gestión de Personas', 'Producción'].includes(item.label))
-                : this.navItems.filter(item => !['Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
+                ? this.navItems.filter(item => ['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label))
+                : this.navItems.filter(item => !['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
         }
     },
     methods: {
@@ -132,6 +133,8 @@ export default {
             });
 
             this.activeSection = currentSection;
+            this.$emit("update-active-section", currentSection); // Emitimos la sección activa
+
         },
         isInternalSection(label) {
             return ['Inicio', 'Ecommerce', 'Identidad Corporativa', 'Empresas', 'Productos', 'Blog'].includes(label);
@@ -200,6 +203,8 @@ export default {
 
 
 }
+
+
 
 /* Estilos de la imagen de logo */
 .navbar-logo img {
@@ -324,12 +329,14 @@ export default {
     }
 
 }
+
 /* Media queries for responsive design */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
         align-items: flex-start;
-        position: static; /* Elimina el efecto de sticky/fixed */
+        position: static;
+        /* Elimina el efecto de sticky/fixed */
     }
 
     .navbar-logo {
@@ -367,7 +374,8 @@ export default {
 @media (max-width: 480px) {
     .navbar {
         padding: 0.5rem 1rem;
-        position: static; /* Asegura que no sea sticky/fixed */
+        position: static;
+        /* Asegura que no sea sticky/fixed */
     }
 
     .navbar-logo img {
@@ -388,6 +396,4 @@ export default {
         margin-right: 0.5rem;
     }
 }
-
-
 </style>

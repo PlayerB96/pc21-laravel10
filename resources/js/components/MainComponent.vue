@@ -1,14 +1,11 @@
 <template>
   <div class="main">
-    <!-- Navbar que se incluiría como un componente Vue -->
-    <navbar></navbar>
+    <navbar @update-active-section="updateActiveSection"></navbar>
 
-    <!-- Contenido principal -->
-    <div id="main-content" class="main-content">
+    <div id="main-content" class="main-content" :class="{ 'no-padding': activeSection === 'inicio' }">
       <router-view></router-view>
     </div>
 
-    <!-- Footer -->
     <footer>
       <footer-component></footer-component>
     </footer>
@@ -24,27 +21,38 @@ export default {
   components: {
     Navbar,
     FooterComponent
+  },
+  data() {
+    return {
+      activeSection: "" // Guardará la sección activa
+    };
+  },
+  methods: {
+    updateActiveSection(section) {
+      this.activeSection = section;
+    }
   }
 };
 </script>
 
 <style scoped>
-/* Estilos para el componente principal */
 .main {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* Asegura que el contenedor ocupe toda la altura de la ventana */
 }
 
 .main-content {
   flex-grow: 1;
-  /* Este es el contenedor principal que ocupará el espacio restante */
-  padding: 0px;
+  padding: 5rem 2rem;
+}
+
+.main-content.no-padding {
+  padding: 0;
+  /* Quita el padding cuando se está en la sección "Inicio" */
 }
 
 footer {
   margin-top: auto;
-  /* Esto empuja el footer al final */
 }
 </style>

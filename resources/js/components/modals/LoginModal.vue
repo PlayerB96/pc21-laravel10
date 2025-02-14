@@ -83,9 +83,7 @@ export default {
                     // Almacenar toda la sesión en localStorage
                     localStorage.setItem('userSession', JSON.stringify(response.data.sessionData));
                     localStorage.setItem('authToken', response.data.token);
-
                     axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-
                     window.location.reload();
                 });
 

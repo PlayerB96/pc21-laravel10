@@ -62,8 +62,7 @@
                             <button
                                 v-if="canApprove || (papeleta.estado_solicitud.value === 1 || papeleta.estado_solicitud.value === 4 || papeleta.estado_solicitud.value === 5)"
                                 class="action-button" @click="confirmarAccionPapeleta(papeleta.id_solicitudes_user)">
-                                <img :src="assetsUrl + 'icons/saved.svg'" alt="Aprobar" title="Aprobar"
-                                    class="theme-icon" />
+                                <img :src="savedIcon" alt="Aprobar" title="Aprobar" class="theme-icon" />
                             </button>
                         </td>
                     </tr>
@@ -98,6 +97,8 @@ export default {
             canApprove: false,
             fechaInicio: firstDayOfMonth.toISOString().split('T')[0],
             fechaFin: today.toISOString().split('T')[0],
+            savedIcon: '/assets/icons/saved.svg',
+
         };
     },
 
@@ -106,33 +107,46 @@ export default {
         if (!userSession) {
             this.$router.push('/inicio');
         } else {
-            await this.buscar_papeletas(true); // 🔹 Primera búsqueda manual con skeleton
-            await this.permissions(userSession); // 🔹 Validar Permisos para Aprobar
-            this.intervalId = setInterval(async() => {
-                // itera solamenta si se está activo en la página
+            await this.buscar_papeletas(true);
+            await this.permissions(userSession);
+            console.log("Valor final de canApprove:", this.canApprove); // 📌 Verificar si se actualiza
+
+            this.intervalId = setInterval(async () => {
                 if (!document.hidden) {
-                    await  this.buscar_papeletas(false); // 🔹 Llamada automática sin skeleton
+                    await this.buscar_papeletas(false);
                 }
             }, 50000);
         }
     },
 
     methods: {
+
         async permissions(userSession) {
             try {
-                const data = await axios.post('/verificar-permisos',
-                    {
-                        permiso: 'Aprobar_Papeletas',
-                        id_puesto: userSession.id_puesto,
-                        id_nivel: userSession.id_nivel,
-                        id_area: -1,
-                        id_sub_gerencia: -1
-                    });
-                this.canApprove = data.acceso;
+                const response = await axios.post('/verificar-permisos', {
+                    permiso: 'Aprobar_Papeletas',
+                    id_puesto: userSession.id_puesto,
+                    id_nivel: userSession.id_nivel,
+                    id_area: -1,
+                    id_sub_gerencia: -1
+                });
+
+                console.log("Respuesta del servidor:", response.data); // 📌 Verifica qué devuelve el backend
+
+                if (response.data && response.data.acceso !== undefined) {
+                    this.canApprove = response.data.acceso;
+                    console.log("Permiso para aprobar:", this.canApprove);
+                } else {
+                    console.warn("La respuesta no contiene 'acceso'. Verifica la estructura del backend.");
+                    this.canApprove = false;
+                }
             } catch (error) {
-                console.error('No tiene permiso:', error);
+                console.error("Error en permisos:", error);
+                this.canApprove = false; // Evita que quede undefined si hay un error
             }
         },
+
+
         async buscar_papeletas(manual = false) {
             if (manual) {
                 this.busquedaManual = true; // 🔹 Activa el skeleton solo para búsqueda manual
@@ -260,6 +274,8 @@ export default {
             return horaRetorno && horaRetorno !== "null" ? horaRetorno : "N/A";
         },
         getEstadoSolicitud(estado) {
+            console.log(estado)
+            console.log("estado")
             switch (estado) {
                 case 1:
                     return { value: 1, html: "<span style='background-color: #ffc107; color: #fff; padding: 5px 10px; border-radius: 5px;'>En proceso</span>" };
@@ -361,23 +377,5 @@ export default {
 /* Cambia el fondo cuando el usuario selecciona una opción */
 .form-control:active {
     background-color: #f0f8ff;
-}
-
-/* Estilos para el botón de acción */
-.action-button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-}
-
-.action-button:hover .theme-icon {
-    transform: scale(1.1);
-    transition: transform 0.2s;
-}
-
-.action-button:active .theme-icon {
-    transform: scale(0.9);
-    transition: transform 0.2s;
 }
 </style>

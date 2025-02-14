@@ -639,9 +639,6 @@ video {
 .flex-wrap{
   flex-wrap: wrap;
 }
-.gap-3{
-  gap: 0.75rem;
-}
 .rounded{
   border-radius: 0.25rem;
 }

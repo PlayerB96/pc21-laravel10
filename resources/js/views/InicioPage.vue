@@ -46,6 +46,12 @@ export default {
             videoSrc: '/assets/videos/RETAIL_LN1.mp4',
         };
     },
+    mounted() {
+        const userSession = localStorage.getItem('userSession');
+        if (userSession) {
+            this.$router.push('/home'); // Redirigir a la vista de inicio si no hay sesión
+        }
+    },
     methods: {
         handleButtonClick() {
             alert("Botón de ejemplo clickeado");
@@ -59,7 +65,8 @@ export default {
 .video-background-container {
     position: relative;
     width: 100%;
-    height: calc(100vh - 80px); /* Ajusta 80px según la altura del navbar */
+    height: calc(100vh - 80px);
+    /* Ajusta 80px según la altura del navbar */
     overflow: hidden;
 }
 

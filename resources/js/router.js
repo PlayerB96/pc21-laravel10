@@ -11,10 +11,13 @@ import GestionPersonasPage from "./views/GestionPersonasPage.vue";
 import RegistroPapeletasPage from "./views/gestionpersonas/RegistroPapeletasPage.vue";
 import RegistroPostulantesPage from "./views/gestionpersonas/RegistroPostulantesPage.vue";
 import FichasProduccionPage from "./views/fichas_produccion/FichasProduccionPage.vue";
+import HomePage from "./views/HomePage.vue";
 
 const routes = [
     { path: "/", component: InicioPage },
     { path: "/inicio", component: InicioPage },
+    { path: "/home", component: HomePage },
+
     { path: "/induccion", component: InduccionPage },
     { path: "/ecommerce", component: EcommercePage },
     {
