@@ -7,7 +7,6 @@
                 <source :src="videoSrc" type="video/mp4">
             </video>
             <div class="content">
-                <h1>Bienvenido a LN1</h1>
             </div>
         </section>
         <!-- Secciones -->
