@@ -7,12 +7,12 @@
         <ul class="navbar-menu">
             <li v-for="(item, index) in filteredNavItems" :key="index" class="navbar-item">
                 <!-- Si es una sección interna, usa scroll -->
+
                 <a v-if="isInternalSection(item.label)" class="navbar-link"
                     :class="{ 'active-link': activeSection === getSectionId(item.label) }"
                     @click="scrollToSection(getSectionId(item.label))">
                     {{ item.label }}
                 </a>
-
                 <!-- Si no es interna, usa router-link -->
                 <router-link v-else :to="item.route" class="navbar-link" active-class="active-link">
                     {{ item.label }}
@@ -43,7 +43,7 @@
                     <div class="user-profile-section">
                         <h5>{{ userSession.nombre_completo }}</h5>
                     </div>
-                    <div class="dropdown-item" id="logoutBtn" @click="handleLogout">
+                    <div class="dropdown-item" @click="handleLogout">
                         <a href="javascript:void(0);">
                             <img :src="assetsUrl + 'icons/quit.svg'" alt="Salir" />
                             <span>Salir</span>
@@ -74,7 +74,7 @@ export default {
         return {
             navItems: [
                 { label: 'Inicio', route: 'inicio', subitems: [] },
-                { label: 'Home', route: 'home', subitems: [] },
+                { label: 'Home', route: '/home', subitems: [] },
                 { label: 'Inducción', route: '/induccion', subitems: [] },
                 { label: 'Ecommerce', route: '/ecommerce', subitems: [] },
                 {
@@ -105,6 +105,8 @@ export default {
     },
     mounted() {
         window.addEventListener("scroll", this.updateActiveSection);
+        window.addEventListener("storage", this.updateUserSession); // Escuchar cambios en localStorage
+        this.updateUserSession(); // Cargar datos al montar
         const storedSession = localStorage.getItem('userSession');
         if (storedSession) {
             this.userSession = JSON.parse(storedSession);
@@ -121,6 +123,10 @@ export default {
         }
     },
     methods: {
+        updateUserSession() {
+            const storedSession = localStorage.getItem('userSession');
+            this.userSession = storedSession ? JSON.parse(storedSession) : null;
+        },
         updateActiveSection() {
             const sections = document.querySelectorAll("section");
             let currentSection = "";
@@ -152,9 +158,11 @@ export default {
             return sectionMap[label] || '';
         },
         scrollToSection(sectionId) {
+            console.log(sectionId);
             this.$nextTick(() => {
                 const section = document.getElementById(sectionId);
                 if (section) {
+                    section.style.scrollMarginTop = "20px"; // Ajusta el margen según necesites
                     section.scrollIntoView({ behavior: "smooth" });
                 }
             });

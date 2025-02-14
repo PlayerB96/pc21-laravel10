@@ -4,7 +4,8 @@
             <button type="button" @click="validarYAgregarReferencia" class="btn-add">Agregar Referencia</button>
         </div>
         <div v-if="section.title === 'Contacto de Emergencia'">
-            <button type="button" @click="validarYAgregarContactoEmergencia" class="btn-add">Agregar Contacto de Emergencia</button>
+            <button type="button" @click="validarYAgregarContactoEmergencia" class="btn-add">Agregar Contacto de
+                Emergencia</button>
         </div>
         <div v-if="section.title === 'Conocimientos de Idiomas'">
             <button type="button" @click="validarYAgregarIdioma" class="btn-add">Agregar Idioma</button>
@@ -15,14 +16,22 @@
         <div v-if="section.title === 'Experiencia Laboral'">
             <button type="button" @click="validarYAgregarExperiencia" class="btn-add">Agregar Experiencia</button>
         </div>
+        <div v-if="section.title === 'Enfermedades'">
+            <button type="button" @click="validarYAgregarEnfermedad" class="btn-add">Agregar Enfermedad</button>
+        </div>
+        <div v-if="section.title === 'Alergias'">
+            <button type="button" @click="validarYAgregarAlergia" class="btn-add">Agregar Alergia</button>
+        </div>
         <div class="section-title">{{ section.title }}</div>
         <div class="form-container">
             <div v-for="(field, index) in section.fields" :key="index" class="form-group form-group-3col">
                 <label>{{ field.label }}</label>
                 <input v-if="field.type === 'text'" type="text" v-model="model[field.name]" :required="field.required">
-                <input v-if="field.type === 'number'" type="number" v-model="model[field.name]" :required="field.required">
+                <input v-if="field.type === 'number'" type="number" v-model="model[field.name]"
+                    :required="field.required">
                 <input v-if="field.type === 'date'" type="date" v-model="model[field.name]" :required="field.required">
-                <input v-if="field.type === 'file'" type="file" @change="handleFileUpload($event, field.name)" :required="field.required">
+                <input v-if="field.type === 'file'" type="file" @change="handleFileUpload($event, field.name)"
+                    :required="field.required">
                 <select v-if="field.type === 'select'" v-model="model[field.name]" :required="field.required">
                     <option v-for="option in field.options" :key="option" :value="option">{{ option }}</option>
                 </select>
@@ -137,6 +146,44 @@ export default {
                 });
             }
         },
+        validarYAgregarEnfermedad() {
+            console.log('Validar y agregar enfermedad');
+            const camposValidos = this.section.fields.every(field => {
+                if (field.required) {
+                    return this.model[field.name] && this.model[field.name] !== 'Seleccione';
+                }
+                return true;
+            });
+
+            if (camposValidos) {
+                this.$emit('agregar-enfermedad');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Por favor, complete todos los campos requeridos.',
+                });
+            }
+        },
+        validarYAgregarAlergia() {
+            console.log('Validar y agregar enfermedad');
+            const camposValidos = this.section.fields.every(field => {
+                if (field.required) {
+                    return this.model[field.name] && this.model[field.name] !== 'Seleccione';
+                }
+                return true;
+            });
+
+            if (camposValidos) {
+                this.$emit('agregar-alergia');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Por favor, complete todos los campos requeridos.',
+                });
+            }
+        },
         handleFileUpload(event, fieldName) {
             const file = event.target.files[0];
             if (file) {
@@ -157,8 +204,10 @@ export default {
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
-    width: 100%; /* Extiende completamente el ancho */
-    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+    width: 100%;
+    /* Extiende completamente el ancho */
+    box-sizing: border-box;
+    /* Incluye el padding y el borde en el ancho total */
 }
 
 .section-title {

@@ -33,7 +33,7 @@
 
 <script>
 import axios from 'axios';
-import SkeletonLoaderTable from '../../components/skeleton/SkeletonLoaderTable.vue';
+import SkeletonLoaderTable from '../../../components/skeleton/SkeletonLoaderTable.vue';
 
 export default {
     components: { SkeletonLoaderTable },
@@ -44,7 +44,7 @@ export default {
             estadoSeleccionado: '1',
             showModal: false,
             cargando: true,
-            messageError: 'No hay registros disponibles.' 
+            messageError: 'No hay registros disponibles.'
 
         };
     },
@@ -79,7 +79,7 @@ export default {
                     autoWidth: false,
                     scrollX: true,
                     pageLength: 10,
-                    order: [], 
+                    order: [],
                     language: {
                         lengthMenu: "Mostrar _MENU_ registros por página",
                         zeroRecords: "No hay datos disponibles",

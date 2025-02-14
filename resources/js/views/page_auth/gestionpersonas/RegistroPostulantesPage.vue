@@ -13,7 +13,8 @@
                     <FormSection v-for="(section, index) in sections" :key="index" :section="section"
                         :model="form[section.model]" @agregar-referencia="agregarReferencia"
                         @agregar-contacto-emergencia="agregarContactoEmergencia" @agregar-idioma="agregarIdioma"
-                        @agregar-curso="agregarCurso" @agregar-experiencia="agregarExperiencia">
+                        @agregar-curso="agregarCurso" @agregar-experiencia="agregarExperiencia"
+                        @agregar-enfermedad="agregarEnfermedad" @agregar-alergia="agregarAlergia">
                         <template v-if="section.model === 'nuevaReferencia'" #default>
                             <div v-if="form.referenciasFamiliares.length > 0" class="table-responsive">
                                 <table class="table">
@@ -162,6 +163,51 @@
                                 </table>
                             </div>
                         </template>
+                        <template v-if="section.model === 'nuevaEnfermedad'" #default>
+                            <div v-if="form.enfermedades.length > 0" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Enfermedad</th>
+                                            <th>Fecha de Diagnóstico</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(enfermedad, index) in form.enfermedades" :key="index">
+                                            <td>{{ enfermedad.enfermedad }}</td>
+                                            <td>{{ enfermedad.fecha_diagnostico }}</td>
+                                            <td>
+                                                <button @click="eliminarEnfermedad(index, $event)">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                        <template v-if="section.model === 'nuevaAlergia'" #default>
+                            <div v-if="form.alergias.length > 0" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Alergia a Medicamento</th>
+                                            <th>Medicamento</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(alergia, index) in form.alergias" :key="index">
+                                            <td>{{ alergia.respuesta_alergico }}</td>
+                                            <td>{{ alergia.alergia }}</td>
+                                            <td>
+                                                <button @click="eliminarAlergia(index, $event)">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </template>
                     </FormSection>
                 </div>
                 <button type="submit" class="btn-primary-postulante">Registrar Postulante</button>
@@ -171,7 +217,7 @@
 </template>
 
 <script>
-import FormSection from '../../components/formularios/FormSection.vue';
+import FormSection from '../../../components/formularios/FormSection.vue';
 
 export default {
     components: {
@@ -282,7 +328,54 @@ export default {
                     nombre_referencia: '',
                     numero_contacto_referencia: '',
                     constancia: ''
+                },
+                enfermedades: [],
+                nuevaEnfermedad: {
+                    padece_enfermedad: '',
+                    enfermedad: '',
+                    fecha_diagnostico: ''
+                },
+                gestacion: {
+                    respuesta_gestacion: '',
+                    fecha_parto: '',
+                    dni_file: ''
+                },
+                alergias: [],
+                nuevaAlergia: {
+                    respuesta_alergico: '',
+                    alergia: '',
+                },
+                otros: {
+                    tipo_sangre: '',
+                },
+                referenciaConvocatoria: {
+                    puesto_referencia: '',
+                    especifique_otros: '',
+                },
+                adjuntarDocumentacion:
+                {
+                    adjuntar_cv: '',
+                    foto_dni: '',
+                    copia_agua_luz: ''
+                },
+                uniforme: {
+                    polo: '',
+                    camisa: '',
+                    pantalon: '',
+                    zapato: ''
+                },
+                sistemapensionario: {
+                    sistema_pensionario: '',
+                    tipo_sistema: '',
+                    afp: '',
+                },
+                cuentabancaria: {
+                    cuenta_bancaria: '',
+                    entidad_bancaria: '',
+                    numero_cuenta: '',
+                    codigo_interbancario: ''
                 }
+
             },
             sections: [
                 {
@@ -424,14 +517,88 @@ export default {
                     ]
 
                 },
-                // {
-                //     title: 'Enfermedades',
-                //     model: 'enfermedades',
-                //     fields: [
-                //         { label: 'Indique si padece alguna enfermedad', name: 'padece_enfermedad', type: 'select', options: ['Sí', 'No'], required: true },
-                //         { label: 'Especifique', name: 'motivo_salida', type: 'text', required: true },
-                //     ]
-                // },
+                {
+                    title: 'Enfermedades',
+                    model: 'nuevaEnfermedad',
+                    fields: [
+                        { label: 'Indique si padece alguna enfermedad', name: 'padece_enfermedad', type: 'select', options: ['Sí', 'No'], required: true },
+                        { label: 'Especifique la Enfermedad', name: 'enfermedad', type: 'text', required: true },
+                        { label: 'Fecha de Diagnóstico', name: 'fecha_diagnostico', type: 'date', required: true },
+
+                    ]
+                },
+                {
+                    title: 'Gestación',
+                    model: 'gestacion',
+                    fields: [
+                        { label: 'Indique si se encuentra en gestación', name: 'respuesta_gestacion', type: 'select', options: ['Sí', 'No'], required: true },
+                        { label: 'Fecha de inicio de gestación', name: 'fecha_parto', type: 'date', required: true }]
+                },
+                {
+                    title: 'Alergias',
+                    model: 'nuevaAlergia',
+                    fields: [
+                        { label: 'Es alérgico a algun medicamento', name: 'respuesta_alergico', type: 'select', options: ['Sí', 'No'], required: true },
+                        { label: 'Indique el nombre del medicamento', name: 'alergia', type: 'text', required: true }
+                    ]
+                },
+                {
+                    title: 'Otros',
+                    model: 'otros',
+                    fields: [
+                        { label: 'Tipo de sangre', name: 'tipo_sangre', type: 'select', options: ['O+', 'A-', 'A+', 'AB+', 'AB-', 'B-', 'O-'], required: true },
+                    ]
+                },
+                {
+                    title: 'Referencia de Convocatoria',
+                    model: 'referenciaConvocatoria',
+                    fields: [
+                        { label: 'Indica ¿Cómo te enteraste del puesto?', name: 'puesto_referencia', type: 'select', options: ['Computrabajo', 'Linkendl', 'Bumeran', 'Facebook'], required: true },
+                        { label: 'Especifique Otros', name: 'especifique_otros', type: 'text', required: true },
+
+                    ]
+                },
+                {
+                    title: 'Adjuntar Documentacion',
+                    model: 'adjuntarDocumentacion',
+                    fields: [
+                        { label: 'Adjuntar curriculum vitae', name: 'adjuntar_cv', type: 'file', required: true },
+                        { label: 'Foto DNI (ambas caras)', name: 'foto_dni', type: 'file', required: true },
+                        { label: 'Copia de recibo de agua y luz', name: 'copia_agua_luz', type: 'file', required: true },
+
+                    ]
+                },
+                {
+                    title: 'Uniforme',
+                    model: 'uniforme',
+                    fields: [
+                        { label: 'Polo', name: 'talla_polo', type: 'select', options: ['XS', 'S', 'M', 'L'], required: true },
+                        { label: 'Camisa', name: 'talla_camisa', type: 'select', options: ['XS', 'S', 'M', 'L'], required: true },
+                        { label: 'Pantalon', name: 'talla_pantalon', type: 'select', options: ['20', '25', '26', '27', '30', '32', '34', '36', '38', '40'], required: true },
+                        { label: 'Zapato', name: 'talla_zapato', type: 'select', options: ['36', '38', '40', '42', '44', '46'], required: true },
+                    ]
+                },
+                {
+                    title: 'Sistema Pensionario',
+                    model: 'sistemapensionario',
+                    fields: [
+                        { label: 'Pertenece a algún sistema pensionario', name: 'sistema_pensionario', type: 'select', options: ['Si', 'No'], required: true },
+                        { label: 'Indique el sistema pensionaro al que pertenece', name: 'tipo_sistema', type: 'select', options: ['ONP', 'AFP'], required: true },
+                        { label: 'Si indico AFP elija', name: 'afp', type: 'select', options: ['AFP Integra', 'Prima AFP', 'Profuturo AFP', 'AFP Habitat'], required: true },
+
+                    ]
+                },
+                {
+                    title: 'Número de Cuenta',
+                    model: 'cuentabancaria',
+                    fields: [
+                        { label: '¿Cuéntas con cuenta bancaria?', name: 'cuenta_bancaria', type: 'select', options: ['Si', 'No'], required: true },
+                        { label: 'Indique la entidad bancaria', name: 'entidad_bancaria', type: 'select', options: ['BCP', 'INTERBANK', 'SCOTIABANK', 'BBVA', 'MIBANCO'], required: true },
+                        { label: 'Indique el número de cuenta', name: 'numero_cuenta', type: 'text', required: true },
+                        { label: 'Indique el código interbancario', name: 'codigo_interbancario', type: 'text', required: true },
+
+                    ]
+                }
             ]
         };
     },
@@ -539,6 +706,29 @@ export default {
         eliminarExperiencia(index, event) {
             event.preventDefault();
             this.form.experienciasLaborales.splice(index, 1);
+        },
+        agregarEnfermedad() {
+            this.form.enfermedades.push({ ...this.form.nuevaEnfermedad });
+            this.form.nuevaEnfermedad = {
+                padece_enfermedad: '',
+                enfermedad: '',
+                fecha_diagnostico: ''
+            };
+        },
+        eliminarEnfermedad(index, event) {
+            event.preventDefault();
+            this.form.enfermedades.splice(index, 1);
+        },
+        agregarAlergia() {
+            this.form.alergias.push({ ...this.form.nuevaAlergia });
+            this.form.nuevaAlergia = {
+                respuesta_alergico: '',
+                alergia: '',
+            };
+        },
+        eliminarAlergia(index, event) {
+            event.preventDefault();
+            this.form.alergias.splice(index, 1);
         }
     }
 };

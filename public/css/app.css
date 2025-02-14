@@ -608,6 +608,9 @@ video {
 .mt-6{
   margin-top: 1.5rem;
 }
+.mt-3{
+  margin-top: 0.75rem;
+}
 .block{
   display: block;
 }
@@ -655,6 +658,12 @@ video {
 .py-2{
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+}
+.text-left{
+  text-align: left;
+}
+.text-right{
+  text-align: right;
 }
 .font-bold{
   font-weight: 700;

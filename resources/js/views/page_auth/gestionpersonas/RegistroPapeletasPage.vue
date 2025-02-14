@@ -76,8 +76,8 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import RegistrarPapeletaModal from '../../components/modals/RegistrarPapeletaModal.vue';
-import SkeletonLoaderTable from '../../components/skeleton/SkeletonLoaderTable.vue'; // 📌 Importamos el nuevo componente
+import RegistrarPapeletaModal from '../../../components/modals/RegistrarPapeletaModal.vue';
+import SkeletonLoaderTable from '../../../components/skeleton/SkeletonLoaderTable.vue'; // 📌 Importamos el nuevo componente
 
 export default {
     components: { RegistrarPapeletaModal, SkeletonLoaderTable },

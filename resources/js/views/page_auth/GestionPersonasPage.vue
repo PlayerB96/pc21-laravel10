@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main-page-auth">
         <h1>Gestión de Personas</h1>
         <!-- Aquí es donde se renderizarán las rutas hijas -->
         <router-view></router-view>

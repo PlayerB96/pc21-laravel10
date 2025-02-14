@@ -52,19 +52,22 @@ export default {
         }
     },
     methods: {
-        handleButtonClick() {
-            alert("Botón de ejemplo clickeado");
-        }
+
     }
 };
 </script>
 
 <style scoped>
+.template {
+    background-color: red;
+}
+
 /* Estilos de la página */
 .video-background-container {
     position: relative;
     width: 100%;
-    height: calc(100vh - 80px);
+    /* height: calc(100vh - 0px); */
+    height: 100vh;
     /* Ajusta 80px según la altura del navbar */
     overflow: hidden;
 }
@@ -98,7 +101,7 @@ export default {
 
 /* Secciones */
 .section {
-    padding: 100px 20px;
+    padding: 100px 200px;
     text-align: center;
     background: #f4f4f4;
     margin-bottom: 20px;
@@ -106,7 +109,7 @@ export default {
 }
 
 .section:nth-child(even) {
-    background: #ddd;
+    background: red;
 }
 
 .section h2 {

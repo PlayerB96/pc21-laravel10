@@ -1,23 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router";
-import InicioPage from "./views/InicioPage.vue";
-import InduccionPage from "./views/InduccionPage.vue";
-import EcommercePage from "./views/EcommercePage.vue";
-import BlogPage from "./views/BlogPage.vue";
-import ProductosPage from "./views/ProductosPage.vue";
-import EmpresasPage from "./views/EmpresasPage.vue";
-import ProduccionPage from "./views/ProduccionPage.vue";
-import IdentidadCorporativaPage from "./views/IdentidadCorporativaPage.vue";
-import GestionPersonasPage from "./views/GestionPersonasPage.vue";
-import RegistroPapeletasPage from "./views/gestionpersonas/RegistroPapeletasPage.vue";
-import RegistroPostulantesPage from "./views/gestionpersonas/RegistroPostulantesPage.vue";
-import FichasProduccionPage from "./views/fichas_produccion/FichasProduccionPage.vue";
-import HomePage from "./views/HomePage.vue";
+import InicioPage from "./views/page_public/InicioPage.vue";
+import InduccionPage from "./views/page_auth/InduccionPage.vue";
+import EcommercePage from "./views/page_public/EcommercePage.vue";
+import BlogPage from "./views/page_public/BlogPage.vue";
+import ProductosPage from "./views/page_public/ProductosPage.vue";
+import EmpresasPage from "./views/page_public/EmpresasPage.vue";
+import ProduccionPage from "./views/page_auth/ProduccionPage.vue";
+import IdentidadCorporativaPage from "./views/page_public/IdentidadCorporativaPage.vue";
+import GestionPersonasPage from "./views/page_auth/GestionPersonasPage.vue";
+import RegistroPapeletasPage from "./views/page_auth/gestionpersonas/RegistroPapeletasPage.vue";
+import RegistroPostulantesPage from "./views/page_auth/gestionpersonas/RegistroPostulantesPage.vue";
+import FichasProduccionPage from "./views/page_auth/fichas_produccion/FichasProduccionPage.vue";
+import HomePage from "./views/page_auth/HomePage.vue";
 
 const routes = [
     { path: "/", component: InicioPage },
     { path: "/inicio", component: InicioPage },
     { path: "/home", component: HomePage },
-
     { path: "/induccion", component: InduccionPage },
     { path: "/ecommerce", component: EcommercePage },
     {

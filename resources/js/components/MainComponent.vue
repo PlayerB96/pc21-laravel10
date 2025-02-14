@@ -2,7 +2,7 @@
   <div class="main">
     <navbar @update-active-section="updateActiveSection"></navbar>
 
-    <div id="main-content" class="main-content" :class="{ 'no-padding': activeSection === 'inicio' }">
+    <div id="main-content" class="main-content">
       <router-view></router-view>
     </div>
 
@@ -44,11 +44,11 @@ export default {
 
 .main-content {
   flex-grow: 1;
-  padding: 5rem 2rem;
+  padding: 0rem;
 }
 
 .main-content.no-padding {
-  padding: 0;
+  padding: 10;
   /* Quita el padding cuando se está en la sección "Inicio" */
 }
 
