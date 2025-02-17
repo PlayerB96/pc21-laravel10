@@ -32,9 +32,14 @@
                 <input v-if="field.type === 'date'" type="date" v-model="model[field.name]" :required="field.required">
                 <input v-if="field.type === 'file'" type="file" @change="handleFileUpload($event, field.name)"
                     :required="field.required">
-                <select v-if="field.type === 'select'" v-model="model[field.name]" :required="field.required">
-                    <option v-for="option in field.options" :key="option" :value="option">{{ option }}</option>
+                <select v-if="field.type === 'select'" v-model="model[field.name]" :required="field.required"
+                    @change="onSelectChange(field.name, model[field.name])">
+                    <option v-for="option in field.options" :key="option.id" :value="option.id">
+                        {{ option.text }}
+                    </option>
                 </select>
+
+
             </div>
         </div>
         <slot></slot>
@@ -43,8 +48,21 @@
 
 <script>
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 export default {
+    data() {
+        return {
+
+            formData: {
+                id_departamento: '',
+                id_provincia: '',
+                id_distrito: ''
+            }
+
+        };
+    },
+
     props: {
         section: {
             type: Object,
@@ -56,6 +74,83 @@ export default {
         }
     },
     methods: {
+        onSelectChange(fieldName, value) {
+            if (!this.formData) {
+                console.error("formData no está definido.");
+                return;
+            }
+
+            if (fieldName === 'id_departamento') {
+                console.log('Departamento seleccionado:', value);
+                this.formData.id_departamento = value;
+                this.loadProvincias();
+            } else if (fieldName === 'id_provincia') {
+                console.log('Provincia seleccionada:', value);
+                this.formData.id_provincia = value;
+                this.loadDistritos();
+            }
+        },
+        // Obtener provincias basadas en el departamento seleccionado
+        loadProvincias() {
+            if (!this.formData.id_departamento) {
+                console.warn("No hay un departamento seleccionado.");
+                return;
+            }
+
+            axios.get('/provincias', { params: { id_departamento: this.formData.id_departamento } })
+                .then(response => {
+                    console.log("Provincias recibidas:", response.data);
+
+                    this.provincias = response.data.map(item => ({
+                        id: item.id_provincia,
+                        text: item.nombre_provincia
+                    }));
+
+                    // 🔹 CORRECCIÓN: Usar `this.section.fields` en lugar de `this.formData.fields`
+                    const provinciaField = this.section.fields.find(field => field.name === 'id_provincia');
+                    if (provinciaField) {
+                        provinciaField.options = [...this.provincias]; // Asegurar reactividad
+                    }
+
+                    this.formData.id_provincia = ''; // Limpiar selección de provincia
+                    this.formData.id_distrito = '';  // Limpiar selección de distrito
+                })
+                .catch(error => {
+                    console.error('Error al obtener provincias:', error);
+                });
+        },
+
+
+        // Obtener distritos basados en la provincia seleccionada
+        loadDistritos() {
+            if (!this.formData.id_provincia) {
+                console.warn("No hay una provincia seleccionada.");
+                return;
+            }
+
+            axios.get('/distritos', { params: { id_provincia: this.formData.id_provincia } })
+                .then(response => {
+                    console.log("Distritos recibidos:", response.data);
+
+                    this.distritos = response.data.map(item => ({
+                        id: item.id_distrito, // Asegúrate de que este campo existe en la respuesta
+                        text: item.nombre_distrito // Asegúrate de que este campo también existe en la respuesta
+                    }));
+
+                    // 🔹 CORRECCIÓN: Usar `this.section.fields` en lugar de `this.sections[1].fields`
+                    const distritoField = this.section.fields.find(field => field.name === 'id_distrito');
+                    if (distritoField) {
+                        distritoField.options = [...this.distritos]; // Asegurar reactividad
+                    }
+
+                    this.formData.id_distrito = ''; // Limpiar selección de distrito
+                })
+                .catch(error => {
+                    // console.error('Error al obtener distritos:", error);
+                });
+        },
+
+
         validarYAgregarReferencia() {
             const camposValidos = this.section.fields.every(field => {
                 if (field.required) {

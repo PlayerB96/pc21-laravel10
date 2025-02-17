@@ -29,7 +29,7 @@ class FichaTecnicaProduccion extends Model
         'user_eli'
     ];
 
-    
+
     public function user()
     {
         return $this->belongsTo(UserIntranet::class, 'user_reg', 'id_usuario');

@@ -82,7 +82,7 @@ export default {
                     route: '/gestionpersonas',
                     subitems: [
                         { label: 'Papeletas', route: '/gestionpersonas/registro_papeletas' },
-                        { label: 'Postulantes', route: '/gestionpersonas/registro_postulantes' }
+                        { label: 'Datos Colaboradores', route: '/gestionpersonas/registro_colaboradores' }
                     ]
                 },
                 {

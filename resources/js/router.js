@@ -9,7 +9,7 @@ import ProduccionPage from "./views/page_auth/ProduccionPage.vue";
 import IdentidadCorporativaPage from "./views/page_public/IdentidadCorporativaPage.vue";
 import GestionPersonasPage from "./views/page_auth/GestionPersonasPage.vue";
 import RegistroPapeletasPage from "./views/page_auth/gestionpersonas/RegistroPapeletasPage.vue";
-import RegistroPostulantesPage from "./views/page_auth/gestionpersonas/RegistroPostulantesPage.vue";
+import RegistroColaboradorPage from "./views/page_auth/gestionpersonas/RegistroColaboradorPage.vue";
 import FichasProduccionPage from "./views/page_auth/fichas_produccion/FichasProduccionPage.vue";
 import HomePage from "./views/page_auth/HomePage.vue";
 
@@ -37,8 +37,8 @@ const routes = [
         children: [
             { path: "registro_papeletas", component: RegistroPapeletasPage },
             {
-                path: "registro_postulantes",
-                component: RegistroPostulantesPage,
+                path: "registro_colaboradores",
+                component: RegistroColaboradorPage,
             },
         ],
     },

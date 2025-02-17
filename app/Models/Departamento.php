@@ -41,4 +41,16 @@ class Departamento extends Model
     {
         return $this->hasMany(Area::class, 'id_departamento', 'id_departamento');
     }
+
+    // Relación con Provincias
+    public function provincias()
+    {
+        return $this->hasMany(Provincia::class, 'id_departamento');
+    }
+
+    // Relación con Distritos (a través de Provincia)
+    public function distritos()
+    {
+        return $this->hasManyThrough(Distrito::class, Provincia::class, 'id_departamento', 'id_provincia');
+    }
 }

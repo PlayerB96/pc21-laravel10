@@ -4,11 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SolicitudUser;
+use App\Models\Departamento;
+use App\Models\Provincia;
+use App\Models\Distrito;
 use App\Models\PermisoPapeletasSalida;
 use App\Models\Destino;
 use App\Models\Tramite;
-use Illuminate\Support\Facades\Log;
+use App\Models\UserIntranet;
+use App\Models\DomicilioUser;
+use App\Models\GustoPreferenciaUser;
 
+
+use Illuminate\Support\Facades\Log;
 
 class GestionPersonas extends Controller
 {
@@ -28,13 +35,7 @@ class GestionPersonas extends Controller
         return view('gestionpersonas.gestionpersonas');
     }
 
-    public function getPapeletas(Request $request)
-    {
-        $id_usuario = $request->id_usuario; // Se obtiene del Middleware automáticamente
-        // dump('Solicitud llegada al controlador');
-        $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida(1, $id_usuario);
-        return response()->json($dato['list_papeletas_salida']);
-    }
+
 
     public function buscar_papeletas(Request $request)
     {
@@ -45,7 +46,6 @@ class GestionPersonas extends Controller
         $cod_ubi = $request->cod_ubi;
         $fecha_inicio = $request->fecha_inicio;
         $fecha_fin = $request->fecha_fin;
-        Log::info('Contenido del request:', $request->all());
 
         $this->Model_Solicitudes->verificacion_papeletas();
         // $list_papeletas_salida = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud, $id_usuario);
@@ -174,13 +174,101 @@ class GestionPersonas extends Controller
 
 
 
-    public function index_rpo()
+    public function store_colaborador(Request $request)
     {
-        return view('gestionpersonas.postulantes.index');
-    }
+        // ✅ Asignar datos de `personalInfo` a `$datos`
+        $personalInfo = $request->input('formulario.personalInfo');
+        $domicilio = $request->input('formulario.domicilio');
+        $gustosPreferencias = $request->input('formulario.gustosPreferencias');
 
-    public function store_rpo()
-    {
-        return view('gestionpersonas.postulantes.index');
+        $id_usuario = $request->id_usuario;
+        Log::info('Contenido de id_usuario:', ['id_usuario' => $id_usuario]);
+        Log::info('Contenido gustosPreferencias:', $gustosPreferencias);
+
+        // ✅ Actualizar los datos en UserIntranet
+        // UserIntranet::where('id_usuario', $request->id_usuario)->update([
+        //     'usuario_apater' => addslashes($personalInfo['apellido_paterno']),
+        //     'usuario_amater' => addslashes($personalInfo['apellido_materno']),
+        //     'usuario_nombres' => addslashes($personalInfo['nombres']),
+        //     'id_nacionalidad' => $personalInfo['nacionalidad'],
+        //     'id_estado_civil' => $personalInfo['estado_civil'],
+        //     'fec_nac' => $personalInfo['fecha_nacimiento'],
+        //     'id_genero' => $personalInfo['genero'],
+        //     'id_tipo_documento' => $personalInfo['tipo_documento'],
+        //     'num_doc' => $personalInfo['numero_documento'],
+        //     'usuario_email' => $personalInfo['correo'],
+        //     'num_celp' => $personalInfo['celular'],
+        //     'num_fijop' => $personalInfo['telefono'] ?? null,
+        //     'fec_act' => now(),
+        //     'user_act' => $id_usuario,
+        // ]);
+
+        // ✅ Actualizar los datos en DomicilioUser
+        // $domicilioData = [
+        //     'id_usuario' => $id_usuario,
+        //     'id_departamento' => $domicilio['id_departamento'],
+        //     'id_provincia' => $domicilio['id_provincia'],
+        //     'id_distrito' => $domicilio['id_distrito'],
+        //     'id_tipo_via' => $domicilio['id_tipo_via'],
+        //     'nom_via' => $domicilio['nom_via'],
+        //     'num_via' => $domicilio['num_via'],
+        //     'id_zona' => $domicilio['id_zona'],
+        //     'nom_zona' => $domicilio['nom_zona'],
+        //     'referencia' => $domicilio['referencia'],
+        //     'kilometro' => $domicilio['kilometro'],
+        //     'manzana' => $domicilio['manzana'],
+        //     'lote' => $domicilio['lote'],
+        //     'interior' => $domicilio['interior'],
+        //     'departamento' => $domicilio['departamento'],
+        //     'piso' => $domicilio['piso'],
+        //     'id_tipo_vivienda' => $domicilio['id_tipo_vivienda'],
+        //     'lat' => $domicilio['lat'],
+        //     'lng' => $domicilio['lng'],
+        // ];
+
+        // $domicilioData['user_act'] = $domicilioData['user_reg'] = $id_usuario;
+        // $domicilioData['fec_act'] = now();
+
+        // if (count($domicilios) > 0) {
+        //     DomicilioUser::where('id_usuario', $id_usuario)->update($domicilioData);
+        // } else {
+        //     $domicilioData['fec_reg'] = now();
+        //     $domicilioData['estado'] = 1;
+        //     DomicilioUser::create($domicilioData);
+        // }
+
+        // $usuarioData = [
+        //     'plato_postre' => addslashes($gustosPreferencias['plato_postre']),
+        //     'galletas_golosinas' => addslashes($gustosPreferencias['galletas_golosinas']),
+        //     'ocio_pasatiempos' => addslashes($gustosPreferencias['ocio_pasatiempos']),
+        //     'artistas_banda' => addslashes($gustosPreferencias['artistas_banda']),
+        //     'genero_musical' => addslashes($gustosPreferencias['genero_musical']),
+        //     'pelicula_serie' => addslashes($gustosPreferencias['pelicula_serie']),
+        //     'colores_favorito' => addslashes($gustosPreferencias['colores_favorito']),
+        //     'redes_sociales' => addslashes($gustosPreferencias['redes_sociales']),
+        //     'deporte_favorito' => addslashes($gustosPreferencias['deporte_favorito']),
+        //     'tiene_mascota' => $gustosPreferencias['tiene_mascota'],
+        //     'mascota' => addslashes($gustosPreferencias['mascota']),
+        //     'fec_act' => now(),
+        //     'user_act' => $id_usuario,
+        // ];
+
+        // $updateData = GustoPreferenciaUser::where('id_usuario', $gustosPreferencias['id_usuario'])
+        //     ->where('estado', 1)
+        //     ->exists();
+
+        // if ($updateData) {
+        //     echo "update";
+        //     GustoPreferenciaUser::where('id_usuario', $gustosPreferencias['id_usuario'])
+        //         ->update($usuarioData);
+        // } else {
+        //     echo "insert";
+        //     GustoPreferenciaUser::create([
+        //         'id_usuario' => $gustosPreferencias['id_usuario'],
+        //         'fec_reg' => now(),
+        //         'user_reg' => $id_usuario,
+        //         'estado' => 1,
+        //     ] + $usuarioData); // Merge both arrays for insert
+        // }
     }
 }

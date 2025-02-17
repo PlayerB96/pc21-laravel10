@@ -4,16 +4,17 @@ import Navbar from "./components/Navbar.vue";
 import FooterComponent from "./components/FooterComponent.vue";
 import Chatbot from "./components/Chatbot.vue";
 import router from "./router";
-import axios from 'axios';
-import '../css/global.css'; 
+import axios from "axios";
+import "../css/global.css";
 
 // Configura la URL base para Axios
 // axios.defaults.baseURL = 'http://localhost:8000/api/';
 axios.defaults.baseURL = `${window.location.origin}/api/`;
 
-
 // Crea la instancia de la aplicación Vue
 const app = createApp(MainComponent);
+
+// Configura la clave de API de Google Maps
 
 // Registra los componentes globales
 app.component("main-component", MainComponent);

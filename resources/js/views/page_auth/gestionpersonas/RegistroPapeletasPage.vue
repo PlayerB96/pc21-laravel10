@@ -1,5 +1,7 @@
 <template>
-    <div>
+    <div class="layout-container-section-content">
+        <h2>Papeletas de Salida</h2>
+
         <div class="mb-4 toolbar-row">
             <div class="toolbar-item">
                 <label class="control-label text-bold">Estado Solicitud:</label>
@@ -60,7 +62,7 @@
                         <td v-html="papeleta.estado_solicitud.html"></td>
                         <td>
                             <button
-                                v-if="canApprove || (papeleta.estado_solicitud.value === 1 || papeleta.estado_solicitud.value === 4 || papeleta.estado_solicitud.value === 5)"
+                                v-if="canApprove && (papeleta.estado_solicitud.value === 1 || papeleta.estado_solicitud.value === 4 || papeleta.estado_solicitud.value === 5)"
                                 class="action-button" @click="confirmarAccionPapeleta(papeleta.id_solicitudes_user)">
                                 <img :src="savedIcon" alt="Aprobar" title="Aprobar" class="theme-icon" />
                             </button>
@@ -274,8 +276,6 @@ export default {
             return horaRetorno && horaRetorno !== "null" ? horaRetorno : "N/A";
         },
         getEstadoSolicitud(estado) {
-            console.log(estado)
-            console.log("estado")
             switch (estado) {
                 case 1:
                     return { value: 1, html: "<span style='background-color: #ffc107; color: #fff; padding: 5px 10px; border-radius: 5px;'>En proceso</span>" };
