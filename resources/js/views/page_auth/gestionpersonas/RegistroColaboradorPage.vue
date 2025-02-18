@@ -15,7 +15,7 @@
                         @agregar-contacto-emergencia="agregarContactoEmergencia" @agregar-hijo="agregarHijos"
                         @agregar-idioma="agregarIdioma" @agregar-curso="agregarCurso"
                         @agregar-experiencia="agregarExperiencia" @agregar-enfermedad="agregarEnfermedad"
-                        @agregar-alergia="agregarAlergia">
+                        @agregar-alergia="agregarAlergia" @file-upload="handleFileUpload">
                         <template v-if="section.model === 'nuevaReferencia'" #default>
                             <div v-if="form.referenciasFamiliares.length > 0" class="table-responsive">
                                 <table class="table">
@@ -100,14 +100,19 @@
                                             <td>{{ hijo.dni_hijo }}</td>
                                             <td>{{ hijo.biologico }}</td>
                                             <td>
+                                                <input type="file" accept="application/pdf"
+                                                    @change="handleFileUpload($event, index)">
+                                                <span v-if="hijo.dni_file">{{ hijo.dni_file.name }}</span>
+                                            </td>
+                                            <td>
                                                 <button @click="eliminarHijos(index, $event)">Eliminar</button>
                                             </td>
                                         </tr>
                                     </tbody>
-
                                 </table>
                             </div>
                         </template>
+
                         <template v-if="section.model === 'nuevoIdioma'" #default>
                             <div v-if="form.idiomas.length > 0" class="table-responsive">
                                 <table class="table">
@@ -392,18 +397,19 @@ export default {
             departamentos: [],
             provincias: [],
             distritos: [],
+            formData: new FormData(),
             mostrarPopup: false,
             form: {
                 personalInfo: {
                     apellido_paterno: '',
                     apellido_materno: '',
                     nombres: '',
-                    nacionalidad: 'Peruano',
-                    estado_civil: 'Soltero',
+                    nacionalidad: '',
+                    estado_civil: '',
                     fecha_nacimiento: '',
                     edad: '',
-                    genero: 'Mujer',
-                    tipo_documento: 'DNI',
+                    genero: '',
+                    tipo_documento: '',
                     numero_documento: '',
                     correo: '',
                     celular: '',
@@ -465,7 +471,6 @@ export default {
                     fecha_nacimiento_hijo: '',
                     dni_hijo: '',
                     biologico: '',
-                    dni_file: ''
                 },
                 conocimientoOffice: {
                     nivel_excel: '',
@@ -666,7 +671,7 @@ export default {
                         { label: 'Interior', name: 'interior', type: 'text', required: false },
                         { label: 'N° Departamento', name: 'numero_departamento', type: 'text', required: false },
                         { label: 'Lote', name: 'lote', type: 'text', required: false },
-                        { label: 'Piso', name: 'piso', type: 'text', required: false },
+                        { label: 'Piso', name: 'piso', type: 'number', required: false },
                         {
                             label: 'Tipo de Zona', name: 'tipo_zona', type: 'select', options: [
                                 { id: 1, text: 'PUEBLO JOVEN' },
@@ -693,7 +698,6 @@ export default {
                             ], required: false
                         },
                         { label: 'Referencia Domicilio', name: 'referencia_domicilio', type: 'text', required: false },
-                        { label: 'Dirección Completa', name: 'direccion_completa', type: 'text', required: false }
                     ]
                 },
 
@@ -756,7 +760,6 @@ export default {
                         { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento_hijo', type: 'date', required: false },
                         { label: 'DNI', name: 'dni_hijo', type: 'text', required: false },
                         { label: 'Biológico/No Biológico', name: 'biologico', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
-                        { label: 'Adjuntar DNI', name: 'dni_file', type: 'file', required: false }
                     ]
                 },
                 {
@@ -1057,16 +1060,21 @@ export default {
                         { label: 'Pertenece a algún sistema pensionario', name: 'sistema_pensionario', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
                         {
                             label: 'Indique el sistema pensionaro al que pertenece', name: 'tipo_sistema', type: 'select',
-                            ptions: [
+                            options: [
+                                { id: 1, text: 'ONP' },
+                                { id: 2, text: 'AFP' },],
+
+                            required: false
+                        },
+                        {
+                            label: 'Si indico AFP elija', name: 'afp', type: 'select', options: [
                                 { id: 1, text: 'INTEGRA' },
                                 { id: 2, text: 'PRIMA' },
                                 { id: 3, text: 'PROFUTURO' },
                                 { id: 4, text: 'HABITAT' },
                                 { id: 5, text: 'HORIZONTE' },
-                                { id: 6, text: 'ONP' }], 
-                                required: false
+                                { id: 6, text: 'ONP' }], required: false
                         },
-                        { label: 'Si indico AFP elija', name: 'afp', type: 'select', options: ['AFP Integra', 'Prima AFP', 'Profuturo AFP', 'AFP Habitat'], required: false },
 
                     ]
                 },
@@ -1212,21 +1220,50 @@ export default {
                 }
             });
         },
+        handleFileUpload(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                // ✅ Guardar en el modelo `hijos` para que se refleje en el JSON
+                this.form.hijos[index].dni_file = file;
+
+                // ✅ Agregarlo a `FormData` para enviarlo correctamente al backend
+                this.formData.append(`dni_file_${index}`, file);
+            }
+        },
+        // handleFileUpload({ file, fieldName }) {
+        //     this.formData.append(fieldName, file);
+        // },
         async submitForm() {
             try {
-                // ✅ Recuperar `userSession` y asegurarse de que sea un objeto
                 const userSessionString = localStorage.getItem('userSession');
-                const userSession = JSON.parse(userSessionString); // ✅ Convertir JSON string a objeto
-                console.log(userSession.id_usuario)
-                console.log("@@")
-                const response = await axios.post('/gestionpersonas/store_colaborador', {
-                    formulario: this.form,
-                    id_usuario: userSession.id_usuario,  // ✅ Ahora `id_usuario` sí tiene valor
+                const userSession = JSON.parse(userSessionString);
+                this.formData.append('id_usuario', userSession.id_usuario);
+                this.formData.append('formulario', JSON.stringify(this.form));
+
+                await axios.post('/gestionpersonas/store_colaborador', this.formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } catch (error) {
                 console.error("Error al enviar el formulario:", error);
             }
         },
+        // async submitForm() {
+        //     try {
+        //         // ✅ Recuperar `userSession` y asegurarse de que sea un objeto
+        //         const userSessionString = localStorage.getItem('userSession');
+        //         const userSession = JSON.parse(userSessionString); // ✅ Convertir JSON string a objeto
+
+        //         console.log(userSession.id_usuario)
+        //         console.log("@@")
+        //         const response = await axios.post('/gestionpersonas/store_colaborador', {
+
+        //             formulario: this.form,
+        //             id_usuario: userSession.id_usuario,  // ✅ Ahora `id_usuario` sí tiene valor
+        //         });
+        //     } catch (error) {
+        //         console.error("Error al enviar el formulario:", error);
+        //     }
+        // },
         agregarReferencia() {
             this.form.referenciasFamiliares.push({ ...this.form.nuevaReferencia });
             this.form.nuevaReferencia = {
@@ -1285,12 +1322,13 @@ export default {
             event.preventDefault();
             this.form.idiomas.splice(index, 1);
         },
-        handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                this.form.nuevoCurso.certificado = file.name; // Guarda solo el nombre del archivo
-            }
-        },
+        // handleFileUpload(event) {
+        //     const file = event.target.files[0];
+        //     if (file) {
+        //         this.form.nuevoCurso.certificado = file.name; // Guarda solo el nombre del archivo
+        //     }
+        // },
+
         agregarCurso() {
             this.form.cursos.push({ ...this.form.nuevoCurso });
             this.form.nuevoCurso = {

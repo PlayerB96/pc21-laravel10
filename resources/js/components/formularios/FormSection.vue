@@ -25,7 +25,7 @@
         <div v-if="section.title === 'Datos de Hijos/as'">
             <button type="button" @click="validarYAgregarHijo" class="btn-add">Agregar Hijos</button>
         </div>
-        
+
         <div class="section-title">{{ section.title }}</div>
         <div class="form-container">
             <div v-for="(field, index) in section.fields" :key="index" class="form-group form-group-3col">
@@ -33,9 +33,13 @@
                 <input v-if="field.type === 'text'" type="text" v-model="model[field.name]" :required="field.required">
                 <input v-if="field.type === 'number'" type="number" v-model="model[field.name]"
                     :required="field.required">
+                <input v-if="field.type === 'email'" type="email" v-model="model[field.name]"
+                    :required="field.required">
+
                 <input v-if="field.type === 'date'" type="date" v-model="model[field.name]" :required="field.required">
                 <input v-if="field.type === 'file'" type="file" @change="handleFileUpload($event, field.name)"
                     :required="field.required">
+
                 <select v-if="field.type === 'select'" v-model="model[field.name]" :required="field.required"
                     @change="onSelectChange(field.name, model[field.name])">
                     <option v-for="option in field.options" :key="option.id" :value="option.id">
@@ -301,15 +305,22 @@ export default {
                 });
             }
         },
+        // handleFileUpload(event, fieldName) {
+        //     const file = event.target.files[0];
+        //     if (file) {
+        //         // 🔹 Guarda el nombre del archivo en el modelo directamente
+        //         this.model[fieldName] = file.name;
+        //         // 🔹 Opcionalmente, emite el evento para notificar al componente padre
+        //         this.$emit('file-upload', { file, fieldName });
+        //     }
+        // }
         handleFileUpload(event, fieldName) {
             const file = event.target.files[0];
             if (file) {
-                // 🔹 Guarda el nombre del archivo en el modelo directamente
-                this.model[fieldName] = file.name;
-                // 🔹 Opcionalmente, emite el evento para notificar al componente padre
+                this.formData.append(fieldName, file);
                 this.$emit('file-upload', { file, fieldName });
             }
-        }
+        },
     }
 };
 </script>
