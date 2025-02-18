@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController; // Asegúrate de importar tu controlador
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\UbigeoController;
-
+use App\Http\Controllers\WebLn1Controller;
 use Illuminate\Session\Middleware\StartSession;
 use App\Models\UserPermission;
 
@@ -122,3 +122,7 @@ Route::middleware(['api', StartSession::class])->group(function () {
 //     Route::post('induccion/submit_survey', 'submitSurvey')->name('induccion.submit_survey');
 // });
 // // });
+
+//NUESTRAS TIENDAS - WEB LN1
+Route::get('nuestras_tiendas', [WebLn1Controller::class, 'nuestras_tiendas']);
+Route::get('modal_nuestras_tiendas/{parametro}', [WebLn1Controller::class, 'modal_nuestras_tiendas']);
