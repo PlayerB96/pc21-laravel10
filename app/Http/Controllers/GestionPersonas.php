@@ -13,7 +13,21 @@ use App\Models\Tramite;
 use App\Models\UserIntranet;
 use App\Models\DomicilioUser;
 use App\Models\GustoPreferenciaUser;
-
+use App\Models\ReferenciaFamiliar;
+use App\Models\ContactoEmergencia;
+use App\Models\Hijos;
+use App\Models\ConociOffice;
+use App\Models\ConociIdiomas;
+use App\Models\CursoComplementario;
+use App\Models\ExperienciaLaboral;
+use App\Models\EnfermedadUsuario;
+use App\Models\GestacionUsuario;
+use App\Models\AlergiaUsuario;
+use App\Models\OtrosUsuario;
+use App\Models\ReferenciaConvocatoria;
+use App\Models\DocumentacionUsuario;
+use App\Models\RopaUsuario;
+use App\Models\SistPensUsuario;
 
 use Illuminate\Support\Facades\Log;
 
@@ -180,10 +194,27 @@ class GestionPersonas extends Controller
         $personalInfo = $request->input('formulario.personalInfo');
         $domicilio = $request->input('formulario.domicilio');
         $gustosPreferencias = $request->input('formulario.gustosPreferencias');
+        $referenciasFamiliares = $request->input('formulario.referenciasFamiliares');
+        $contactosEmergencia = $request->input('formulario.contactosEmergencia');
+        $hijos = $request->input('formulario.hijos');
+        $conocimientoOffice = $request->input('formulario.conocimientoOffice');
+        $idiomas = $request->input('formulario.idiomas');
+        $cursos = $request->input('formulario.cursos');
+        $experienciasLaborales = $request->input('formulario.experienciasLaborales');
+        $enfermedades = $request->input('formulario.enfermedades');
+        $gestacion = $request->input('formulario.gestacion');
+        $alergias = $request->input('formulario.alergias');
+        $otros = $request->input('formulario.otros');
+        $referenciaConvocatoria = $request->input('formulario.referenciaConvocatoria');
+        $adjuntarDocumentacion = $request->input('formulario.adjuntarDocumentacion');
+        $uniforme = $request->input('formulario.uniforme');
+
+        
+        
 
         $id_usuario = $request->id_usuario;
         Log::info('Contenido de id_usuario:', ['id_usuario' => $id_usuario]);
-        Log::info('Contenido gustosPreferencias:', $gustosPreferencias);
+        Log::info('Contenido uniforme:', $uniforme);
 
         // ✅ Actualizar los datos en UserIntranet
         // UserIntranet::where('id_usuario', $request->id_usuario)->update([
@@ -209,21 +240,21 @@ class GestionPersonas extends Controller
         //     'id_departamento' => $domicilio['id_departamento'],
         //     'id_provincia' => $domicilio['id_provincia'],
         //     'id_distrito' => $domicilio['id_distrito'],
-        //     'id_tipo_via' => $domicilio['id_tipo_via'],
-        //     'nom_via' => $domicilio['nom_via'],
-        //     'num_via' => $domicilio['num_via'],
-        //     'id_zona' => $domicilio['id_zona'],
-        //     'nom_zona' => $domicilio['nom_zona'],
-        //     'referencia' => $domicilio['referencia'],
-        //     'kilometro' => $domicilio['kilometro'],
-        //     'manzana' => $domicilio['manzana'],
+        //     'id_tipo_via' => $domicilio['tipo_via'],
+        //     'nom_via' => $domicilio['nombre_via'],
+        //     'num_via' => $domicilio['numero_via'],
+        //     'id_zona' => $domicilio['tipo_zona'],
+        //     'nom_zona' => $domicilio['nombre_zona'],
+        //     'referencia' => $domicilio['referencia_domicilio'],
+        //     'kilometro' => $domicilio['km'],
+        //     'manzana' => $domicilio['mz'],
         //     'lote' => $domicilio['lote'],
         //     'interior' => $domicilio['interior'],
-        //     'departamento' => $domicilio['departamento'],
+        //     'departamento' => $domicilio['numero_departamento'],
         //     'piso' => $domicilio['piso'],
-        //     'id_tipo_vivienda' => $domicilio['id_tipo_vivienda'],
-        //     'lat' => $domicilio['lat'],
-        //     'lng' => $domicilio['lng'],
+        //     'id_tipo_vivienda' => $domicilio['tipo_vivienda'],
+        // //     'lat' => $domicilio['lat'],
+        // //     'lng' => $domicilio['lng'],
         // ];
 
         // $domicilioData['user_act'] = $domicilioData['user_reg'] = $id_usuario;
@@ -237,18 +268,18 @@ class GestionPersonas extends Controller
         //     DomicilioUser::create($domicilioData);
         // }
 
-        // $usuarioData = [
-        //     'plato_postre' => addslashes($gustosPreferencias['plato_postre']),
-        //     'galletas_golosinas' => addslashes($gustosPreferencias['galletas_golosinas']),
-        //     'ocio_pasatiempos' => addslashes($gustosPreferencias['ocio_pasatiempos']),
-        //     'artistas_banda' => addslashes($gustosPreferencias['artistas_banda']),
-        //     'genero_musical' => addslashes($gustosPreferencias['genero_musical']),
-        //     'pelicula_serie' => addslashes($gustosPreferencias['pelicula_serie']),
-        //     'colores_favorito' => addslashes($gustosPreferencias['colores_favorito']),
-        //     'redes_sociales' => addslashes($gustosPreferencias['redes_sociales']),
+        // $gustosPreferenciasData = [
+        //     'plato_postre' => addslashes($gustosPreferencias['plato_postre_favorito']),
+        //     'galletas_golosinas' => addslashes($gustosPreferencias['galletas_golosinas_favoritas']),
+        //     'ocio_pasatiempos' => addslashes($gustosPreferencias['actividades_ocio']),
+        //     'artistas_banda' => addslashes($gustosPreferencias['artistas_banda_favorita']),
+        //     'genero_musical' => addslashes($gustosPreferencias['genero_musical_favorito']),
+        //     'pelicula_serie' => addslashes($gustosPreferencias['pelicula_serie_favorita']),
+        //     'colores_favorito' => addslashes($gustosPreferencias['colores_favoritos']),
+        //     'redes_sociales' => addslashes($gustosPreferencias['redes_sociales_favoritas']),
         //     'deporte_favorito' => addslashes($gustosPreferencias['deporte_favorito']),
         //     'tiene_mascota' => $gustosPreferencias['tiene_mascota'],
-        //     'mascota' => addslashes($gustosPreferencias['mascota']),
+        //     'mascota' => addslashes($gustosPreferencias['tipo_mascota']),
         //     'fec_act' => now(),
         //     'user_act' => $id_usuario,
         // ];
@@ -260,7 +291,7 @@ class GestionPersonas extends Controller
         // if ($updateData) {
         //     echo "update";
         //     GustoPreferenciaUser::where('id_usuario', $gustosPreferencias['id_usuario'])
-        //         ->update($usuarioData);
+        //         ->update($gustosPreferenciasData);
         // } else {
         //     echo "insert";
         //     GustoPreferenciaUser::create([
@@ -268,7 +299,482 @@ class GestionPersonas extends Controller
         //         'fec_reg' => now(),
         //         'user_reg' => $id_usuario,
         //         'estado' => 1,
-        //     ] + $usuarioData); // Merge both arrays for insert
+        //     ] + $gustosPreferenciasData); // Merge both arrays for insert
         // }
+
+        // ✅ Actualizar los datos en ReferenciaFamiliar
+        // foreach ($referenciasFamiliares as $referencia) {
+        //     ReferenciaFamiliar::create([
+        //         'id_usuario' => $id_usuario, 
+        //         'nom_familiar' => $referencia['nombre_familiar'] ?? null,
+        //         'id_parentesco' => $referencia['parentesco'] ?? null,
+        //         'dia_nac' => date('d', strtotime($referencia['fecha_nacimiento_ref'] ?? '0000-00-00')),
+        //         'mes_nac' => date('m', strtotime($referencia['fecha_nacimiento_ref'] ?? '0000-00-00')),
+        //         'anio_nac' => date('Y', strtotime($referencia['fecha_nacimiento_ref'] ?? '0000-00-00')),
+        //         'celular1' => $referencia['celular_ref'] ?? null,
+        //         'celular2' => $referencia['celular_ref2'] ?? null,
+        //         'fijo' => $referencia['telefono_fijo'] ?? null,
+        //         'fec_nac' => $referencia['fecha_nacimiento_ref'] ?? null,
+        //         'fec_reg' => now(),
+        //         'user_reg' => $id_usuario,
+        //         'estado' => 1
+        //     ]);
+        // }
+
+        // ✅ Actualizar los datos en ContactoEmergencia
+        // foreach ($contactosEmergencia as $contactoE) {
+        //     ContactoEmergencia::create([
+        //         'id_usuario' => $id_usuario, 
+        //         'nom_contacto' => $contactoE['nombre_contacto_emergencia'],
+        //         'id_parentesco' => $contactoE['parentesco_contacto_emergencia'],
+        //         'celular1' => $contactoE['celular_contacto_emergencia'],
+        //         'celular2' => $contactoE['celular2_contacto_emergencia'],
+        //         'fijo' => $contactoE['telefono_fijo_contacto_emergencia'],
+        //         'fec_reg' => now(), 
+        //         'user_reg' =>  $id_usuario, 
+        //         'estado' => 1, 
+        //     ]);
+        // }
+
+        // ✅ Actualizar los datos en Hijos Y UserIntranet
+        // if ($hijos->id_respuestah == 1) {
+        //     if ($_FILES["documento"]["name"] != "") {
+        //         $ftp_server = "lanumerounocloud.com";
+        //         $ftp_usuario = "intranet@lanumerounocloud.com";
+        //         $ftp_pass = "Intranet2022@";
+        //         $con_id = ftp_connect($ftp_server);
+        //         $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        //         if ((!$con_id) || (!$lr)) {
+        //         } else {
+        //             $path = $_FILES['documento']['name'];
+        //             if ($path != "") {
+        //                 $temp = explode(".", $_FILES['documento']['name']);
+        //                 $source_file = $_FILES['documento']['tmp_name'];
+
+        //                 $fechaHoraActual = date('Y-m-dHis');
+        //                 $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        //                 $ext = pathinfo($path, PATHINFO_EXTENSION);
+        //                 $codigoUnico = '';
+        //                 do {
+        //                     $cadenaAleatoria = '';
+        //                     for ($i = 0; $i < 20; $i++) {
+        //                         $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+        //                     }
+        //                     $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+        //                     $nombre = "dochijo_" . $hijos['id_hijos'] . "_" . $codigoUnico . "_" . rand(10, 199) . "." . $ext;
+        //                     $nombre_archivo = "PERFIL/DOCUMENTACION/DATOS_HIJOS/" . $nombre;
+        //                     $duplicado = 0;
+        //                 } while ($duplicado > 0);
+
+        //                 ftp_pasv($con_id, true);
+
+        //                 if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+        //                     $dato['archivo'] = $nombre;
+        //                 } else {
+        //                     $error = error_get_last();
+        //                 }
+        //             }
+        //             ftp_close($con_id);
+        //         }
+        //     }
+        // }
+
+        // UserIntranet::where('id_usuario', $id_usuario)
+        //     ->update([
+        //         'hijos' => $hijos[0]->respuesta,
+        //         'fec_act' => now(),
+        //         'user_act' => $id_usuario
+        //     ]);
+        // if ($hijos[0]->respuesta == 1) {
+        //     Hijos::where('id_hijos', $hijos->respuesta)
+        //         ->update([
+        //             'id_usuario' => $hijos->respuesta,
+        //             'nom_hijo' => $hijos->nombre_hijo,
+        //             'id_genero' => $hijos->genero_hijo,
+        //             'dia_nac' => date('d', strtotime($referencia['fecha_nacimiento_hijo'] ?? '0000-00-00')),
+        //             'mes_nac' => date('m', strtotime($referencia['fecha_nacimiento_hijo'] ?? '0000-00-00')),
+        //             'anio_nac' => date('Y', strtotime($referencia['fecha_nacimiento_hijo'] ?? '0000-00-00')),
+        //             'num_doc' => $hijos->dni_hijo,
+        //             'id_biologico' => $hijos->biologico,
+        //             'documento' => $hijos->dni_file,
+        //             'fec_nac' => $hijos['fec_nac'],
+        //             'fec_act' => now(),
+        //             'user_act' => $id_usuario,
+        //         ]);
+        // } else {
+        //     Hijos::where('id_usuario', $id_usuario)
+        //         ->update([
+        //             'estado' => 2,
+        //             'fec_act' => now(),
+        //             'user_act' => $id_usuario,
+        //         ]);
+        // }
+
+        // ✅ Actualizar los datos en ConociOffice
+        // ConociOffice::create([
+        //     'id_usuario' => $id_usuario,
+        //     'nl_excel' => $conocimientoOffice['nivel_excel'],
+        //     'nl_word' => $conocimientoOffice['nivel_word'],
+        //     'nl_ppoint' => $conocimientoOffice['nivel_powerpoint'],
+        //     'fec_reg' => now(),
+        //     'user_reg' => $id_usuario,
+        //     'estado' => 1
+        // ]);
+
+        // ✅ Actualizar los datos en ConociIdiomas
+        // foreach ($idiomas as $idioma) {
+        //     ConociIdiomas::create([
+        //         'id_usuario' => $id_usuario,
+        //         'nom_conoci_idiomas' => $idioma['idioma'],
+        //         'lect_conoci_idiomas' => $idioma['lectura'],
+        //         'escrit_conoci_idiomas' => $idioma['escritura'],
+        //         'conver_conoci_idiomas' => $idioma['conversacion'],
+        //         'fec_reg' => now(),
+        //         'user_reg' => $id_usuario,
+        //         'estado' => 1
+        //     ]);
+        // }
+
+
+        // ✅ Actualizar los datos en CursoComplementario
+        // if($_FILES["certificado"]["name"] != ""){
+        //     $ftp_server = "lanumerounocloud.com";
+        //     $ftp_usuario = "intranet@lanumerounocloud.com";
+        //     $ftp_pass = "Intranet2022@";
+        //     $con_id = ftp_connect($ftp_server);
+        //     $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+        //     if((!$con_id) || (!$lr)){
+        //         //echo "No se conecto";
+        //     }else{
+        //         //echo "Se conecto";
+        //         $path = $_FILES['certificado']['name'];
+        //         if($path!=""){
+        //             $temp = explode(".",$_FILES['certificado']['name']);
+        //             $source_file = $_FILES['certificado']['tmp_name'];
+
+        //             $fechaHoraActual = date('Y-m-dHis');
+        //             $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
+        //             $codigoUnico = '';
+        //             do {
+        //                 $cadenaAleatoria = '';
+        //                 for ($i = 0; $i < 20; $i++) {
+        //                     $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+        //                 }
+        //                 $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+        //                 $nombre="cursocomp_".$id_usuario."_".$codigoUnico."_".rand(10,199).".".$ext;
+        //                 $nombre_archivo = "PERFIL/DOCUMENTACION/CURSOS_COMPLEMENTARIOS/".$nombre;
+        //                 $duplicado=0;
+
+        //             }while ($duplicado>0);
+
+        //             ftp_pasv($con_id, true);
+
+        //             if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+        //                 $dato['archivo'] = $nombre;
+        //             }else{
+        //                 $error = error_get_last();
+        //             }
+        //         }
+        //         ftp_close($con_id);
+        //     }
+        // }
+        // foreach ($cursos as $curso) {
+        //     CursoComplementario::create([
+        //         'id_usuario' => $id_usuario,
+        //         'nom_curso_complementario' => $curso['curso'],
+        //         'anio' => $curso['anio'],
+        //         'certificado' => $dato['archivo'],
+        //         'estado' => 1,
+        //         'fec_reg' => now(),
+        //         'user_reg' => $id_usuario,
+        //         'actualidad' => 0,
+        //         'certificado_nombre' => 0,
+        //     ]);
+        // }
+
+
+        // ✅ Actualizar los datos en ExperienciaLaboral
+        // if ($_FILES["certificadolb"]["name"] != "") {
+        //     $ftp_server = "lanumerounocloud.com";
+        //     $ftp_usuario = "intranet@lanumerounocloud.com";
+        //     $ftp_pass = "Intranet2022@";
+        //     $con_id = ftp_connect($ftp_server);
+        //     $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        //     if ((!$con_id) || (!$lr)) {
+        //         //echo "No se conecto";
+        //     } else {
+        //         //echo "Se conecto";
+        //         $path = $_FILES['certificadolb']['name'];
+        //         if ($path != "") {
+        //             $temp = explode(".", $_FILES['certificadolb']['name']);
+        //             $source_file = $_FILES['certificadolb']['tmp_name'];
+
+        //             $fechaHoraActual = date('Y-m-dHis');
+        //             $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
+        //             $codigoUnico = '';
+        //             do {
+        //                 $cadenaAleatoria = '';
+        //                 for ($i = 0; $i < 20; $i++) {
+        //                     $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+        //                 }
+        //                 $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
+        //                 $nombre = "certificadolb_" . $id_usuario . "_" . $codigoUnico . "_" . rand(10, 199) . "." . $ext;
+        //                 $nombre_archivo = "PERFIL/DOCUMENTACION/EXPERIENCIA_LABORAL/" . $nombre;
+        //                 $duplicado = 0;
+        //             } while ($duplicado > 0);
+
+        //             ftp_pasv($con_id, true);
+
+        //             if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+        //                 $dato['archivo'] = $nombre;
+        //             } else {
+        //                 $error = error_get_last();
+        //             }
+        //         }
+        //         ftp_close($con_id);
+        //     }
+        // }
+
+        // if ($dato['actualidad'] == 1) {
+        //     $dato['fec_fin'] = null;
+        // }
+
+        // foreach ($experienciasLaborales as $experiencia) {
+        //     ExperienciaLaboral::create([
+        //         'id_usuario' => $id_usuario,
+        //         'empresa' => $experiencia['empresa'],
+        //         'cargo' => $experiencia['cargo'],
+        //         'dia_ini' => date('d', strtotime($referencia['fecha_inicio'] ?? '0000-00-00')),
+        //         'mes_ini' => date('m', strtotime($referencia['fecha_inicio'] ?? '0000-00-00')),
+        //         'anio_ini' => date('Y', strtotime($referencia['fecha_inicio'] ?? '0000-00-00')),
+        //         'fec_ini' => $experiencia['fecha_inicio'],
+        //         'actualidad' => 0,
+        //         'dia_fin' => date('d', strtotime($referencia['fecha_fin'] ?? '0000-00-00')),
+        //         'mes_fin' => date('m', strtotime($referencia['fecha_fin'] ?? '0000-00-00')),
+        //         'anio_fin' => date('Y', strtotime($referencia['fecha_fin'] ?? '0000-00-00')),
+        //         'fec_fin' => $experiencia['fecha_fin'],
+        //         'motivo_salida' => $experiencia['motivo_salida'],
+        //         'remuneracion' => $experiencia['importe_remuneracion'],
+        //         'nom_referencia_labores' => $experiencia['nombre_referencia'],
+        //         'num_contacto' => $experiencia['numero_contacto_referencia'],
+        //         'certificado' => $experiencia['archivo'],
+        //         'fec_reg' => now(),
+        //         'user_reg' => $id_usuario,
+        //         'estado' => 1,
+        //         'certificado_nombre' => 0,
+        //     ]);
+        // }
+
+        // ✅ Actualizar los datos en EnfermedadUsuario y UserIntranet
+        // UserIntranet::where('id_usuario', $id_usuario)
+        //     ->update([
+        //         'enfermedades' => $enfermedades[0]['padece_enfermedad'],
+        //         'fec_act' => now(),
+        //         'user_act' => $id_usuario
+        //     ]);
+
+        // // Verificación y gestión en la tabla `enfermedad_usuario`
+        // if ($enfermedades[0]['padece_enfermedad'] == 1) {
+        //     foreach ($enfermedades as $enfermedad) {
+        //         // Inserción en `enfermedad_usuario`
+        //         EnfermedadUsuario::create([
+        //             'id_usuario' => $id_usuario,
+        //             'id_respuestae' => $enfermedad['id_respuestae'],
+        //             'nom_enfermedad' => $enfermedad['nom_enfermedad'],
+        //             'dia_diagnostico' => $enfermedad['dia_diagnostico'],
+        //             'mes_diagnostico' => $enfermedad['mes_diagnostico'],
+        //             'anio_diagnostico' => $enfermedad['anio_diagnostico'],
+        //             'fec_diagnostico' => $enfermedad['fec_diagnostico'],
+        //             'fec_reg' => now(),
+        //             'user_reg' => $id_usuario,
+        //             'estado' => 1
+        //         ]);
+        //     }
+        // } else {
+        //     // Actualización en `enfermedad_usuario`
+        //     EnfermedadUsuario::where('id_usuario', $id_usuario)
+        //         ->update([
+        //             'estado' => 2,
+        //             'fec_act' => now(),
+        //             'user_act' => $id_usuario
+        //         ]);
+        // }
+
+        // ✅ Actualizar los datos en GestacionUsuario 
+        // if ($gestacion['respuesta_gestacion'] == 1) {
+        //     GestacionUsuario::create([
+        //         'id_usuario' => $id_usuario,
+        //         'id_respuesta' => $gestacion['respuesta_gestacion'],
+        //         'dia_ges' => date('d', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
+        //         'mes_ges' => date('m', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
+        //         'anio_ges' => date('Y', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
+        //         'fec_ges' => $gestacion['fecha_parto'],
+        //         'fec_reg' => now(),
+        //         'user_reg' => $id_usuario,
+        //         'estado' => 1,
+        //     ]);
+        // } else {
+        //     GestacionUsuario::create([
+        //         'id_usuario' => $gestacion['id_usuario'],
+        //         'id_respuesta' => $gestacion['respuesta_gestacion'],
+        //         'dia_ges' => date('d', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
+        //         'mes_ges' => date('m', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
+        //         'anio_ges' => date('Y', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
+        //         'fec_ges' => $gestacion['fecha_parto'],
+        //         'fec_reg' => now(),
+        //         'user_reg' => $id_usuario,
+        //         'estado' => 1,
+        //     ]);
+        // }
+
+        // ✅ Actualizar los datos en AlergiaUsuario y UserIntranet
+        // UserIntranet::where('id_usuario', $id_usuario)->update([
+        //     'alergia' => $alergias[0]['respuesta_alergico'],
+        //     'fec_act' => now(),
+        //     'user_act' => $id_usuario,
+        // ]);
+
+        // if ($alergias[0]['respuesta_alergico'] == 1) {
+        //     foreach ($alergias as $alergia) {
+        //         AlergiaUsuario::create([
+        //             'id_usuario' => $id_usuario,
+        //             'nom_alergia' => $alergia['alergia'],
+        //             'fec_reg' => now(),
+        //             'user_reg' => $id_usuario,
+        //             'estado' => 1,
+        //         ]);
+        //     }
+
+        // } else {
+        //     AlergiaUsuario::where('id_usuario', $id_usuario)->update([
+        //         'estado' => 2,
+        //         'fec_act' => now(),
+        //         'user_act' => $id_usuario,
+        //     ]);
+        // }
+
+        // ✅ Actualizar los datos en OtrosUsuario
+        // OtrosUsuario::where('id_usuario', $id_usuario)->update([
+        //     'id_grupo_sanguineo' => $otros['tipo_sangre'],
+        //     'cert_vacu_covid' => '',
+        //     'fec_act' => now(),
+        //     'user_act' => $id_usuario,
+        // ]);
+
+        // ✅ Actualizar los datos en ReferenciaConvocatoria
+        // ReferenciaConvocatoria::create([
+        //     'id_usuario' => $id_usuario,
+        //     'id_referencia_laboral' => $referenciaConvocatoria['puesto_referencia'],
+        //     'otros' => $referenciaConvocatoria['especifique_otros'],
+        //     'fec_reg' => now(),
+        //     'user_reg' => $id_usuario,
+        //     'estado' => 1
+        // ]);
+
+        // if ($_FILES['filecv_doc']['name'] != "" || $_FILES['filedni_doc']['name'] != "" || $_FILES['filerecibo_doc']['name'] != "") {
+        //     $ftp_server = "lanumerounocloud.com";
+        //     $ftp_usuario = "intranet@lanumerounocloud.com";
+        //     $ftp_pass = "Intranet2022@";
+        //     $con_id = ftp_connect($ftp_server);
+        //     $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        //     if ((!$con_id) || (!$lr)) {
+        //         echo "No se conecto";
+        //     } else {
+        //         echo "Se conecto";
+        //         if ($_FILES['filecv_doc']['name'] != "") {
+        //             $path = $_FILES['filecv_doc']['name'];
+        //             $temp = explode(".", $_FILES['filecv_doc']['name']);
+        //             $source_file = $_FILES['filecv_doc']['tmp_name'];
+
+        //             $fecha = date('Y-m-d_His');
+        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
+        //             $nombre_soli = "CV_" . $id_usuario . "_" . $fecha . "_" . rand(10, 199);
+        //             $nombre = $nombre_soli . "." . $ext;
+        //             $dato['cv_doc'] = $nombre;
+
+        //             ftp_pasv($con_id, true);
+        //             $subio = ftp_put($con_id, "PERFIL/DOCUMENTACION/DOCUMENTACION/" . $nombre, $source_file, FTP_BINARY);
+        //             if ($subio) {
+        //                 echo "Archivo subido correctamente";
+        //             } else {
+        //                 echo "Archivo no subido correctamente";
+        //             }
+        //         }
+        //         if ($_FILES['filedni_doc']['name'] != "") {
+        //             $path = $_FILES['filedni_doc']['name'];
+        //             $temp = explode(".", $_FILES['filedni_doc']['name']);
+        //             $source_file = $_FILES['filedni_doc']['tmp_name'];
+
+        //             $fecha = date('Y-m-d_His');
+        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
+        //             $nombre_soli = "DNI_" . $id_usuario . "_" . $fecha . "_" . rand(10, 199);
+        //             $nombre = $nombre_soli . "." . $ext;
+        //             $dato['dni_doc'] = $nombre;
+
+        //             ftp_pasv($con_id, true);
+        //             $subio = ftp_put($con_id, "PERFIL/DOCUMENTACION/DOCUMENTACION/" . $nombre, $source_file, FTP_BINARY);
+        //             if ($subio) {
+        //                 echo "Archivo subido correctamente";
+        //             } else {
+        //                 echo "Archivo no subido correctamente";
+        //             }
+        //         }
+        //         if ($_FILES['filerecibo_doc']['name'] != "") {
+        //             $path = $_FILES['filerecibo_doc']['name'];
+        //             $temp = explode(".", $_FILES['filerecibo_doc']['name']);
+        //             $source_file = $_FILES['filerecibo_doc']['tmp_name'];
+
+        //             $fecha = date('Y-m-d_His');
+        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
+        //             $nombre_soli = "RECIBO_" . $id_usuario . "_" . $fecha . "_" . rand(10, 199);
+        //             $nombre = $nombre_soli . "." . $ext;
+        //             $dato['recibo_doc'] = $nombre;
+
+        //             ftp_pasv($con_id, true);
+        //             $subio = ftp_put($con_id, "PERFIL/DOCUMENTACION/DOCUMENTACION/" . $nombre, $source_file, FTP_BINARY);
+        //             if ($subio) {
+        //                 echo "Archivo subido correctamente";
+        //             } else {
+        //                 echo "Archivo no subido correctamente";
+        //             }
+        //         }
+        //     }
+        // }
+
+        // DocumentacionUsuario::insert([
+        //     'id_usuario' => $id_usuario,
+        //     'cv_doc' => $dato['cv_doc'],
+        //     'dni_doc' => $dato['dni_doc'],
+        //     'recibo_doc' => $dato['recibo_doc'],
+        //     'estado' => 1,
+        //     'fec_reg' => now(),
+        //     'user_reg' => $id_usuario
+        // ]);
+
+
+        // ✅ Actualizar los datos en RopaUsuario
+        // RopaUsuario::insert([
+        //     'id_usuario' => $id_usuario,
+        //     'polo' => $uniforme['talla_polo'],
+        //     'camisa' => $uniforme['talla_camisa'],
+        //     'pantalon' => $uniforme['talla_pantalon'],
+        //     'zapato' => $uniforme['tallazapato'],
+        //     'fec_reg' => now(),
+        //     'user_reg' => $id_usuario,
+        //     'estado' => 1
+        // ]);
+
+        // ✅ Actualizar los datos en SistPensUsuario
+        // SistPensUsuario::create([
+        //     'id_usuario' => $dato['id_usuario'],
+        //     'id_respuestasp' => $dato['id_respuestasp'],
+        //     'id_sistema_pensionario' => $dato['id_sistema_pensionario'],
+        //     'id_afp' => $dato['id_afp'],
+        //     'user_reg' => $id_usuario,
+        //     'fec_reg' => now(),
+        //     'estado' => 1,
+        // ]);
     }
 }
