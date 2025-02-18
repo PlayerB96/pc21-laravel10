@@ -12,9 +12,10 @@
                 <div class="form-container-postulante">
                     <FormSection v-for="(section, index) in sections" :key="index" :section="section"
                         :model="form[section.model]" @agregar-referencia="agregarReferencia"
-                        @agregar-contacto-emergencia="agregarContactoEmergencia" @agregar-idioma="agregarIdioma"
-                        @agregar-curso="agregarCurso" @agregar-experiencia="agregarExperiencia"
-                        @agregar-enfermedad="agregarEnfermedad" @agregar-alergia="agregarAlergia">
+                        @agregar-contacto-emergencia="agregarContactoEmergencia" @agregar-hijo="agregarHijos"
+                        @agregar-idioma="agregarIdioma" @agregar-curso="agregarCurso"
+                        @agregar-experiencia="agregarExperiencia" @agregar-enfermedad="agregarEnfermedad"
+                        @agregar-alergia="agregarAlergia">
                         <template v-if="section.model === 'nuevaReferencia'" #default>
                             <div v-if="form.referenciasFamiliares.length > 0" class="table-responsive">
                                 <table class="table">
@@ -30,7 +31,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(referencia, index) in form.referenciasFamiliares" :key="index">
+                                        <tr v-for="(referencia, index) in referenciasConTexto" :key="index">
                                             <td>{{ referencia.nombre_familiar }}</td>
                                             <td>{{ referencia.parentesco }}</td>
                                             <td>{{ referencia.fecha_nacimiento_ref }}</td>
@@ -59,7 +60,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(contacto, index) in form.contactosEmergencia" :key="index">
+                                        <tr v-for="(contacto, index) in contactosEmergenciaConTexto" :key="index">
                                             <td>{{ contacto.nombre_contacto_emergencia }}</td>
                                             <td>{{ contacto.parentesco_contacto_emergencia }}</td>
                                             <td>{{ contacto.celular_contacto_emergencia }}</td>
@@ -71,6 +72,39 @@
                                             </td>
                                         </tr>
                                     </tbody>
+
+                                </table>
+                            </div>
+                        </template>
+                        <template v-if="section.model === 'nuevoHijo'" #default>
+                            <div v-if="form.hijos.length > 0" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Respuesta</th>
+                                            <th>Nombre Hijo</th>
+                                            <th>Genero</th>
+                                            <th>Fecha Nacimiento</th>
+                                            <th>DNI</th>
+                                            <th>Biologico</th>
+                                            <th>DNI(PDF)</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(hijo, index) in hijosConTexto" :key="index">
+                                            <td>{{ hijo.respuesta }}</td>
+                                            <td>{{ hijo.nombre_hijo }}</td>
+                                            <td>{{ hijo.genero_hijo }}</td>
+                                            <td>{{ hijo.fecha_nacimiento_hijo }}</td>
+                                            <td>{{ hijo.dni_hijo }}</td>
+                                            <td>{{ hijo.biologico }}</td>
+                                            <td>
+                                                <button @click="eliminarHijos(index, $event)">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
                                 </table>
                             </div>
                         </template>
@@ -87,7 +121,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(idioma, index) in form.idiomas" :key="index">
+                                        <tr v-for="(idioma, index) in idiomasConTexto" :key="index">
                                             <td>{{ idioma.idioma }}</td>
                                             <td>{{ idioma.lectura }}</td>
                                             <td>{{ idioma.escritura }}</td>
@@ -97,6 +131,7 @@
                                             </td>
                                         </tr>
                                     </tbody>
+
                                 </table>
                             </div>
                         </template>
@@ -133,7 +168,6 @@
                                             <th>Cargo</th>
                                             <th>Fecha de Inicio</th>
                                             <th>Fecha de Fin</th>
-                                            <th>Descripción</th>
                                             <th>Motivo de Salida</th>
                                             <th>Importe de Remuneración</th>
                                             <th>Nombre Referencia</th>
@@ -148,7 +182,6 @@
                                             <td>{{ experiencia.cargo }}</td>
                                             <td>{{ experiencia.fecha_inicio }}</td>
                                             <td>{{ experiencia.fecha_fin }}</td>
-                                            <td>{{ experiencia.descripcion }}</td>
                                             <td>{{ experiencia.motivo_salida }}</td>
                                             <td>{{ experiencia.importe_remuneracion }}</td>
                                             <td>{{ experiencia.nombre_referencia }}</td>
@@ -289,13 +322,77 @@ export default {
     components: {
         FormSection, MapComponent
     },
+    computed: {
+        idiomasConTexto() {
+            const getText = (campo, id) => {
+                return this.sections.find(s => s.model === 'nuevoIdioma')
+                    ?.fields.find(f => f.name === campo)
+                    ?.options.find(opt => opt.id === id)?.text || 'Desconocido';
+            };
+
+            return this.form.idiomas.map(idioma => ({
+                idioma: getText('idioma', idioma.idioma),
+                lectura: getText('lectura', idioma.lectura),
+                escritura: getText('escritura', idioma.escritura),
+                conversacion: getText('conversacion', idioma.conversacion)
+            }));
+        },
+        referenciasConTexto() {
+            const getText = (campo, id) => {
+                return this.sections.find(s => s.model === 'nuevaReferencia')
+                    ?.fields.find(f => f.name === campo)
+                    ?.options.find(opt => opt.id === id)?.text || 'Desconocido';
+            };
+
+            return this.form.referenciasFamiliares.map(ref => ({
+                nombre_familiar: ref.nombre_familiar,
+                parentesco: getText('parentesco', ref.parentesco),
+                fecha_nacimiento_ref: ref.fecha_nacimiento_ref,
+                celular_ref: ref.celular_ref,
+                celular_ref2: ref.celular_ref2,
+                telefono_fijo: ref.telefono_fijo
+            }));
+        },
+        hijosConTexto() {
+            const getText = (campo, id) => {
+                return this.sections.find(s => s.model === 'nuevoHijo')
+                    ?.fields.find(f => f.name === campo)
+                    ?.options.find(opt => opt.id === id)?.text || 'Desconocido';
+            };
+
+            return this.form.hijos.map(hijo => ({
+                respuesta: getText('respuesta', hijo.respuesta),
+                nombre_hijo: hijo.nombre_hijo,
+                genero_hijo: getText('genero_hijo', hijo.genero_hijo),
+                fecha_nacimiento_hijo: hijo.fecha_nacimiento_hijo,
+                dni_hijo: hijo.dni_hijo,
+                biologico: getText('biologico', hijo.biologico),
+                dni_file: hijo.dni_file
+            }));
+        },
+        contactosEmergenciaConTexto() {
+            const getText = (campo, id) => {
+                return this.sections.find(s => s.model === 'nuevoContactoEmergencia')
+                    ?.fields.find(f => f.name === campo)
+                    ?.options.find(opt => opt.id === id)?.text || 'Desconocido';
+            };
+
+            return this.form.contactosEmergencia.map(contacto => ({
+                nombre_contacto_emergencia: contacto.nombre_contacto_emergencia,
+                parentesco_contacto_emergencia: getText('parentesco_contacto_emergencia', contacto.parentesco_contacto_emergencia),
+                celular_contacto_emergencia: contacto.celular_contacto_emergencia,
+                celular2_contacto_emergencia: contacto.celular2_contacto_emergencia,
+                telefono_fijo_contacto_emergencia: contacto.telefono_fijo_contacto_emergencia
+            }));
+        }
+    },
     data() {
         return {
+            anios: [],
             departamentos: [],
             provincias: [],
             distritos: [],
             mostrarPopup: false,
-
             form: {
                 personalInfo: {
                     apellido_paterno: '',
@@ -329,7 +426,6 @@ export default {
                     nombre_zona: '',
                     tipo_vivienda: '',
                     referencia_domicilio: '',
-                    direccion_completa: ''
                 },
                 gustosPreferencias: {
                     plato_postre_favorito: '',
@@ -396,7 +492,6 @@ export default {
                     cargo: '',
                     fecha_inicio: '',
                     fecha_fin: '',
-                    descripcion: '',
                     motivo_salida: '',
                     importe_remuneracion: '',
                     nombre_referencia: '',
@@ -412,7 +507,7 @@ export default {
                 gestacion: {
                     respuesta_gestacion: '',
                     fecha_parto: '',
-                    dni_file: ''
+
                 },
                 alergias: [],
                 nuevaAlergia: {
@@ -426,17 +521,16 @@ export default {
                     puesto_referencia: '',
                     especifique_otros: '',
                 },
-                adjuntarDocumentacion:
-                {
+                adjuntarDocumentacion: {
                     adjuntar_cv: '',
                     foto_dni: '',
                     copia_agua_luz: ''
                 },
                 uniforme: {
-                    polo: '',
-                    camisa: '',
-                    pantalon: '',
-                    zapato: ''
+                    talla_polo: '',
+                    talla_camisa: '',
+                    talla_pantalon: '',
+                    talla_zapato: ''
                 },
                 sistemapensionario: {
                     sistema_pensionario: '',
@@ -525,21 +619,21 @@ export default {
                             label: 'Departamento',
                             name: 'id_departamento',
                             type: 'select',
-                            required: true,
+                            required: false,
                             options: [] // Aquí llenas las opciones dinámicamente desde el backend
                         },
                         {
                             label: 'Provincia',
                             name: 'id_provincia',
                             type: 'select',
-                            required: true,
+                            required: false,
                             options: [] // Aquí llenas las opciones dinámicamente después de seleccionar un departamento
                         },
                         {
                             label: 'Distrito',
                             name: 'id_distrito',
                             type: 'select',
-                            required: true,
+                            required: false,
                             options: [] // Aquí llenas las opciones dinámicamente después de seleccionar una provincia
                         },
                         {
@@ -625,7 +719,21 @@ export default {
                     model: 'nuevaReferencia',
                     fields: [
                         { label: 'Nombre de Familiar', name: 'nombre_familiar', type: 'text', required: false },
-                        { label: 'Parentesco', name: 'parentesco', type: 'select', options: ['Madre', 'Padre', 'Hermano', 'Hermana', 'Otro'], required: false },
+                        {
+                            label: 'Parentesco', name: 'parentesco', type: 'select', options: [
+                                { id: 1, text: 'PAPÁ' },
+                                { id: 2, text: 'MAMÁ' },
+                                { id: 3, text: 'TÍO/A' },
+                                { id: 4, text: 'HERMANO/A' },
+                                { id: 5, text: 'PRIMO/A' },
+                                { id: 6, text: 'ESPOSO/A' },
+                                { id: 7, text: 'PAREJA' },
+                                { id: 8, text: 'SOBRINO/A' },
+                                { id: 9, text: 'HIJO/A' },
+                                { id: 10, text: 'ABUELO/A' }
+                            ],
+                            required: false
+                        },
                         { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento_ref', type: 'date', required: false },
                         { label: 'Celular', name: 'celular_ref', type: 'number', required: false },
                         { label: 'Celular 2', name: 'celular_ref2', type: 'number', required: false },
@@ -636,12 +744,18 @@ export default {
                     title: 'Datos de Hijos/as',
                     model: 'nuevoHijo',
                     fields: [
-                        { label: '¿Respuesta?', name: 'respuesta', type: 'select', options: ['Sí', 'No'], required: false },
+                        { label: '¿Respuesta?', name: 'respuesta', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
                         { label: 'Nombre de Hijo/a', name: 'nombre_hijo', type: 'text', required: false },
-                        { label: 'Género', name: 'genero_hijo', type: 'select', options: ['Masculino', 'Femenino', 'Otro'], required: false },
+                        {
+                            label: 'Género', name: 'genero_hijo', type: 'select',
+                            options: [
+                                { id: 1, text: 'MASCULINO' },
+                                { id: 2, text: 'FEMENINO' }],
+                            required: false
+                        },
                         { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento_hijo', type: 'date', required: false },
                         { label: 'DNI', name: 'dni_hijo', type: 'text', required: false },
-                        { label: 'Biológico/No Biológico', name: 'biologico', type: 'select', options: ['Sí', 'No'], required: false },
+                        { label: 'Biológico/No Biológico', name: 'biologico', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
                         { label: 'Adjuntar DNI', name: 'dni_file', type: 'file', required: false }
                     ]
                 },
@@ -650,7 +764,20 @@ export default {
                     model: 'nuevoContactoEmergencia',
                     fields: [
                         { label: 'Nombre de Contacto', name: 'nombre_contacto_emergencia', type: 'text', required: false },
-                        { label: 'Parentesco', name: 'parentesco_contacto_emergencia', type: 'select', options: ['Padre', 'Madre', 'Hermano/a', 'Amigo/a', 'Otro'], required: false },
+                        {
+                            label: 'Parentesco', name: 'parentesco_contacto_emergencia', type: 'select', options: [
+                                { id: 1, text: 'PAPÁ' },
+                                { id: 2, text: 'MAMÁ' },
+                                { id: 3, text: 'TÍO/A' },
+                                { id: 4, text: 'HERMANO/A' },
+                                { id: 5, text: 'PRIMO/A' },
+                                { id: 6, text: 'ESPOSO/A' },
+                                { id: 7, text: 'PAREJA' },
+                                { id: 8, text: 'SOBRINO/A' },
+                                { id: 9, text: 'HIJO/A' },
+                                { id: 10, text: 'ABUELO/A' }
+                            ], required: false
+                        },
                         { label: 'Celular', name: 'celular_contacto_emergencia', type: 'number', required: false },
                         { label: 'Celular 2', name: 'celular2_contacto_emergencia', type: 'number', required: false },
                         { label: 'Teléfono Fijo', name: 'telefono_fijo_contacto_emergencia', type: 'number', required: false }
@@ -660,19 +787,83 @@ export default {
                     title: 'Conocimientos de Office',
                     model: 'conocimientoOffice',
                     fields: [
-                        { label: '¿Nivel de Excel?', name: 'nivel_excel', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: false },
-                        { label: '¿Nivel de Word?', name: 'nivel_word', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: false },
-                        { label: '¿Nivel de PowerPoint?', name: 'nivel_powerpoint', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: false },
+                        {
+                            label: '¿Nivel de Excel?', name: 'nivel_excel', type: 'select',
+                            options: [
+                                { id: 1, text: 'Básico' },
+                                { id: 2, text: 'Intermedio' },
+                                { id: 3, text: 'Avanzado' },
+                                { id: 4, text: 'No Aplica' },
+                            ],
+                            required: false
+                        },
+                        {
+                            label: '¿Nivel de Word?', name: 'nivel_word', type: 'select',
+                            options: [
+                                { id: 1, text: 'Básico' },
+                                { id: 2, text: 'Intermedio' },
+                                { id: 3, text: 'Avanzado' },
+                                { id: 4, text: 'No Aplica' },
+                            ],
+                            required: false
+                        },
+                        {
+                            label: '¿Nivel de PowerPoint?', name: 'nivel_powerpoint', type: 'select',
+                            options: [
+                                { id: 1, text: 'Básico' },
+                                { id: 2, text: 'Intermedio' },
+                                { id: 3, text: 'Avanzado' },
+                                { id: 4, text: 'No Aplica' },
+                            ],
+                            required: false
+                        },
                     ]
                 },
                 {
                     title: 'Conocimientos de Idiomas',
                     model: 'nuevoIdioma',
                     fields: [
-                        { label: 'Idioma', name: 'idioma', type: 'select', options: ['Inglés', 'Francés', 'Alemán', 'Italiano', 'Portugués', 'Otro'], required: false },
-                        { label: 'Lectura', name: 'lectura', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: false },
-                        { label: 'Escritura', name: 'escritura', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: false },
-                        { label: 'Conversación', name: 'conversacion', type: 'select', options: ['Básico', 'Intermedio', 'Avanzado'], required: false },
+                        {
+                            label: 'Idioma', name: 'idioma', type: 'select',
+                            options: [
+                                { id: 1, text: 'Inglés' },
+                                { id: 2, text: 'Quechua' },
+                                { id: 3, text: 'Francés' },
+                                { id: 4, text: 'Portugués' },
+                                { id: 5, text: 'No Aplica' },
+                            ],
+                            required: false
+                        },
+                        {
+                            label: 'Lectura', name: 'lectura', type: 'select', options:
+                                [
+                                    { id: 1, text: 'Básico' },
+                                    { id: 2, text: 'Intermedio' },
+                                    { id: 3, text: 'Avanzado' },
+                                    { id: 4, text: 'No Aplica' },
+                                ],
+                            required: false
+                        },
+                        {
+                            label: 'Escritura', name: 'escritura', type: 'select', options:
+                                [
+                                    { id: 1, text: 'Básico' },
+                                    { id: 2, text: 'Intermedio' },
+                                    { id: 3, text: 'Avanzado' },
+                                    { id: 4, text: 'No Aplica' },
+                                ],
+                            required: false
+                        },
+                        {
+                            label: 'Conversación', name: 'conversacion', type: 'select', options:
+                                [
+                                    { id: 1, text: 'Básico' },
+                                    { id: 2, text: 'Intermedio' },
+                                    { id: 3, text: 'Avanzado' },
+                                    { id: 4, text: 'No Aplica' },
+                                ],
+                            required: false
+                        },
 
                     ]
                 },
@@ -681,7 +872,11 @@ export default {
                     model: 'nuevoCurso',
                     fields: [
                         { label: 'Curso', name: 'curso', type: 'text', required: false },
-                        { label: 'Año', name: 'anio', type: 'select', options: ['2020', '2021', '2022', '2023', '2024', '2025'], required: false },
+                        {
+                            label: 'Año', name: 'anio', type: 'select',
+                            required: false,
+                            options: [],
+                        },
                         { label: 'Adjuntar Certificado', name: 'certificado', type: 'file', onchange: 'handleFileUpload', required: false }
 
                     ]
@@ -694,7 +889,6 @@ export default {
                         { label: 'Cargo', name: 'cargo', type: 'text', required: false },
                         { label: 'Fecha de Inicio', name: 'fecha_inicio', type: 'date', required: false },
                         { label: 'Fecha de Fin', name: 'fecha_fin', type: 'date', required: false },
-                        { label: 'Descripción', name: 'descripcion', type: 'text', required: false },
                         { label: 'Motivo de Salida', name: 'motivo_salida', type: 'text', required: false },
                         { label: 'Importe de Remuneración', name: 'importe_remuneracion', type: 'number', required: false },
                         { label: 'Nombre Referencia', name: 'nombre_referencia', type: 'text', required: false },
@@ -707,7 +901,7 @@ export default {
                     title: 'Enfermedades',
                     model: 'nuevaEnfermedad',
                     fields: [
-                        { label: 'Indique si padece alguna enfermedad', name: 'padece_enfermedad', type: 'select', options: ['Sí', 'No'], required: false },
+                        { label: 'Indique si padece alguna enfermedad', name: 'padece_enfermedad', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
                         { label: 'Especifique la Enfermedad', name: 'enfermedad', type: 'text', required: false },
                         { label: 'Fecha de Diagnóstico', name: 'fecha_diagnostico', type: 'date', required: false },
 
@@ -717,14 +911,14 @@ export default {
                     title: 'Gestación',
                     model: 'gestacion',
                     fields: [
-                        { label: 'Indique si se encuentra en gestación', name: 'respuesta_gestacion', type: 'select', options: ['Sí', 'No'], required: false },
+                        { label: 'Indique si se encuentra en gestación', name: 'respuesta_gestacion', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
                         { label: 'Fecha de inicio de gestación', name: 'fecha_parto', type: 'date', required: false }]
                 },
                 {
                     title: 'Alergias',
                     model: 'nuevaAlergia',
                     fields: [
-                        { label: 'Es alérgico a algun medicamento', name: 'respuesta_alergico', type: 'select', options: ['Sí', 'No'], required: false },
+                        { label: 'Es alérgico a algun medicamento', name: 'respuesta_alergico', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
                         { label: 'Indique el nombre del medicamento', name: 'alergia', type: 'text', required: false }
                     ]
                 },
@@ -732,14 +926,40 @@ export default {
                     title: 'Otros',
                     model: 'otros',
                     fields: [
-                        { label: 'Tipo de sangre', name: 'tipo_sangre', type: 'select', options: ['O+', 'A-', 'A+', 'AB+', 'AB-', 'B-', 'O-'], required: false },
+                        {
+                            label: 'Tipo de sangre', name: 'tipo_sangre', type: 'select',
+                            options: [
+                                { id: 1, text: 'O-' },
+                                { id: 2, text: 'O+' },
+                                { id: 3, text: 'A-' },
+                                { id: 4, text: 'A+' },
+                                { id: 5, text: 'B-' },
+                                { id: 6, text: 'B+' },
+                                { id: 7, text: 'AB-' },
+                                { id: 8, text: 'AB+' },
+                                { id: 9, text: 'Desconoce' },
+                            ],
+                            required: false
+                        },
                     ]
                 },
                 {
                     title: 'Referencia de Convocatoria',
                     model: 'referenciaConvocatoria',
                     fields: [
-                        { label: 'Indica ¿Cómo te enteraste del puesto?', name: 'puesto_referencia', type: 'select', options: ['Computrabajo', 'Linkendl', 'Bumeran', 'Facebook'], required: false },
+                        {
+                            label: 'Indica ¿Cómo te enteraste del puesto?', name: 'puesto_referencia', type: 'select',
+                            options:
+                                [
+                                    { id: 1, text: 'COMPUTRABAJO' },
+                                    { id: 2, text: 'AFICHE EN FACHADA' },
+                                    { id: 3, text: 'RECOMENDACIÓN' },
+                                    { id: 4, text: 'REDES SOCIALES' },
+                                    { id: 5, text: 'RADIO' },
+                                    { id: 6, text: 'OTROS' },
+                                ],
+                            required: false
+                        },
                         { label: 'Especifique Otros', name: 'especifique_otros', type: 'text', required: false },
 
                     ]
@@ -758,18 +978,94 @@ export default {
                     title: 'Uniforme',
                     model: 'uniforme',
                     fields: [
-                        { label: 'Polo', name: 'talla_polo', type: 'select', options: ['XS', 'S', 'M', 'L'], required: false },
-                        { label: 'Camisa', name: 'talla_camisa', type: 'select', options: ['XS', 'S', 'M', 'L'], required: false },
-                        { label: 'Pantalon', name: 'talla_pantalon', type: 'select', options: ['20', '25', '26', '27', '30', '32', '34', '36', '38', '40'], required: false },
-                        { label: 'Zapato', name: 'talla_zapato', type: 'select', options: ['36', '38', '40', '42', '44', '46'], required: false },
+                        {
+                            label: 'Polo',
+                            name: 'talla_polo',
+                            type: 'select',
+                            options: [
+                                { id: 2, text: 'XS' },
+                                { id: 1, text: 'S' },
+                                { id: 3, text: 'M' },
+                                { id: 4, text: 'L' },
+                                { id: 5, text: 'XL' },
+                                { id: 6, text: 'XXL' },
+                                { id: 7, text: 'XXXL' }
+                            ],
+                            required: false
+                        },
+                        {
+                            label: 'Camisa',
+                            name: 'talla_camisa',
+                            type: 'select',
+                            options: [
+                                { id: 25, text: '13' },
+                                { id: 31, text: '13.5' },
+                                { id: 26, text: '14' },
+                                { id: 32, text: '14.5' },
+                                { id: 27, text: '15' },
+                                { id: 33, text: '15.5' },
+                                { id: 28, text: '16' },
+                                { id: 34, text: '16.5' },
+                                { id: 29, text: '17' },
+                                { id: 35, text: '17.5' },
+                                { id: 30, text: '18' },
+                                { id: 36, text: '18.5' }
+                            ],
+                            required: false
+                        },
+                        {
+                            label: 'Pantalón',
+                            name: 'talla_pantalon',
+                            type: 'select',
+                            options: [
+                                { id: 19, text: '26' },
+                                { id: 20, text: '28' },
+                                { id: 21, text: '30' },
+                                { id: 22, text: '32' },
+                                { id: 23, text: '34' },
+                                { id: 24, text: '36' }
+                            ],
+                            required: false
+                        },
+                        {
+                            label: 'Zapato',
+                            name: 'talla_zapato',
+                            type: 'select',
+                            options: [
+                                { id: 8, text: '34' },
+                                { id: 9, text: '35' },
+                                { id: 10, text: '36' },
+                                { id: 11, text: '37' },
+                                { id: 12, text: '38' },
+                                { id: 13, text: '39' },
+                                { id: 14, text: '40' },
+                                { id: 15, text: '41' },
+                                { id: 16, text: '42' },
+                                { id: 17, text: '43' },
+                                { id: 18, text: '44' },
+                                { id: 37, text: '45' }
+                            ],
+                            required: false
+                        }
                     ]
+
                 },
                 {
                     title: 'Sistema Pensionario',
                     model: 'sistemapensionario',
                     fields: [
-                        { label: 'Pertenece a algún sistema pensionario', name: 'sistema_pensionario', type: 'select', options: ['Si', 'No'], required: false },
-                        { label: 'Indique el sistema pensionaro al que pertenece', name: 'tipo_sistema', type: 'select', options: ['ONP', 'AFP'], required: false },
+                        { label: 'Pertenece a algún sistema pensionario', name: 'sistema_pensionario', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
+                        {
+                            label: 'Indique el sistema pensionaro al que pertenece', name: 'tipo_sistema', type: 'select',
+                            ptions: [
+                                { id: 1, text: 'INTEGRA' },
+                                { id: 2, text: 'PRIMA' },
+                                { id: 3, text: 'PROFUTURO' },
+                                { id: 4, text: 'HABITAT' },
+                                { id: 5, text: 'HORIZONTE' },
+                                { id: 6, text: 'ONP' }], 
+                                required: false
+                        },
                         { label: 'Si indico AFP elija', name: 'afp', type: 'select', options: ['AFP Integra', 'Prima AFP', 'Profuturo AFP', 'AFP Habitat'], required: false },
 
                     ]
@@ -778,8 +1074,20 @@ export default {
                     title: 'Número de Cuenta',
                     model: 'cuentabancaria',
                     fields: [
-                        { label: '¿Cuéntas con cuenta bancaria?', name: 'cuenta_bancaria', type: 'select', options: ['Si', 'No'], required: false },
-                        { label: 'Indique la entidad bancaria', name: 'entidad_bancaria', type: 'select', options: ['BCP', 'INTERBANK', 'SCOTIABANK', 'BBVA', 'MIBANCO'], required: false },
+                        { label: '¿Cuéntas con cuenta bancaria?', name: 'cuenta_bancaria', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
+                        {
+                            label: 'Indique la entidad bancaria', name: 'entidad_bancaria', type: 'select',
+                            options:
+                                [
+                                    { id: 1, text: 'Banco de Crédito del Perú' },
+                                    { id: 2, text: 'Interbank' },
+                                    { id: 3, text: 'Scotiabank' },
+                                    { id: 4, text: 'BBVA' },
+                                    { id: 5, text: 'Banco De La Nacion' },
+                                    { id: 6, text: 'ONP' }
+                                ]
+                            , required: false
+                        },
                         { label: 'Indique el número de cuenta', name: 'numero_cuenta', type: 'text', required: false },
                         { label: 'Indique el código interbancario', name: 'codigo_interbancario', type: 'text', required: false },
 
@@ -794,8 +1102,28 @@ export default {
             this.$router.push('/inicio'); // Redirigir a la vista de inicio si no hay sesión
         }
         this.getDepartamentos();
+        this.getAnios();
     },
     methods: {
+        // Obtener los años
+        getAnios() {
+            axios.get('/anios')
+                .then(response => {
+                    // Transformar la respuesta para tener id y text
+                    this.anios = response.data.map(item => ({
+                        id: item.cod_anio, // Asegúrate de que este campo existe en la respuesta
+                        text: item.cod_anio // Asegúrate de que este campo también existe en la respuesta
+                    }));
+                    // Asignar las opciones de departamento al campo 'id_departamento'
+                    this.sections[8].fields.find(field => field.name === 'anio').options = this.anios;
+                    console.log(this.anios);
+
+                })
+                .catch(error => {
+                    console.error('Error al obtener anio:', error);
+                });
+        },
+
         // Obtener los departamentos
         getDepartamentos() {
             axios.get('/departamentos')
@@ -808,7 +1136,7 @@ export default {
 
                     // Asignar las opciones de departamento al campo 'id_departamento'
                     this.sections[1].fields.find(field => field.name === 'id_departamento').options = this.departamentos;
-                    console.log(this.departamentos);
+                    // console.log(this.departamentos);
 
                 })
                 .catch(error => {
@@ -924,6 +1252,22 @@ export default {
                 telefono_fijo_contacto_emergencia: ''
             };
         },
+        eliminarHijos(index, event) {
+            event.preventDefault();
+            this.form.hijos.splice(index, 1);
+        },
+        agregarHijos() {
+            this.form.hijos.push({ ...this.form.nuevoHijo });
+            this.form.nuevoHijo = {
+                respuesta: '',
+                nombre_hijo: '',
+                genero_hijo: '',
+                fecha_nacimiento_hijo: '',
+                dni_hijo: '',
+                biologico: '',
+                dni_file: ''
+            };
+        },
         eliminarContactoEmergencia(index, event) {
             event.preventDefault();
             this.form.contactosEmergencia.splice(index, 1);
@@ -966,7 +1310,6 @@ export default {
                 cargo: '',
                 fecha_inicio: '',
                 fecha_fin: '',
-                descripcion: '',
                 motivo_salida: '',
                 importe_remuneracion: '',
                 nombre_referencia: '',

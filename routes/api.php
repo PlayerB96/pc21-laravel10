@@ -25,6 +25,7 @@ Route::middleware(['api', StartSession::class])->group(function () {
     Route::post('/gestionpersonas/store_colaborador',  [GestionPersonas::class, 'store_colaborador']);
     // Ubigeo
     Route::get('/departamentos', [UbigeoController::class, 'getDepartamentos']);
+    Route::get('/anios', [UbigeoController::class, 'getAnio']);
     Route::get('/provincias', [UbigeoController::class, 'getProvincias']);
     Route::get('/distritos', [UbigeoController::class, 'getDistritos']);
     Route::get('/distritos-departamento', [UbigeoController::class, 'getDistritosByDepartamento']);

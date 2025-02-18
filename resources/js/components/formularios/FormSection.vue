@@ -22,6 +22,10 @@
         <div v-if="section.title === 'Alergias'">
             <button type="button" @click="validarYAgregarAlergia" class="btn-add">Agregar Alergia</button>
         </div>
+        <div v-if="section.title === 'Datos de Hijos/as'">
+            <button type="button" @click="validarYAgregarHijo" class="btn-add">Agregar Hijos</button>
+        </div>
+        
         <div class="section-title">{{ section.title }}</div>
         <div class="form-container">
             <div v-for="(field, index) in section.fields" :key="index" class="form-group form-group-3col">
@@ -179,6 +183,24 @@ export default {
 
             if (camposValidos) {
                 this.$emit('agregar-contacto-emergencia');
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Por favor, complete todos los campos requeridos.',
+                });
+            }
+        },
+        validarYAgregarHijo() {
+            const camposValidos = this.section.fields.every(field => {
+                if (field.required) {
+                    return this.model[field.name] && this.model[field.name] !== 'Seleccione';
+                }
+                return true;
+            });
+
+            if (camposValidos) {
+                this.$emit('agregar-hijo');
             } else {
                 Swal.fire({
                     icon: 'warning',

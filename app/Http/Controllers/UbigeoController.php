@@ -3,6 +3,7 @@
 // app/Http/Controllers/UbigeoController.php
 namespace App\Http\Controllers;
 
+use App\Models\Anio;
 use App\Models\Departamento;
 use App\Models\Provincia;
 use App\Models\Distrito;
@@ -10,6 +11,14 @@ use Illuminate\Http\Request;
 
 class UbigeoController extends Controller
 {
+    // Obtener todos los años
+    public function getAnio()
+    {
+        $anios = Anio::where('estado', 1)->get();
+        return response()->json($anios);
+    }
+
+
     // Obtener todos los departamentos
     public function getDepartamentos()
     {
