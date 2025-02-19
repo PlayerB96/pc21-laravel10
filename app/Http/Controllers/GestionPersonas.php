@@ -50,8 +50,6 @@ class GestionPersonas extends Controller
         return view('gestionpersonas.gestionpersonas');
     }
 
-
-
     public function buscar_papeletas(Request $request)
     {
 
@@ -192,9 +190,7 @@ class GestionPersonas extends Controller
     public function store_colaborador(Request $request)
     {
         $formulario = json_decode($request->input('formulario'), true);
-
-        $request->id_usuario;
-        $id_usuario = 1611;
+        $id_usuario =  $request->id_usuario;
         if ($formulario['personalInfo']['fecha_nacimiento']) {
             // Asegurar que la fecha tiene el formato correcto
             $timestamp = strtotime($formulario['personalInfo']['fecha_nacimiento']);
@@ -314,11 +310,10 @@ class GestionPersonas extends Controller
 
 
         // ✅ Actualizar los datos en Hijos Y UserIntranet
-        Log::info("Archivo subido formulario hijos: " . json_encode($formulario['hijos']));
+        // Log::info("Archivo subido formulario hijos: " . json_encode($formulario['hijos']));
 
         try {
             $hijos = $formulario['hijos'] ?? [];
-            $id_usuario = $request->input('id_usuario', 1611);
             $archivosSubidos = [];
 
             // 🔹 Conectar al servidor FTP
@@ -479,7 +474,6 @@ class GestionPersonas extends Controller
         // ✅ Actualizar los datos en CursoComplementario
         try {
             $cursos = $formulario['cursos'] ?? [];
-            $id_usuario = $request->input('id_usuario', 1611);
             $archivosSubidos = [];
 
             $ftp_server = "lanumerounocloud.com";
@@ -540,7 +534,6 @@ class GestionPersonas extends Controller
         // ✅ Actualizar los datos en ExperienciaLaboral
         try {
             $experiencias = $formulario['experienciasLaborales'] ?? [];
-            $id_usuario = $request->input('id_usuario', 1611);
             $archivosSubidos = [];
 
             $ftp_server = "lanumerounocloud.com";
@@ -778,7 +771,6 @@ class GestionPersonas extends Controller
 
         // ✅ Actualizar los datos en DocumentacionUsuario
         try {
-            $id_usuario = $request->input('id_usuario', 1611);
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";

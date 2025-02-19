@@ -1,18 +1,17 @@
 <?php
 
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
-use App\Http\Controllers\PapeletaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GestionPersonas;
-use Illuminate\Http\Request;
+use App\Http\Controllers\InduccionController;
 
 use App\Http\Controllers\AuthController; // Asegúrate de importar tu controlador
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\UbigeoController;
 use App\Http\Controllers\WebLn1Controller;
 use Illuminate\Session\Middleware\StartSession;
-use App\Models\UserPermission;
+
+
 
 Route::middleware(['api', StartSession::class])->group(function () {
     Route::post('/auth/validate_user', [AuthController::class, 'auth']);
@@ -32,6 +31,10 @@ Route::middleware(['api', StartSession::class])->group(function () {
 
     // PRODUCCIÓN: Fichas Técnicas
     Route::post('/produccion/buscar_fichas_tecnicas',  [ProduccionController::class, 'buscar_fichas_tecnicas']);
+    
+    // INDUCCIÓN: Video_induccion - Formulario de Inducción
+    Route::get('/induccion/preguntas_induccion',  [InduccionController::class, 'preguntas_induccion']);
+    Route::post('/induccion/submit_survey', [InduccionController::class, 'submit_survey']);
 
     // VERIFICACIÓN DE PERMISOS
     Route::post('/verificar-permisos',  [AuthController::class, 'verificar_permisos']);

@@ -75,7 +75,14 @@ export default {
             navItems: [
                 { label: 'Inicio', route: 'inicio', subitems: [] },
                 { label: 'Home', route: '/home', subitems: [] },
-                { label: 'Inducción', route: '/induccion', subitems: [] },
+                {
+                    label: 'Inducción',
+                    route: '/induccion',
+                    subitems:
+                        [
+                            { label: 'Video Inducción', route: '/induccion/video_induccion' },
+                        ]
+                },
                 { label: 'Ecommerce', route: '/ecommerce', subitems: [] },
                 {
                     label: 'Gestión de Personas',
@@ -117,10 +124,19 @@ export default {
     },
     computed: {
         filteredNavItems() {
-            return this.userSession
-                ? this.navItems.filter(item => ['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label))
-                : this.navItems.filter(item => !['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
+            if (!this.userSession) {
+                // 🔹 Usuario no autenticado: oculta "Home", "Inducción", "Gestión de Personas" y "Producción"
+                return this.navItems.filter(item => !['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
+            }
+            if (this.userSession.induccion === 1) {
+                // 🔹 Si inducción es 1, muestra "Home", "Inducción", "Gestión de Personas" y "Producción"
+                return this.navItems.filter(item => ['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
+            }
+            // 🔹 Si inducción es 0, oculta "Gestión de Personas" pero muestra "Inducción"
+            return this.navItems.filter(item => ['Home', 'Inducción'].includes(item.label));
         }
+
+
     },
     methods: {
         updateUserSession() {

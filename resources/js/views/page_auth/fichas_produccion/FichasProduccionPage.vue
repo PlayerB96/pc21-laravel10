@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="layout-container-section-content">
         <h2>Fichas Técnicas</h2>
         <SkeletonLoaderTable v-if="cargando" :rows="10" :columns="4" />
 
