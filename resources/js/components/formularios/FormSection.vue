@@ -61,24 +61,26 @@ import axios from 'axios';
 export default {
     data() {
         return {
-
             formData: {
                 id_departamento: '',
                 id_provincia: '',
                 id_distrito: ''
             }
-
         };
     },
 
     props: {
         section: {
             type: Object,
-            required: true
+            required: true,
+            requiredT: true
+
         },
         model: {
             type: [Object, Array],
-            required: true
+            required: true,
+            requiredT: true
+
         }
     },
     methods: {
@@ -160,12 +162,19 @@ export default {
 
 
         validarYAgregarReferencia() {
+            console.log("Modelo actual:", this.model); // Verifica los datos antes de validar
+            console.log("#############11111");
+
             const camposValidos = this.section.fields.every(field => {
+                console.log("Campo validado:", field.name, "Valor:", this.model[field.name]);
+                console.log(field.required)
                 if (field.required) {
-                    return this.model[field.name] && this.model[field.name] !== 'Seleccione';
+                    return this.model[field.name] && this.model[field.name] !== '';
                 }
                 return true;
             });
+
+            console.log("¿Campos válidos?:", camposValidos);
 
             if (camposValidos) {
                 this.$emit('agregar-referencia');
