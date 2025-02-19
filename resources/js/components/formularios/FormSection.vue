@@ -305,22 +305,15 @@ export default {
                 });
             }
         },
-        // handleFileUpload(event, fieldName) {
-        //     const file = event.target.files[0];
-        //     if (file) {
-        //         // 🔹 Guarda el nombre del archivo en el modelo directamente
-        //         this.model[fieldName] = file.name;
-        //         // 🔹 Opcionalmente, emite el evento para notificar al componente padre
-        //         this.$emit('file-upload', { file, fieldName });
-        //     }
-        // }
         handleFileUpload(event, fieldName) {
             const file = event.target.files[0];
             if (file) {
-                this.formData.append(fieldName, file);
-                this.$emit('file-upload', { file, fieldName });
+                this.$emit('file-selected', { fieldName, file }); // Emitir evento para actualizar en RegistroColaboradorPage
+                this.model[fieldName] = file;
+                console.log(`Archivo seleccionado para ${fieldName}:`, file);
             }
-        },
+        }
+
     }
 };
 </script>

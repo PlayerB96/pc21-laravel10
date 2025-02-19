@@ -192,20 +192,9 @@ class GestionPersonas extends Controller
     public function store_colaborador(Request $request)
     {
         $formulario = json_decode($request->input('formulario'), true);
+        // Log::info("Archivo subido exitosamente: " . json_encode($formulario['uniforme']));
 
         // ✅ Asignar datos de `personalInfo` a `$datos`
-        // $hijos = $request->input('formulario.hijos');
-        // $contactosEmergencia = $request->input('formulario.contactosEmergencia');
-        // $conocimientoOffice = $request->input('formulario.conocimientoOffice');
-        // $idiomas = $request->input('formulario.idiomas');
-        // $cursos = $request->input('formulario.cursos');
-        // $experienciasLaborales = $request->input('formulario.experienciasLaborales');
-        // $enfermedades = $request->input('formulario.enfermedades');
-        // $gestacion = $request->input('formulario.gestacion');
-        // $alergias = $request->input('formulario.alergias');
-        // $otros = $request->input('formulario.otros');
-        // $referenciaConvocatoria = $request->input('formulario.referenciaConvocatoria');
-        // $adjuntarDocumentacion = $request->input('formulario.adjuntarDocumentacion');
         // $uniforme = $request->input('formulario.uniforme');
         // $sistemapensionario = $request->input('formulario.sistemapensionario');
         // $cuentabancaria = $request->input('formulario.cuentabancaria');
@@ -331,116 +320,106 @@ class GestionPersonas extends Controller
 
 
         // ✅ Actualizar los datos en Hijos Y UserIntranet
-        try {
-            $hijos = $formulario['hijos'] ?? [];
-            $id_usuario = $request->input('id_usuario', 1611);
-            $archivosSubidos = [];
-            // 🔹 Conectar al servidor FTP
-            $ftp_server = "lanumerounocloud.com";
-            $ftp_usuario = "intranet@lanumerounocloud.com";
-            $ftp_pass = "Intranet2022@";
-            $con_id = ftp_connect($ftp_server);
-            if (!$con_id) {
-                Log::error("No se pudo conectar al servidor FTP.");
-                return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
-            }
-            $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-            if (!$lr) {
-                Log::error("Error en la autenticación FTP.");
-                ftp_close($con_id);
-                return response()->json(['error' => 'Error en la autenticación FTP'], 500);
-            }
-            ftp_pasv($con_id, true);
-            // 🔹 Procesar cada hijo y subir su archivo
-            foreach ($hijos as $index => &$hijo) {
-                if ($request->hasFile("dni_file_{$index}")) {
-                    $file = $request->file("dni_file_{$index}");
+        // try {
+        //     $hijos = $formulario['hijos'] ?? [];
+        //     $id_usuario = $request->input('id_usuario', 1611);
+        //     $archivosSubidos = [];
+        //     // 🔹 Conectar al servidor FTP
+        //     $ftp_server = "lanumerounocloud.com";
+        //     $ftp_usuario = "intranet@lanumerounocloud.com";
+        //     $ftp_pass = "Intranet2022@";
+        //     $con_id = ftp_connect($ftp_server);
+        //     if (!$con_id) {
+        //         return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
+        //     }
+        //     $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        //     if (!$lr) {
+        //         ftp_close($con_id);
+        //         return response()->json(['error' => 'Error en la autenticación FTP'], 500);
+        //     }
+        //     ftp_pasv($con_id, true);
+        //     // 🔹 Procesar cada hijo y subir su archivo
+        //     foreach ($hijos as $index => &$hijo) {
+        //         if ($request->hasFile("dni_file_{$index}")) {
+        //             $file = $request->file("dni_file_{$index}");
+        //             if ($file->isValid()) {
+        //                 $source_file = $file->getPathname();
+        //                 $extension = $file->getClientOriginalExtension();
+        //                 $fechaHoraActual = date('Y-m-dHis');
+        //                 $codigoUnico = strtoupper(bin2hex(random_bytes(10)));
+        //                 $nombre = "dochijo_" . ($hijo['id_hijos'] ?? 'sin_id') . "_{$codigoUnico}_{$fechaHoraActual}.{$extension}";
+        //                 $nombre_archivo = "PERFIL/DOCUMENTACION/DATOS_HIJOS/" . $nombre;
 
-                    if ($file->isValid()) {
-                        $source_file = $file->getPathname();
-                        $extension = $file->getClientOriginalExtension();
-                        $fechaHoraActual = date('Y-m-dHis');
-                        $codigoUnico = strtoupper(bin2hex(random_bytes(10)));
+        //                 // 🔹 Subir archivo al FTP
+        //                 if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+        //                     Log::info("Archivo subido exitosamente: $nombre_archivo");
+        //                     $hijo['dni_file'] = $nombre; // Guardar el nombre del archivo en el array
+        //                     $archivosSubidos[] = $nombre;
+        //                 } else {
+        //                     Log::error("Error en FTP al subir el archivo para el hijo ID: " . ($hijo['id_hijos'] ?? 'sin_id'));
+        //                 }
+        //             } else {
+        //                 Log::error("El archivo DNI para el hijo ID " . ($hijo['id_hijos'] ?? 'sin_id') . " no es válido.");
+        //             }
+        //         }
+        //     }
+        //     ftp_close($con_id);
+        //     UserIntranet::where('id_usuario', $id_usuario)
+        //         ->update([
+        //             'hijos' => $hijos[0]['respuesta'],
+        //             'fec_act' => now(),
+        //             'user_act' => $id_usuario
+        //         ]);
 
-                        $nombre = "dochijo_" . ($hijo['id_hijos'] ?? 'sin_id') . "_{$codigoUnico}_{$fechaHoraActual}.{$extension}";
-                        $nombre_archivo = "PERFIL/DOCUMENTACION/DATOS_HIJOS/" . $nombre;
-
-                        // 🔹 Subir archivo al FTP
-                        if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
-                            Log::info("Archivo subido exitosamente: $nombre_archivo");
-                            $hijo['dni_file'] = $nombre; // Guardar el nombre del archivo en el array
-                            $archivosSubidos[] = $nombre;
-                        } else {
-                            Log::error("Error en FTP al subir el archivo para el hijo ID: " . ($hijo['id_hijos'] ?? 'sin_id'));
-                        }
-                    } else {
-                        Log::error("El archivo DNI para el hijo ID " . ($hijo['id_hijos'] ?? 'sin_id') . " no es válido.");
-                    }
-                }
-            }
-            ftp_close($con_id);
-            Log::info('Archivos subidos:', ['archivos' => $archivosSubidos]);
-            Log::info('Archivos hijos:', ['hijos' => $hijos]);
-            UserIntranet::where('id_usuario', $id_usuario)
-                ->update([
-                    'hijos' => $hijos[0]['respuesta'],
-                    'fec_act' => now(),
-                    'user_act' => $id_usuario
-                ]);
-
-            foreach ($hijos as $hijo) {
-                if ($hijo['fecha_nacimiento_hijo']) {
-                    // Asegurar que la fecha tiene el formato correcto
-                    $timestamp = strtotime($hijo['fecha_nacimiento_hijo']);
-                    $dia_nac = date('d', $timestamp);
-                    $mes_nac = date('m', $timestamp);
-                    $anio_nac = date('Y', $timestamp);
-                }
-                // Log::info('Contenido de dato archivo:', ['dato' => $dato['archivo']]);
-                Hijos::create([
-                    'id_usuario' => $id_usuario,
-                    'nom_hijo' => $hijo['nombre_hijo'],
-                    'id_genero' => $hijo['genero_hijo'],
-                    'dia_nac' => $dia_nac,
-                    'mes_nac' => $mes_nac,
-                    'anio_nac' => $anio_nac,
-                    'id_biologico' => $hijo['biologico'],
-                    'num_doc' => $hijo['dni_hijo'],
-                    'documento' => $hijo['dni_file'],
-                    'fec_nac' => $hijo['fecha_nacimiento_hijo'],
-                    'fec_reg' => now(),
-                    'user_reg' => $id_usuario,
-                    'estado' => 1,
-                    'id_tipo_documento' => 0,
-                    'id_vinculo' => 0,
-                    'id_situacion' => 0,
-                    'id_motivo_baja' => 0,
-                    'id_tipo_via' => 0,
-                    'id_zona' => 0,
-                    'carta_medica' => 0,
-                    'n_certificado_medico' => 0,
-                    'nom_via' => 0,
-                    'num_via' => 0,
-                    'interior' => 0,
-                    'nom_zona' => 0,
-                    'referencia' => 0,
-                    'documento_nombre' => 0,
-                ]);
-            }
-            return response()->json(['message' => 'Formulario procesado', 'archivos' => $archivosSubidos], 200);
-        } catch (\Exception $e) {
-            Log::error("Error en store_colaborador: " . $e->getMessage());
-            return response()->json(['error' => 'Ocurrió un error en el servidor'], 500);
-        }
-
-
-
-
+        //     foreach ($hijos as $hij) {
+        //         if ($hij['fecha_nacimiento_hijo']) {
+        //             // Asegurar que la fecha tiene el formato correcto
+        //             $timestamp = strtotime($hijo['fecha_nacimiento_hijo']);
+        //             $dia_nac = date('d', $timestamp);
+        //             $mes_nac = date('m', $timestamp);
+        //             $anio_nac = date('Y', $timestamp);
+        //         }
+        //         // Log::info('Contenido de dato archivo:', ['dato' => $dato['archivo']]);
+        //         Hijos::create([
+        //             'id_usuario' => $id_usuario,
+        //             'nom_hijo' => $hij['nombre_hijo'],
+        //             'id_genero' => $hij['genero_hijo'],
+        //             'dia_nac' => $dia_nac,
+        //             'mes_nac' => $mes_nac,
+        //             'anio_nac' => $anio_nac,
+        //             'id_biologico' => $hij['biologico'],
+        //             'num_doc' => $hij['dni_hijo'],
+        //             'documento' => $hij['dni_file'],
+        //             'fec_nac' => $hij['fecha_nacimiento_hijo'],
+        //             'fec_reg' => now(),
+        //             'user_reg' => $id_usuario,
+        //             'estado' => 1,
+        //             'id_tipo_documento' => 0,
+        //             'id_vinculo' => 0,
+        //             'id_situacion' => 0,
+        //             'id_motivo_baja' => 0,
+        //             'id_tipo_via' => 0,
+        //             'id_zona' => 0,
+        //             'carta_medica' => 0,
+        //             'n_certificado_medico' => 0,
+        //             'nom_via' => 0,
+        //             'num_via' => 0,
+        //             'interior' => 0,
+        //             'nom_zona' => 0,
+        //             'referencia' => 0,
+        //             'documento_nombre' => 0,
+        //         ]);
+        //     }
+        //     return response()->json(['message' => 'Formulario procesado', 'archivos' => $archivosSubidos], 200);
+        // } catch (\Exception $e) {
+        //     Log::error("Error en store_colaborador: " . $e->getMessage());
+        //     return response()->json(['error' => 'Ocurrió un error en el servidor'], 500);
+        // }
 
 
 
         // ✅ Actualizar los datos en ContactoEmergencia
-        // foreach ($contactosEmergencia as $contactoE) {
+        // foreach ($formulario['contactosEmergencia'] as $contactoE) {
         //     ContactoEmergencia::create([
         //         'id_usuario' => $id_usuario, 
         //         'nom_contacto' => $contactoE['nombre_contacto_emergencia'],
@@ -457,16 +436,16 @@ class GestionPersonas extends Controller
         // ✅ Actualizar los datos en ConociOffice
         // ConociOffice::create([
         //     'id_usuario' => $id_usuario,
-        //     'nl_excel' => $conocimientoOffice['nivel_excel'],
-        //     'nl_word' => $conocimientoOffice['nivel_word'],
-        //     'nl_ppoint' => $conocimientoOffice['nivel_powerpoint'],
+        //     'nl_excel' => $formulario['conocimientoOffice']['nivel_excel'],
+        //     'nl_word' => $formulario['conocimientoOffice']['nivel_word'],
+        //     'nl_ppoint' => $formulario['conocimientoOffice']['nivel_powerpoint'],
         //     'fec_reg' => now(),
         //     'user_reg' => $id_usuario,
         //     'estado' => 1
         // ]);
 
         // ✅ Actualizar los datos en ConociIdiomas
-        // foreach ($idiomas as $idioma) {
+        // foreach ($formulario['idiomas'] as $idioma) {
         //     ConociIdiomas::create([
         //         'id_usuario' => $id_usuario,
         //         'nom_conoci_idiomas' => $idioma['idioma'],
@@ -481,156 +460,174 @@ class GestionPersonas extends Controller
 
 
         // ✅ Actualizar los datos en CursoComplementario
-        // if($_FILES["certificado"]["name"] != ""){
-        //     $ftp_server = "lanumerounocloud.com";
-        //     $ftp_usuario = "intranet@lanumerounocloud.com";
-        //     $ftp_pass = "Intranet2022@";
-        //     $con_id = ftp_connect($ftp_server);
-        //     $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-        //     if((!$con_id) || (!$lr)){
-        //         //echo "No se conecto";
-        //     }else{
-        //         //echo "Se conecto";
-        //         $path = $_FILES['certificado']['name'];
-        //         if($path!=""){
-        //             $temp = explode(".",$_FILES['certificado']['name']);
-        //             $source_file = $_FILES['certificado']['tmp_name'];
+        // try {
+        //     $cursos = $formulario['cursos'] ?? [];
+        //     $id_usuario = $request->input('id_usuario', 1611);
+        //     $archivosSubidos = [];
 
-        //             $fechaHoraActual = date('Y-m-dHis');
-        //             $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
-        //             $codigoUnico = '';
-        //             do {
-        //                 $cadenaAleatoria = '';
-        //                 for ($i = 0; $i < 20; $i++) {
-        //                     $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
-        //                 }
-        //                 $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
-        //                 $nombre="cursocomp_".$id_usuario."_".$codigoUnico."_".rand(10,199).".".$ext;
-        //                 $nombre_archivo = "PERFIL/DOCUMENTACION/CURSOS_COMPLEMENTARIOS/".$nombre;
-        //                 $duplicado=0;
-
-        //             }while ($duplicado>0);
-
-        //             ftp_pasv($con_id, true);
-
-        //             if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
-        //                 $dato['archivo'] = $nombre;
-        //             }else{
-        //                 $error = error_get_last();
-        //             }
-        //         }
-        //         ftp_close($con_id);
-        //     }
-        // }
-        // foreach ($cursos as $curso) {
-        //     CursoComplementario::create([
-        //         'id_usuario' => $id_usuario,
-        //         'nom_curso_complementario' => $curso['curso'],
-        //         'anio' => $curso['anio'],
-        //         'certificado' => $dato['archivo'],
-        //         'estado' => 1,
-        //         'fec_reg' => now(),
-        //         'user_reg' => $id_usuario,
-        //         'actualidad' => 0,
-        //         'certificado_nombre' => 0,
-        //     ]);
-        // }
-
-
-        // ✅ Actualizar los datos en ExperienciaLaboral
-        // if ($_FILES["certificadolb"]["name"] != "") {
         //     $ftp_server = "lanumerounocloud.com";
         //     $ftp_usuario = "intranet@lanumerounocloud.com";
         //     $ftp_pass = "Intranet2022@";
         //     $con_id = ftp_connect($ftp_server);
         //     $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-        //     if ((!$con_id) || (!$lr)) {
-        //         //echo "No se conecto";
-        //     } else {
-        //         //echo "Se conecto";
-        //         $path = $_FILES['certificadolb']['name'];
-        //         if ($path != "") {
-        //             $temp = explode(".", $_FILES['certificadolb']['name']);
-        //             $source_file = $_FILES['certificadolb']['tmp_name'];
+        //     if (!$con_id) {
+        //         return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
+        //     }
+        //     ftp_pasv($con_id, true);
+        //     foreach ($cursos as $index => &$curso) {
+        //         if ($request->hasFile("certificado_{$index}")) {
+        //             $file = $request->file("certificado_{$index}");
+        //             if ($file->isValid()) {
+        //                 $source_file = $file->getPathname();
+        //                 $extension = $file->getClientOriginalExtension();
+        //                 $fechaHoraActual = date('Y-m-dHis');
+        //                 $codigoUnico = strtoupper(bin2hex(random_bytes(10)));
+        //                 $nombre = "cursocomp_" . ($id_usuario ?? 'sin_id') . "_{$codigoUnico}_{$fechaHoraActual}.{$extension}";
+        //                 $nombre_archivo = "PERFIL/DOCUMENTACION/CURSOS_COMPLEMENTARIOS/" . $nombre;
 
-        //             $fechaHoraActual = date('Y-m-dHis');
-        //             $caracteresPermitidos = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
-        //             $codigoUnico = '';
-        //             do {
-        //                 $cadenaAleatoria = '';
-        //                 for ($i = 0; $i < 20; $i++) {
-        //                     $cadenaAleatoria .= $caracteresPermitidos[rand(0, strlen($caracteresPermitidos) - 1)];
+        //                 // 🔹 Subir archivo al FTP
+        //                 if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+        //                     Log::info("Archivo subido exitosamente: $nombre_archivo");
+        //                     $curso['certificado'] = $nombre; // Guardar el nombre del archivo en el array
+        //                     $archivosSubidos[] = $nombre;
+        //                 } else {
+        //                     Log::error("Error en FTP al subir el archivo para el curso ID: " . ($id_usuario ?? 'sin_id'));
         //                 }
-        //                 $codigoUnico = $cadenaAleatoria . $fechaHoraActual;
-        //                 $nombre = "certificadolb_" . $id_usuario . "_" . $codigoUnico . "_" . rand(10, 199) . "." . $ext;
-        //                 $nombre_archivo = "PERFIL/DOCUMENTACION/EXPERIENCIA_LABORAL/" . $nombre;
-        //                 $duplicado = 0;
-        //             } while ($duplicado > 0);
-
-        //             ftp_pasv($con_id, true);
-
-        //             if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
-        //                 $dato['archivo'] = $nombre;
         //             } else {
-        //                 $error = error_get_last();
+        //                 Log::error("El archivo DNI para el curso ID " . ($id_usuario ?? 'sin_id') . " no es válido.");
         //             }
         //         }
-        //         ftp_close($con_id);
         //     }
+
+        //     ftp_close($con_id);
+        //     Log::info("Archivo subido exitosamente cursos: " . json_encode($cursos));
+
+        //     foreach ($cursos as $curs) {
+        //         CursoComplementario::create([
+        //             'id_usuario' => $id_usuario,
+        //             'nom_curso_complementario' => $curs['curso'],
+        //             'anio' => $curs['anio'],
+        //             'certificado' => $curs['certificado'],
+        //             'estado' => 1,
+        //             'fec_reg' => now(),
+        //             'user_reg' => $id_usuario,
+        //             'actualidad' => 0,
+        //             'certificado_nombre' => 0,
+        //         ]);
+        //     }
+        // } catch (\Exception $e) {
+        //     Log::error("Error en store_colaborador: " . $e->getMessage());
+        //     return response()->json(['error' => 'Ocurrió un error en el servidor'], 500);
         // }
 
-        // if ($dato['actualidad'] == 1) {
-        //     $dato['fec_fin'] = null;
+
+
+        // ✅ Actualizar los datos en ExperienciaLaboral
+        // try {
+        //     $experiencias = $formulario['experienciasLaborales'] ?? [];
+        //     $id_usuario = $request->input('id_usuario', 1611);
+        //     $archivosSubidos = [];
+
+        //     $ftp_server = "lanumerounocloud.com";
+        //     $ftp_usuario = "intranet@lanumerounocloud.com";
+        //     $ftp_pass = "Intranet2022@";
+        //     $con_id = ftp_connect($ftp_server);
+        //     $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+        //     if (!$con_id) {
+        //         return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
+        //     }
+        //     ftp_pasv($con_id, true);
+        //     foreach ($experiencias as $index => &$exp) {
+        //         if ($request->hasFile("certificadolb_{$index}")) {
+        //             $file = $request->file("certificadolb_{$index}");
+        //             if ($file->isValid()) {
+        //                 $source_file = $file->getPathname();
+        //                 $extension = $file->getClientOriginalExtension();
+        //                 $fechaHoraActual = date('Y-m-dHis');
+        //                 $codigoUnico = strtoupper(bin2hex(random_bytes(10)));
+        //                 $nombre = "certificadolb_" . ($id_usuario ?? 'sin_id') . "_{$codigoUnico}_{$fechaHoraActual}.{$extension}";
+        //                 $nombre_archivo = "PERFIL/DOCUMENTACION/EXPERIENCIA_LABORAL/" . $nombre;
+
+        //                 // 🔹 Subir archivo al FTP
+        //                 if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+        //                     Log::info("Archivo subido exitosamente: $nombre_archivo");
+        //                     $exp['constancia'] = $nombre; // Guardar el nombre del archivo en el array
+        //                     $archivosSubidos[] = $nombre;
+        //                 } else {
+        //                     Log::error("Error en FTP al subir el archivo para el curso ID: " . ($id_usuario ?? 'sin_id'));
+        //                 }
+        //             } else {
+        //                 Log::error("El archivo DNI para el curso ID " . ($id_usuario ?? 'sin_id') . " no es válido.");
+        //             }
+        //         }
+        //     }
+        //     ftp_close($con_id);
+
+        //     foreach ($experiencias as $exper) {
+        //         // Asegurar que la fecha tiene el formato correcto
+        //         $timestamp = strtotime($exper['fecha_inicio']);
+        //         $timestampF = strtotime($exper['fecha_fin']);
+        //         $dia_ini = date('d', $timestamp);
+        //         $mes_ini = date('m', $timestamp);
+        //         $anio_ini = date('Y', $timestamp);
+        //         $dia_fin = date('d', $timestampF);
+        //         $mes_fin = date('m', $timestampF);
+        //         $anio_fin = date('Y', $timestampF);
+        //         ExperienciaLaboral::create([
+        //             'id_usuario' => $id_usuario,
+        //             'empresa' => $exper['empresa'],
+        //             'cargo' => $exper['cargo'],
+        //             'dia_ini' => $dia_ini ?? '00',
+        //             'mes_ini' => $mes_ini ?? '00',
+        //             'anio_ini' => $anio_ini ?? '0000',
+        //             'fec_ini' => $exper['fecha_inicio'],
+        //             'actualidad' => 0,
+        //             'dia_fin' => $dia_fin ?? '00',
+        //             'mes_fin' => $mes_fin ?? '00',
+        //             'anio_fin' => $anio_fin ?? '0000',
+        //             'fec_fin' => $exper['fecha_fin'],
+        //             'motivo_salida' => $exper['motivo_salida'],
+        //             'remuneracion' => $exper['importe_remuneracion'],
+        //             'nom_referencia_labores' => $exper['nombre_referencia'],
+        //             'num_contacto' => $exper['numero_contacto_referencia'],
+        //             'certificado' => $exper['constancia'],
+        //             'fec_reg' => now(),
+        //             'user_reg' => $id_usuario,
+        //             'estado' => 1,
+        //             'certificado_nombre' => 0,
+        //         ]);
+        //     }
+        // } catch (\Exception $e) {
+        //     Log::error("Error en store_colaborador: " . $e->getMessage());
+        //     return response()->json(['error' => 'Ocurrió un error en el servidor'], 500);
         // }
 
-        // foreach ($experienciasLaborales as $experiencia) {
-        //     ExperienciaLaboral::create([
-        //         'id_usuario' => $id_usuario,
-        //         'empresa' => $experiencia['empresa'],
-        //         'cargo' => $experiencia['cargo'],
-        //         'dia_ini' => date('d', strtotime($referencia['fecha_inicio'] ?? '0000-00-00')),
-        //         'mes_ini' => date('m', strtotime($referencia['fecha_inicio'] ?? '0000-00-00')),
-        //         'anio_ini' => date('Y', strtotime($referencia['fecha_inicio'] ?? '0000-00-00')),
-        //         'fec_ini' => $experiencia['fecha_inicio'],
-        //         'actualidad' => 0,
-        //         'dia_fin' => date('d', strtotime($referencia['fecha_fin'] ?? '0000-00-00')),
-        //         'mes_fin' => date('m', strtotime($referencia['fecha_fin'] ?? '0000-00-00')),
-        //         'anio_fin' => date('Y', strtotime($referencia['fecha_fin'] ?? '0000-00-00')),
-        //         'fec_fin' => $experiencia['fecha_fin'],
-        //         'motivo_salida' => $experiencia['motivo_salida'],
-        //         'remuneracion' => $experiencia['importe_remuneracion'],
-        //         'nom_referencia_labores' => $experiencia['nombre_referencia'],
-        //         'num_contacto' => $experiencia['numero_contacto_referencia'],
-        //         'certificado' => $experiencia['archivo'],
-        //         'fec_reg' => now(),
-        //         'user_reg' => $id_usuario,
-        //         'estado' => 1,
-        //         'certificado_nombre' => 0,
-        //     ]);
-        // }
+
 
         // ✅ Actualizar los datos en EnfermedadUsuario y UserIntranet
         // UserIntranet::where('id_usuario', $id_usuario)
         //     ->update([
-        //         'enfermedades' => $enfermedades[0]['padece_enfermedad'],
+        //         'enfermedades' => $formulario['enfermedades'][0]['padece_enfermedad'],
         //         'fec_act' => now(),
         //         'user_act' => $id_usuario
         //     ]);
 
         // // Verificación y gestión en la tabla `enfermedad_usuario`
-        // if ($enfermedades[0]['padece_enfermedad'] == 1) {
-        //     foreach ($enfermedades as $enfermedad) {
+        // if ($formulario['enfermedades'][0]['padece_enfermedad'] == 1) {
+        //     foreach ($formulario['enfermedades'] as $enfermedad) {
+        //         $timestamp = strtotime($enfermedad['fecha_diagnostico']);
+        //         $dia_diagnostico = date('d', $timestamp);
+        //         $mes_diagnostico = date('m', $timestamp);
+        //         $anio_diagnostico = date('Y', $timestamp);
         //         // Inserción en `enfermedad_usuario`
         //         EnfermedadUsuario::create([
         //             'id_usuario' => $id_usuario,
-        //             'id_respuestae' => $enfermedad['id_respuestae'],
-        //             'nom_enfermedad' => $enfermedad['nom_enfermedad'],
-        //             'dia_diagnostico' => $enfermedad['dia_diagnostico'],
-        //             'mes_diagnostico' => $enfermedad['mes_diagnostico'],
-        //             'anio_diagnostico' => $enfermedad['anio_diagnostico'],
-        //             'fec_diagnostico' => $enfermedad['fec_diagnostico'],
+        //             'id_respuestae' => $enfermedad['padece_enfermedad'],
+        //             'nom_enfermedad' => $enfermedad['enfermedad'],
+        //             'dia_diagnostico' => $dia_diagnostico,
+        //             'mes_diagnostico' =>  $mes_diagnostico,
+        //             'anio_diagnostico' =>  $anio_diagnostico,
+        //             'fec_diagnostico' => $enfermedad['fecha_diagnostico'],
         //             'fec_reg' => now(),
         //             'user_reg' => $id_usuario,
         //             'estado' => 1
@@ -647,26 +644,30 @@ class GestionPersonas extends Controller
         // }
 
         // ✅ Actualizar los datos en GestacionUsuario 
-        // if ($gestacion['respuesta_gestacion'] == 1) {
+        // $timestamp = strtotime($formulario['gestacion']['fecha_parto']);
+        // $dia_ges = date('d', $timestamp);
+        // $mes_ges = date('m', $timestamp);
+        // $anio_ges = date('Y', $timestamp);
+        // if ($formulario['gestacion']['respuesta_gestacion'] == 1) {
         //     GestacionUsuario::create([
         //         'id_usuario' => $id_usuario,
-        //         'id_respuesta' => $gestacion['respuesta_gestacion'],
-        //         'dia_ges' => date('d', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
-        //         'mes_ges' => date('m', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
-        //         'anio_ges' => date('Y', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
-        //         'fec_ges' => $gestacion['fecha_parto'],
+        //         'id_respuesta' => $formulario['gestacion']['respuesta_gestacion'],
+        //         'dia_ges' => $dia_ges,
+        //         'mes_ges' =>  $mes_ges,
+        //         'anio_ges' =>  $anio_ges,
+        //         'fec_ges' => $formulario['gestacion']['fecha_parto'],
         //         'fec_reg' => now(),
         //         'user_reg' => $id_usuario,
         //         'estado' => 1,
         //     ]);
         // } else {
         //     GestacionUsuario::create([
-        //         'id_usuario' => $gestacion['id_usuario'],
-        //         'id_respuesta' => $gestacion['respuesta_gestacion'],
-        //         'dia_ges' => date('d', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
-        //         'mes_ges' => date('m', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
-        //         'anio_ges' => date('Y', strtotime($gestacion['fecha_parto'] ?? '0000-00-00')),
-        //         'fec_ges' => $gestacion['fecha_parto'],
+        //         'id_usuario' => $formulario['gestacion']['id_usuario'],
+        //         'id_respuesta' => $formulario['gestacion']['respuesta_gestacion'],
+        //         'dia_ges' => $dia_ges,
+        //         'mes_ges' =>  $mes_ges,
+        //         'anio_ges' =>  $anio_ges,
+        //         'fec_ges' => $formulario['gestacion']['fecha_parto'],
         //         'fec_reg' => now(),
         //         'user_reg' => $id_usuario,
         //         'estado' => 1,
@@ -675,13 +676,13 @@ class GestionPersonas extends Controller
 
         // ✅ Actualizar los datos en AlergiaUsuario y UserIntranet
         // UserIntranet::where('id_usuario', $id_usuario)->update([
-        //     'alergia' => $alergias[0]['respuesta_alergico'],
+        //     'alergia' => $formulario['alergias'][0]['respuesta_alergico'],
         //     'fec_act' => now(),
         //     'user_act' => $id_usuario,
         // ]);
 
-        // if ($alergias[0]['respuesta_alergico'] == 1) {
-        //     foreach ($alergias as $alergia) {
+        // if ($formulario['alergias'][0]['respuesta_alergico'] == 1) {
+        //     foreach ($formulario['alergias'] as $alergia) {
         //         AlergiaUsuario::create([
         //             'id_usuario' => $id_usuario,
         //             'nom_alergia' => $alergia['alergia'],
@@ -700,111 +701,102 @@ class GestionPersonas extends Controller
         // }
 
         // ✅ Actualizar los datos en OtrosUsuario
-        // OtrosUsuario::where('id_usuario', $id_usuario)->update([
-        //     'id_grupo_sanguineo' => $otros['tipo_sangre'],
-        //     'cert_vacu_covid' => '',
-        //     'fec_act' => now(),
-        //     'user_act' => $id_usuario,
+        // OtrosUsuario::create([
+        //     'id_usuario' => $id_usuario,
+        //     'id_grupo_sanguineo' => $formulario['otros']['tipo_sangre'],
+        //     'cert_vacu_covid' =>'',
+        //     'fec_reg' => now(),
+        //     'user_reg' => $id_usuario,
+        //     'estado' => 1,
         // ]);
 
         // ✅ Actualizar los datos en ReferenciaConvocatoria
         // ReferenciaConvocatoria::create([
         //     'id_usuario' => $id_usuario,
-        //     'id_referencia_laboral' => $referenciaConvocatoria['puesto_referencia'],
-        //     'otros' => $referenciaConvocatoria['especifique_otros'],
+        //     'id_referencia_laboral' => $formulario['referenciaConvocatoria']['puesto_referencia'],
+        //     'otros' => $formulario['referenciaConvocatoria']['especifique_otros'],
         //     'fec_reg' => now(),
         //     'user_reg' => $id_usuario,
         //     'estado' => 1
         // ]);
 
-        // if ($_FILES['filecv_doc']['name'] != "" || $_FILES['filedni_doc']['name'] != "" || $_FILES['filerecibo_doc']['name'] != "") {
+
+        // ✅ Actualizar los datos en DocumentacionUsuario
+        // try {
+        //     $id_usuario = $request->input('id_usuario', 1611);
         //     $ftp_server = "lanumerounocloud.com";
         //     $ftp_usuario = "intranet@lanumerounocloud.com";
         //     $ftp_pass = "Intranet2022@";
         //     $con_id = ftp_connect($ftp_server);
         //     $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-        //     if ((!$con_id) || (!$lr)) {
-        //         echo "No se conecto";
-        //     } else {
-        //         echo "Se conecto";
-        //         if ($_FILES['filecv_doc']['name'] != "") {
-        //             $path = $_FILES['filecv_doc']['name'];
-        //             $temp = explode(".", $_FILES['filecv_doc']['name']);
-        //             $source_file = $_FILES['filecv_doc']['tmp_name'];
+        //     if (!$con_id) {
+        //         return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
+        //     }
+        //     ftp_pasv($con_id, true);
+        //     // 🔹 Procesar archivos recibidos
+        //     $archivos = [
+        //         'CV' => $request->file('adjuntar_cv'),
+        //         'DNI' => $request->file('foto_dni'),
+        //         'RECIBO' => $request->file('copia_agua_luz')
+        //     ];
+        //     $archivosSubidos = [
+        //         'cv_doc' => null,
+        //         'dni_doc' => null,
+        //         'recibo_doc' => null
+        //     ];
+        //     foreach ($archivos as $key => $archivo) {
+        //         if ($archivo && $archivo->isValid()) {
+        //             $source_file = $archivo->getPathname();
+        //             $extension = $archivo->getClientOriginalExtension();
+        //             $fechaHoraActual = date('Y-m-dHis');
+        //             $codigoUnico = strtoupper(bin2hex(random_bytes(10)));
+        //             $nombre = "{$key}_" . ($id_usuario ?? 'sin_id') . "_{$codigoUnico}_{$fechaHoraActual}.{$extension}";
+        //             $nombre_archivo = "PERFIL/DOCUMENTACION/DOCUMENTACION/" . $nombre;
 
-        //             $fecha = date('Y-m-d_His');
-        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
-        //             $nombre_soli = "CV_" . $id_usuario . "_" . $fecha . "_" . rand(10, 199);
-        //             $nombre = $nombre_soli . "." . $ext;
-        //             $dato['cv_doc'] = $nombre;
+        //             // 🔹 Subir archivo al FTP
+        //             if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
+        //                 Log::info("Archivo subido exitosamente: $nombre_archivo");
 
-        //             ftp_pasv($con_id, true);
-        //             $subio = ftp_put($con_id, "PERFIL/DOCUMENTACION/DOCUMENTACION/" . $nombre, $source_file, FTP_BINARY);
-        //             if ($subio) {
-        //                 echo "Archivo subido correctamente";
+        //                 // Guardar el nombre en el array con las claves correctas para la BD
+        //                 if ($key === 'CV') {
+        //                     $archivosSubidos['cv_doc'] = $nombre;
+        //                 } elseif ($key === 'DNI') {
+        //                     $archivosSubidos['dni_doc'] = $nombre;
+        //                 } elseif ($key === 'RECIBO') {
+        //                     $archivosSubidos['recibo_doc'] = $nombre;
+        //                 }
         //             } else {
-        //                 echo "Archivo no subido correctamente";
+        //                 Log::error("Error en FTP al subir el archivo: $key para el usuario ID: " . ($id_usuario ?? 'sin_id'));
         //             }
-        //         }
-        //         if ($_FILES['filedni_doc']['name'] != "") {
-        //             $path = $_FILES['filedni_doc']['name'];
-        //             $temp = explode(".", $_FILES['filedni_doc']['name']);
-        //             $source_file = $_FILES['filedni_doc']['tmp_name'];
-
-        //             $fecha = date('Y-m-d_His');
-        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
-        //             $nombre_soli = "DNI_" . $id_usuario . "_" . $fecha . "_" . rand(10, 199);
-        //             $nombre = $nombre_soli . "." . $ext;
-        //             $dato['dni_doc'] = $nombre;
-
-        //             ftp_pasv($con_id, true);
-        //             $subio = ftp_put($con_id, "PERFIL/DOCUMENTACION/DOCUMENTACION/" . $nombre, $source_file, FTP_BINARY);
-        //             if ($subio) {
-        //                 echo "Archivo subido correctamente";
-        //             } else {
-        //                 echo "Archivo no subido correctamente";
-        //             }
-        //         }
-        //         if ($_FILES['filerecibo_doc']['name'] != "") {
-        //             $path = $_FILES['filerecibo_doc']['name'];
-        //             $temp = explode(".", $_FILES['filerecibo_doc']['name']);
-        //             $source_file = $_FILES['filerecibo_doc']['tmp_name'];
-
-        //             $fecha = date('Y-m-d_His');
-        //             $ext = pathinfo($path, PATHINFO_EXTENSION);
-        //             $nombre_soli = "RECIBO_" . $id_usuario . "_" . $fecha . "_" . rand(10, 199);
-        //             $nombre = $nombre_soli . "." . $ext;
-        //             $dato['recibo_doc'] = $nombre;
-
-        //             ftp_pasv($con_id, true);
-        //             $subio = ftp_put($con_id, "PERFIL/DOCUMENTACION/DOCUMENTACION/" . $nombre, $source_file, FTP_BINARY);
-        //             if ($subio) {
-        //                 echo "Archivo subido correctamente";
-        //             } else {
-        //                 echo "Archivo no subido correctamente";
-        //             }
+        //         } else {
+        //             Log::error("El archivo $key no es válido para el usuario ID: " . ($id_usuario ?? 'sin_id'));
         //         }
         //     }
+        //     ftp_close($con_id);
+        //     // 🔹 Guardar la información en la base de datos
+        //     DocumentacionUsuario::insert([
+        //         'id_usuario' => $id_usuario,
+        //         'cv_doc' => $archivosSubidos['cv_doc'],
+        //         'dni_doc' => $archivosSubidos['dni_doc'],
+        //         'recibo_doc' => $archivosSubidos['recibo_doc'],
+        //         'estado' => 1,
+        //         'fec_reg' => now(),
+        //         'user_reg' => $id_usuario
+        //     ]);
+        //     return response()->json(['success' => 'Archivos subidos correctamente']);
+        // } catch (\Exception $e) {
+        //     Log::error("Error en store_colaborador: " . $e->getMessage());
+        //     return response()->json(['error' => 'Ocurrió un error en el servidor'], 500);
         // }
-
-        // DocumentacionUsuario::insert([
-        //     'id_usuario' => $id_usuario,
-        //     'cv_doc' => $dato['cv_doc'],
-        //     'dni_doc' => $dato['dni_doc'],
-        //     'recibo_doc' => $dato['recibo_doc'],
-        //     'estado' => 1,
-        //     'fec_reg' => now(),
-        //     'user_reg' => $id_usuario
-        // ]);
 
 
         // ✅ Actualizar los datos en RopaUsuario
         // RopaUsuario::insert([
         //     'id_usuario' => $id_usuario,
-        //     'polo' => $uniforme['talla_polo'],
-        //     'camisa' => $uniforme['talla_camisa'],
-        //     'pantalon' => $uniforme['talla_pantalon'],
-        //     'zapato' => $uniforme['tallazapato'],
+        //     'polo' => $formulario['uniforme']['talla_polo'],
+        //     'camisa' => $formulario['uniforme']['talla_camisa'],
+        //     'pantalon' => $formulario['uniforme']['talla_pantalon'],
+        //     'zapato' => $formulario['uniforme']['talla_zapato'],
         //     'fec_reg' => now(),
         //     'user_reg' => $id_usuario,
         //     'estado' => 1
@@ -813,33 +805,21 @@ class GestionPersonas extends Controller
         // ✅ Actualizar los datos en SistPensUsuario
         // SistPensUsuario::create([
         //     'id_usuario' => $id_usuario,
-        //     'id_respuestasp' => $sistemapensionario['sistema_pensionario'],
-        //     'id_sistema_pensionario' => $sistemapensionario['tipo_sistema'],
-        //     'id_afp' => $sistemapensionario['afp'],
+        //     'id_respuestasp' => $formulario['sistemapensionario']['sistema_pensionario'],
+        //     'id_sistema_pensionario' => $formulario['sistemapensionario']['tipo_sistema'],
+        //     'id_afp' => $formulario['sistemapensionario']['afp'],
         //     'user_reg' => $id_usuario,
         //     'fec_reg' => now(),
         //     'estado' => 1,
         // ]);
-
-        // ✅ Actualizar los datos en SistPensUsuario
-        // SistPensUsuario::create([
-        //     'id_usuario' => $id_usuario,
-        //     'id_respuestasp' => $sistemapensionario['sistema_pensionario'],
-        //     'id_sistema_pensionario' => $sistemapensionario['tipo_sistema'],
-        //     'id_afp' => $sistemapensionario['afp'],
-        //     'user_reg' => $id_usuario,
-        //     'fec_reg' => now(),
-        //     'estado' => 1,
-        // ]);
-
 
         // ✅ Actualizar los datos en CuentaBancaria
         // CuentaBancaria::insert([
         //     'id_usuario' => $id_usuario,
-        //     'id_banco' => $cuentabancaria['entidad_bancaria'],
-        //     'cuenta_bancaria' => $cuentabancaria['cuenta_bancaria'],
-        //     'num_cuenta_bancaria' => $cuentabancaria['numero_cuenta'],
-        //     'num_codigo_interbancario' => $cuentabancaria['codigo_interbancario'],
+        //     'id_banco' => $formulario['cuentabancaria']['entidad_bancaria'],
+        //     'cuenta_bancaria' => $formulario['cuentabancaria']['cuenta_bancaria'],
+        //     'num_cuenta_bancaria' => $formulario['cuentabancaria']['numero_cuenta'],
+        //     'num_codigo_interbancario' => $formulario['cuentabancaria']['codigo_interbancario'],
         //     'fec_reg' => now(),
         //     'user_reg' => $id_usuario,
         //     'estado' => 1

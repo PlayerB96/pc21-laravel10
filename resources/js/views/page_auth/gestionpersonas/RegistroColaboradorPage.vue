@@ -15,7 +15,8 @@
                         @agregar-contacto-emergencia="agregarContactoEmergencia" @agregar-hijo="agregarHijos"
                         @agregar-idioma="agregarIdioma" @agregar-curso="agregarCurso"
                         @agregar-experiencia="agregarExperiencia" @agregar-enfermedad="agregarEnfermedad"
-                        @agregar-alergia="agregarAlergia" @file-upload="handleFileUpload">
+                        @agregar-alergia="agregarAlergia" @file-upload="handleFileUploadDni"
+                        @file-selected="updateFile">
                         <template v-if="section.model === 'nuevaReferencia'" #default>
                             <div v-if="form.referenciasFamiliares.length > 0" class="table-responsive">
                                 <table class="table">
@@ -101,7 +102,7 @@
                                             <td>{{ hijo.biologico }}</td>
                                             <td>
                                                 <input type="file" accept="application/pdf"
-                                                    @change="handleFileUpload($event, index)">
+                                                    @change="handleFileUploadDni($event, index)">
                                                 <span v-if="hijo.dni_file">{{ hijo.dni_file.name }}</span>
                                             </td>
                                             <td>
@@ -155,9 +156,14 @@
                                         <tr v-for="(curso, index) in form.cursos" :key="index">
                                             <td>{{ curso.curso }}</td>
                                             <td>{{ curso.anio }}</td>
-                                            <td>{{ curso.certificado }}</td>
                                             <td>
-                                                <button @click="eliminarIdioma(index, $event)">Eliminar</button>
+                                                <input type="file" accept="application/pdf"
+                                                    @change="handleFileUploadCurso($event, index)">
+                                                <span v-if="curso.certificado">{{ curso.certificado.name }}</span>
+                                            </td>
+
+                                            <td>
+                                                <button @click="eliminarCurso(index, $event)">Eliminar</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -192,7 +198,12 @@
                                             <td>{{ experiencia.nombre_referencia }}</td>
                                             <td>{{ experiencia.numero_contacto_referencia }}
                                             </td>
-                                            <td>{{ experiencia.constancia }}</td>
+                                            <td>
+                                                <input type="file" accept="application/pdf"
+                                                    @change="handleFileUploadConstancia($event, index)">
+                                                <span v-if="experiencia.constancia">{{ experiencia.constancia.name
+                                                    }}</span>
+                                            </td>
                                             <td>
                                                 <button @click="eliminarExperiencia(index, $event)">Eliminar</button>
                                             </td>
@@ -489,7 +500,6 @@ export default {
                 nuevoCurso: {
                     curso: '',
                     anio: '',
-                    certificado: '',
                 },
                 experienciasLaborales: [],
                 nuevaExperienciaLaboral: {
@@ -501,7 +511,6 @@ export default {
                     importe_remuneracion: '',
                     nombre_referencia: '',
                     numero_contacto_referencia: '',
-                    constancia: ''
                 },
                 enfermedades: [],
                 nuevaEnfermedad: {
@@ -880,7 +889,6 @@ export default {
                             required: false,
                             options: [],
                         },
-                        { label: 'Adjuntar Certificado', name: 'certificado', type: 'file', onchange: 'handleFileUpload', required: false }
 
                     ]
                 },
@@ -896,7 +904,6 @@ export default {
                         { label: 'Importe de Remuneración', name: 'importe_remuneracion', type: 'number', required: false },
                         { label: 'Nombre Referencia', name: 'nombre_referencia', type: 'text', required: false },
                         { label: 'Número Contacto Referencia', name: 'numero_contacto_referencia', type: 'number', required: false },
-                        { label: 'Adjuntar Constancia', name: 'constancia', type: 'file', required: false }
                     ]
 
                 },
@@ -1220,7 +1227,7 @@ export default {
                 }
             });
         },
-        handleFileUpload(event, index) {
+        handleFileUploadDni(event, index) {
             const file = event.target.files[0];
             if (file) {
                 // ✅ Guardar en el modelo `hijos` para que se refleje en el JSON
@@ -1230,40 +1237,83 @@ export default {
                 this.formData.append(`dni_file_${index}`, file);
             }
         },
-        // handleFileUpload({ file, fieldName }) {
-        //     this.formData.append(fieldName, file);
-        // },
+        handleFileUploadCurso(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                // ✅ Guardar en el modelo `cursos` para que se refleje en el JSON
+                this.form.cursos[index].certificado = file;
+                // ✅ Agregarlo a `FormData` para enviarlo correctamente al backend
+                this.formData.append(`certificado_${index}`, file);
+            }
+        },
+        handleFileUploadConstancia(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                // ✅ Guardar en el modelo `experienciasLaborales` para que se refleje en el JSON
+                this.form.experienciasLaborales[index].constancia = file;
+                // ✅ Agregarlo a `FormData` para enviarlo correctamente al backend
+                this.formData.append(`certificadolb_${index}`, file);
+            }
+        },
+
+        updateFile({ fieldName, file }) {
+            if (!this.form.adjuntarDocumentacion) {
+                this.form.adjuntarDocumentacion = {};
+            }
+            this.form.adjuntarDocumentacion[fieldName] = file;
+        },
         async submitForm() {
             try {
                 const userSessionString = localStorage.getItem('userSession');
                 const userSession = JSON.parse(userSessionString);
+
+                // Inicializa correctamente FormData
+                this.formData = new FormData();
+
                 this.formData.append('id_usuario', userSession.id_usuario);
                 this.formData.append('formulario', JSON.stringify(this.form));
 
+                // 🔹 Verifica que this.form.adjuntarDocumentacion tiene los archivos correctamente
+                if (this.form.adjuntarDocumentacion.adjuntar_cv) {
+                    this.formData.append('adjuntar_cv', this.form.adjuntarDocumentacion.adjuntar_cv);
+                }
+                if (this.form.adjuntarDocumentacion.foto_dni) {
+                    this.formData.append('foto_dni', this.form.adjuntarDocumentacion.foto_dni);
+                }
+                if (this.form.adjuntarDocumentacion.copia_agua_luz) {
+                    this.formData.append('copia_agua_luz', this.form.adjuntarDocumentacion.copia_agua_luz);
+                }
+
+                // 🔹 Imprimir FormData para verificar
+                for (let pair of this.formData.entries()) {
+                    console.log(pair[0], pair[1]);
+                }
+
+                // Enviar datos al servidor
                 await axios.post('/gestionpersonas/store_colaborador', this.formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
+
             } catch (error) {
                 console.error("Error al enviar el formulario:", error);
             }
         },
+
         // async submitForm() {
         //     try {
-        //         // ✅ Recuperar `userSession` y asegurarse de que sea un objeto
         //         const userSessionString = localStorage.getItem('userSession');
-        //         const userSession = JSON.parse(userSessionString); // ✅ Convertir JSON string a objeto
+        //         const userSession = JSON.parse(userSessionString);
+        //         this.formData.append('id_usuario', userSession.id_usuario);
+        //         this.formData.append('formulario', JSON.stringify(this.form));
 
-        //         console.log(userSession.id_usuario)
-        //         console.log("@@")
-        //         const response = await axios.post('/gestionpersonas/store_colaborador', {
-
-        //             formulario: this.form,
-        //             id_usuario: userSession.id_usuario,  // ✅ Ahora `id_usuario` sí tiene valor
+        //         await axios.post('/gestionpersonas/store_colaborador', this.formData, {
+        //             headers: { 'Content-Type': 'multipart/form-data' }
         //         });
         //     } catch (error) {
         //         console.error("Error al enviar el formulario:", error);
         //     }
         // },
+
         agregarReferencia() {
             this.form.referenciasFamiliares.push({ ...this.form.nuevaReferencia });
             this.form.nuevaReferencia = {
@@ -1395,7 +1445,6 @@ export default {
             },
             immediate: true // Ejecuta el watcher inmediatamente después de la carga del componente
         },
-
         'formData.id_provincia': {
             handler(newProvincia) {
                 if (newProvincia) {
