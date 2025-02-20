@@ -23,8 +23,10 @@
     <!-- Cargar DataTables JS después de jQuery -->
     <script type="text/javascript" src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
+    
     <!-- 🔥 Mover Vue al final del body para evitar problemas -->
     <script src="{{ mix('js/app.js') }}" defer></script>
+
 </body>
 
 

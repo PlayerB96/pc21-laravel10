@@ -18,7 +18,7 @@ h1 {
 
 /* BUTTON */
 .btn-primary {
-    background-color: var(--light-secondary-bg);
+    background-color: var(--light-primary-bg);
     /* Azul primario */
     color: white;
     font-size: 16px;
@@ -31,19 +31,19 @@ h1 {
 }
 
 .btn-primary:hover {
-    background-color: var(--light-secondary-hover);
+    background-color: var(--light-primary-hover);
     /* Azul más oscuro al pasar el mouse */
     transform: scale(1.05);
 }
 
 .btn-primary:active {
-    background-color: var(--light-secondary-bg);
+    background-color: var(--light-primary-bg);
     /* Azul más oscuro al hacer clic */
     transform: scale(0.98);
 }
 
 .btn-secondary {
-    background-color: var(--dark-accent);
+    background-color: var(--light-secondary-hover);
     color: white;
     padding: 10px 15px;
     border: none;
@@ -54,7 +54,7 @@ h1 {
 }
 
 .btn-secondary:hover {
-    background-color: var(--dark-accent);
+    background-color: var(--light-secondary-hover);
     /* Azul más oscuro al pasar el mouse */
     transform: scale(1.05);
 }

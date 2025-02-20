@@ -1,38 +1,23 @@
 <template>
     <div>
-        <!-- Fondo del video -->
+        <!-- Fondo del video en la sección de inicio -->
         <section id="inicio" class="video-background-container">
             <div class="gradient-overlay"></div>
             <video autoplay loop muted class="video-background">
-                <source :src="videoSrc" type="video/mp4">
+                <source src="/assets/videos/RETAIL_LN1.mp4" type="video/mp4">
             </video>
-            <div class="content">
+        </section>
+        
+        <!-- Fondo dinámico -->
+        <div class="dynamic-background" :style="{ backgroundImage: `url(${currentBackground})`, transition: 'background-image 1s ease-in-out' }"></div>
+        
+        <!-- Contenido de la página -->
+        <section v-for="(section, index) in sections" :key="index" :id="section.id" class="section">
+            <div class="container text-center">
+                <h2 class="fw-bold">{{ section.title }}</h2>
+                <p>{{ section.description }}</p>
+                <a :href="'https://www.google.com'" target="_blank" class="btn-primary">Ir a Sitio</a>
             </div>
-        </section>
-        <!-- Secciones -->
-        <section id="ecommerce" class="section">
-            <h2>Ecommerce</h2>
-            <p>Explora nuestra plataforma de comercio electrónico.</p>
-        </section>
-
-        <section id="identidadcorporativa" class="section">
-            <h2>Identidad Corporativa</h2>
-            <p>Descubre nuestra imagen y valores de marca.</p>
-        </section>
-
-        <section id="empresas" class="section">
-            <h2>Empresas</h2>
-            <p>Conoce nuestras empresas y aliados estratégicos.</p>
-        </section>
-
-        <section id="productos" class="section">
-            <h2>Productos</h2>
-            <p>Explora nuestro catálogo de productos.</p>
-        </section>
-
-        <section id="blog" class="section">
-            <h2>Blog</h2>
-            <p>Lee nuestros artículos y novedades.</p>
         </section>
     </div>
 </template>
@@ -42,33 +27,46 @@ export default {
     name: "InicioPage",
     data() {
         return {
-            videoSrc: '/assets/videos/RETAIL_LN1.mp4',
+            currentBackground: '/assets/imgs/default.jpg', // Imagen por defecto
+            sections: [
+                { id: 'ecommerce', title: 'Ecommerce', description: 'Compra fácil...', background: '/assets/imgs/ecommerce_ln1.jpg' },
+                { id: 'identidadcorporativa', title: 'Identidad Corporativa', description: 'Nuestra identidad...', background: '/assets/imgs/identidad_ln1.jpg' },
+                { id: 'empresas', title: 'Empresas', description: 'Colaboramos con grandes marcas...', background: '/assets/imgs/empresa1_ln1.jpg' },
+                { id: 'productos', title: 'Productos', description: 'Descubre nuestra variedad...', background: '/assets/imgs/productos_ln1.jpg' },
+                { id: 'blog', title: 'Blog', description: 'Últimas noticias...', background: '/assets/imgs/blog1_ln1.jpg' }
+            ]
         };
     },
     mounted() {
-        const userSession = localStorage.getItem('userSession');
-        if (userSession) {
-            this.$router.push('/home'); // Redirigir a la vista de inicio si no hay sesión
-        }
+        window.addEventListener('scroll', this.updateBackground);
+        this.updateBackground(); // Llamar al cargar la página
+    },
+    beforeDestroy() {
+        window.removeEventListener('scroll', this.updateBackground);
     },
     methods: {
-
+        updateBackground() {
+            requestAnimationFrame(() => {
+                this.sections.forEach(section => {
+                    const sectionElement = document.getElementById(section.id);
+                    if (sectionElement) {
+                        const { top, bottom } = sectionElement.getBoundingClientRect();
+                        if (top < window.innerHeight / 2 && bottom > window.innerHeight / 2) {
+                            this.currentBackground = section.background;
+                        }
+                    }
+                });
+            });
+        }
     }
 };
 </script>
 
 <style scoped>
-.template {
-    background-color: red;
-}
-
-/* Estilos de la página */
 .video-background-container {
     position: relative;
     width: 100%;
-    /* height: calc(100vh - 0px); */
     height: 100vh;
-    /* Ajusta 80px según la altura del navbar */
     overflow: hidden;
 }
 
@@ -99,25 +97,24 @@ export default {
     text-align: center;
 }
 
-/* Secciones */
+.dynamic-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    z-index: -1;
+}
+
 .section {
-    padding: 100px 200px;
+    padding: 100px 50px;
     text-align: center;
-    background: #f4f4f4;
-    margin-bottom: 20px;
-    min-height: 50rem;
-}
-
-.section:nth-child(even) {
-    background: red;
-}
-
-.section h2 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-}
-
-.section p {
-    font-size: 1.2rem;
+    min-height: 100vh;
+    background: rgba(255, 255, 255, 0.505);
+    position: relative;
+    z-index: 1;
 }
 </style>

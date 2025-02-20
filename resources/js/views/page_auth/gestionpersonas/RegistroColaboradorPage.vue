@@ -3,10 +3,6 @@
         <h2>Datos de Colaborador</h2>
         <div class="widget-container-section-content">
 
-            <div class="upload-container" id="uploadContainer">
-                <input type="file" id="foto" name="foto" accept="image/*" @change="previewImage">
-                <p>Actualizar imagen</p>
-            </div>
 
             <form @submit.prevent="submitForm">
                 <div class="form-container-postulante">
@@ -15,7 +11,8 @@
                         @agregar-contacto-emergencia="agregarContactoEmergencia" @agregar-hijo="agregarHijos"
                         @agregar-idioma="agregarIdioma" @agregar-curso="agregarCurso"
                         @agregar-experiencia="agregarExperiencia" @agregar-enfermedad="agregarEnfermedad"
-                        @agregar-alergia="agregarAlergia">
+                        @agregar-alergia="agregarAlergia" @file-upload="handleFileUploadDni"
+                        @file-selected="updateFile">
                         <template v-if="section.model === 'nuevaReferencia'" #default>
                             <div v-if="form.referenciasFamiliares.length > 0" class="table-responsive">
                                 <table class="table">
@@ -100,14 +97,19 @@
                                             <td>{{ hijo.dni_hijo }}</td>
                                             <td>{{ hijo.biologico }}</td>
                                             <td>
+                                                <input type="file" accept="application/pdf"
+                                                    @change="handleFileUploadDni($event, index)">
+                                                <span v-if="hijo.dni_file">{{ hijo.dni_file.name }}</span>
+                                            </td>
+                                            <td>
                                                 <button @click="eliminarHijos(index, $event)">Eliminar</button>
                                             </td>
                                         </tr>
                                     </tbody>
-
                                 </table>
                             </div>
                         </template>
+
                         <template v-if="section.model === 'nuevoIdioma'" #default>
                             <div v-if="form.idiomas.length > 0" class="table-responsive">
                                 <table class="table">
@@ -150,9 +152,14 @@
                                         <tr v-for="(curso, index) in form.cursos" :key="index">
                                             <td>{{ curso.curso }}</td>
                                             <td>{{ curso.anio }}</td>
-                                            <td>{{ curso.certificado }}</td>
                                             <td>
-                                                <button @click="eliminarIdioma(index, $event)">Eliminar</button>
+                                                <input type="file" accept="application/pdf"
+                                                    @change="handleFileUploadCurso($event, index)">
+                                                <span v-if="curso.certificado">{{ curso.certificado.name }}</span>
+                                            </td>
+
+                                            <td>
+                                                <button @click="eliminarCurso(index, $event)">Eliminar</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -187,7 +194,12 @@
                                             <td>{{ experiencia.nombre_referencia }}</td>
                                             <td>{{ experiencia.numero_contacto_referencia }}
                                             </td>
-                                            <td>{{ experiencia.constancia }}</td>
+                                            <td>
+                                                <input type="file" accept="application/pdf"
+                                                    @change="handleFileUploadConstancia($event, index)">
+                                                <span v-if="experiencia.constancia">{{ experiencia.constancia.name
+                                                    }}</span>
+                                            </td>
                                             <td>
                                                 <button @click="eliminarExperiencia(index, $event)">Eliminar</button>
                                             </td>
@@ -244,71 +256,57 @@
                     </FormSection>
                 </div>
 
-                <div>
-                    <button @click="mostrarPopup = true" class="btn-primary">Ver Términos y Condiciones</button>
 
-                    <div v-if="mostrarPopup" class="modal-overlay" @click.self="cerrarPopup($event)">
+                <!-- <button type="submit" class="btn-primary-postulante">Registrar Datos</button>-->
+                <button type="submit" class="btn-primary-postulante" :disabled="isSubmitting">
+                    <span v-if="isSubmitting" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                    {{ isSubmitting ? 'Registrando...' : 'Registrar Datos' }}
+                </button>
+
+            </form>
+            <div>
+                <!-- Botón para abrir el modal -->
+                <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal"
+                    data-bs-target="#terminosModal">
+                    Ver Términos y Condiciones
+                </button>
+
+                <!-- Modal de Bootstrap -->
+                <div class="modal fade" id="terminosModal" tabindex="-1" aria-labelledby="terminosModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
-                            <h2><b>Por Política de Privacidad</b></h2>
-                            <p>La número 1 estamos comprometidos con mantener la privacidad y protección de información
-                                de
-                                nuestros colaboradores. Asimismo tiene un compromiso por el respeto y cumplimiento de lo
-                                dispuesto
-                                por la Ley N°29733-Ley de Protección de Datos Personales y su reglamento aprobado por
-                                Decreto
-                                Supremo N°003-2013-JUS.</p>
-                            <p>La protección de datos es una cuestión de confianza y privacidad, por ello es importante
-                                para
-                                nosotros. Por lo tanto, utilizaremos solamente su nombre y otra información referente a
-                                Ud. bajo
-                                los términos previstos en nuestra Política de Privacidad.</p>
-                            <p>Nuestra Política de Privacidad explica cómo recolectamos, utilizamos y divulgamos su
-                                información
-                                personal y explica las medidas que hemos tomado para asegurar su información personal.
-                                La empresa adopta los niveles de seguridad de protección de los datos personales
-                                legalmente
-                                requeridos.</p>
-                            <p>Nosotros recogeremos, almacenaremos y procesaremos los datos para el procesamiento fines
-                                de recursos
-                                humanos y para cualquier información posterior. Podemos recopilar información personal,
-                                incluyendo
-                                pero no limitado a, el título, nombre, fecha de nacimiento, dirección de correo
-                                electrónico, número
-                                de teléfono, número de teléfono celular y otros datos.</p>
-                            <p>Cada colaborador se compromete y garantiza que los Datos Personales que suministre a La
-                                Empresa son
-                                veraces y actuales. En tal sentido, será el responsable de comunicar oportunamente,
-                                mediante las
-                                vías establecidas por esta, sobre cualquier corrección o modificación que se produzca en
-                                ellos.</p>
-                            <p>Los colaboradores tendrán total libertad para ejercitar los derechos establecidos en la
-                                Ley No.
-                                29733 y su reglamento, sobre los derechos ARCO (Acceso, Rectificación, Cancelación y
-                                Oposición);
-                                la empresa garantiza por su parte, el respeto y observancia al ejercicio de dichos
-                                derechos, para lo
-                                cual puede enviar una comunicación al correo electrónico
-                                <a href="mailto:sistemas@lanumero1.com.pe">sistemas@lanumero1.com.pe</a>
-                            </p>
-                            <p>La empresa requiere del consentimiento libre, previo, expreso, inequívoco e informado del
-                                titular
-                                de los datos personales para el tratamiento de los mismos, en consecuencia desde el
-                                momento de su
-                                ingreso o uso de nuestro sitio web, el titular de datos otorga su total consentimiento
-                                para el
-                                tratamiento de los datos personales que consigna al dar check en la opción Acepto los
-                                términos y
-                                condiciones y dar clic en el botón de envío de formulario.</p>
-
-                            <button @click="cerrarPopup" class="btn-primary">Cerrar</button>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="terminosModalLabel"><b>Por Política de Privacidad</b></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>La número 1 estamos comprometidos con mantener la privacidad y protección de
+                                    información de
+                                    nuestros colaboradores...</p>
+                                <p>La protección de datos es una cuestión de confianza y privacidad...</p>
+                                <p>Nosotros recogeremos, almacenaremos y procesaremos los datos para fines de recursos
+                                    humanos...
+                                </p>
+                                <p>Cada colaborador se compromete y garantiza que los Datos Personales que suministre
+                                    son veraces y
+                                    actuales...</p>
+                                <p>Los colaboradores tendrán total libertad para ejercitar los derechos establecidos en
+                                    la Ley No.
+                                    29733...</p>
+                                <p>Para más información, puedes enviar una comunicación al correo electrónico:
+                                    <a href="mailto:sistemas@lanumero1.com.pe">sistemas@lanumero1.com.pe</a>
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn-primary-postulante">Registrar Postulante</button>
-            </form>
-            <!-- <div id="app">
-                <MapComponent />
-            </div> -->
+            </div>
         </div>
     </div>
 </template>
@@ -323,6 +321,7 @@ export default {
         FormSection, MapComponent
     },
     computed: {
+
         idiomasConTexto() {
             const getText = (campo, id) => {
                 return this.sections.find(s => s.model === 'nuevoIdioma')
@@ -388,22 +387,24 @@ export default {
     },
     data() {
         return {
+            isSubmitting: false,
             anios: [],
             departamentos: [],
             provincias: [],
             distritos: [],
+            formData: new FormData(),
             mostrarPopup: false,
             form: {
                 personalInfo: {
                     apellido_paterno: '',
                     apellido_materno: '',
                     nombres: '',
-                    nacionalidad: 'Peruano',
-                    estado_civil: 'Soltero',
+                    nacionalidad: '',
+                    estado_civil: '',
                     fecha_nacimiento: '',
                     edad: '',
-                    genero: 'Mujer',
-                    tipo_documento: 'DNI',
+                    genero: '',
+                    tipo_documento: '',
                     numero_documento: '',
                     correo: '',
                     celular: '',
@@ -465,7 +466,6 @@ export default {
                     fecha_nacimiento_hijo: '',
                     dni_hijo: '',
                     biologico: '',
-                    dni_file: ''
                 },
                 conocimientoOffice: {
                     nivel_excel: '',
@@ -484,7 +484,6 @@ export default {
                 nuevoCurso: {
                     curso: '',
                     anio: '',
-                    certificado: '',
                 },
                 experienciasLaborales: [],
                 nuevaExperienciaLaboral: {
@@ -496,7 +495,6 @@ export default {
                     importe_remuneracion: '',
                     nombre_referencia: '',
                     numero_contacto_referencia: '',
-                    constancia: ''
                 },
                 enfermedades: [],
                 nuevaEnfermedad: {
@@ -550,9 +548,9 @@ export default {
                     title: 'Información Personal',
                     model: 'personalInfo',
                     fields: [
-                        { label: 'Apellido Paterno', name: 'apellido_paterno', type: 'text', required: false },
-                        { label: 'Apellido Materno', name: 'apellido_materno', type: 'text', required: false },
-                        { label: 'Nombres', name: 'nombres', type: 'text', required: false },
+                        { label: 'Apellido Paterno', name: 'apellido_paterno', type: 'text', required: true },
+                        { label: 'Apellido Materno', name: 'apellido_materno', type: 'text', required: true },
+                        { label: 'Nombres', name: 'nombres', type: 'text', required: true },
                         {
                             label: 'Nacionalidad',
                             name: 'nacionalidad',
@@ -562,7 +560,7 @@ export default {
                                 { id: 2, text: 'VENEZOLANO' },
                                 { id: 3, text: 'COLOMBIANO' }
                             ],
-                            required: false
+                            required: true
                         },
                         {
                             label: 'Estado Civil',
@@ -576,7 +574,7 @@ export default {
                                 { id: 5, text: 'SEPARADO' },
                                 { id: 6, text: 'VIUDO' }
                             ],
-                            required: false
+                            required: true
                         },
                         { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento', type: 'date', required: false },
                         { label: 'Edad', name: 'edad', type: 'number', required: false },
@@ -588,7 +586,7 @@ export default {
                                 { id: 1, text: 'MASCULINO' },
                                 { id: 2, text: 'FEMENINO' }
                             ],
-                            required: false
+                            required: true
                         },
                         {
                             label: 'Tipo de Documento',
@@ -602,11 +600,11 @@ export default {
                                 { id: 5, text: 'CARNET DE EXTRANJERÍA' },
                                 { id: 6, text: 'REGISTRO ÚNICO DE CONTRIBUYENTES' }
                             ],
-                            required: false
+                            required: true
                         },
-                        { label: 'Número de Documento', name: 'numero_documento', type: 'number', required: false },
-                        { label: 'Correo Electrónico', name: 'correo', type: 'email', required: false },
-                        { label: 'Número Celular', name: 'celular', type: 'number', required: false },
+                        { label: 'Número de Documento', name: 'numero_documento', type: 'number', required: true },
+                        { label: 'Correo Electrónico', name: 'correo', type: 'email', required: true },
+                        { label: 'Número Celular', name: 'celular', type: 'number', required: true },
                         { label: 'Teléfono Fijo', name: 'telefono', type: 'number', required: false }
                     ]
                 },
@@ -619,21 +617,21 @@ export default {
                             label: 'Departamento',
                             name: 'id_departamento',
                             type: 'select',
-                            required: false,
+                            required: true,
                             options: [] // Aquí llenas las opciones dinámicamente desde el backend
                         },
                         {
                             label: 'Provincia',
                             name: 'id_provincia',
                             type: 'select',
-                            required: false,
+                            required: true,
                             options: [] // Aquí llenas las opciones dinámicamente después de seleccionar un departamento
                         },
                         {
                             label: 'Distrito',
                             name: 'id_distrito',
                             type: 'select',
-                            required: false,
+                            required: true,
                             options: [] // Aquí llenas las opciones dinámicamente después de seleccionar una provincia
                         },
                         {
@@ -656,7 +654,7 @@ export default {
                                 { id: 16, text: 'Paseo' },
                                 { id: 17, text: 'Plazuela' },
                                 { id: 18, text: 'Portal' }
-                            ], required: false
+                            ], required: true
                         },
 
                         { label: 'Nombre de vía', name: 'nombre_via', type: 'text', required: false },
@@ -666,7 +664,7 @@ export default {
                         { label: 'Interior', name: 'interior', type: 'text', required: false },
                         { label: 'N° Departamento', name: 'numero_departamento', type: 'text', required: false },
                         { label: 'Lote', name: 'lote', type: 'text', required: false },
-                        { label: 'Piso', name: 'piso', type: 'text', required: false },
+                        { label: 'Piso', name: 'piso', type: 'number', required: false },
                         {
                             label: 'Tipo de Zona', name: 'tipo_zona', type: 'select', options: [
                                 { id: 1, text: 'PUEBLO JOVEN' },
@@ -681,7 +679,7 @@ export default {
                                 { id: 10, text: 'FUNDO' },
                                 { id: 11, text: 'OTROS' },
                                 { id: 12, text: 'URBANIZACIÓN' },
-                            ], required: false
+                            ], required: true
                         },
                         { label: 'Nombre Zona', name: 'nombre_zona', type: 'text', required: false },
                         {
@@ -690,10 +688,9 @@ export default {
                                 { id: 2, text: 'Propia' },
                                 { id: 3, text: 'Propiedad de un familiar' },
 
-                            ], required: false
+                            ], required: true
                         },
-                        { label: 'Referencia Domicilio', name: 'referencia_domicilio', type: 'text', required: false },
-                        { label: 'Dirección Completa', name: 'direccion_completa', type: 'text', required: false }
+                        { label: 'Referencia Domicilio', name: 'referencia_domicilio', type: 'text', required: true },
                     ]
                 },
 
@@ -706,10 +703,10 @@ export default {
                         { label: 'Actividades de ocio o pasatiempos', name: 'actividades_ocio', type: 'text', required: false },
                         { label: 'Artistas o banda favorita', name: 'artistas_banda_favorita', type: 'text', required: false },
                         { label: 'Género musical favorito', name: 'genero_musical_favorito', type: 'text', required: false },
-                        { label: 'Película o serie favorita', name: 'pelicula_serie_favorita', type: 'text', required: false },
+                        { label: 'Película o serie favorita', name: 'pelicula_serie_favorita', type: 'text', required: true },
                         { label: 'Colores favoritos', name: 'colores_favoritos', type: 'text', required: false },
                         { label: 'Redes sociales favoritas', name: 'redes_sociales_favoritas', type: 'text', required: false },
-                        { label: 'Deporte favorito', name: 'deporte_favorito', type: 'text', required: false },
+                        { label: 'Deporte favorito', name: 'deporte_favorito', type: 'text', required: true },
                         { label: '¿Tiene mascota?', name: 'tiene_mascota', type: 'select', options: [{ id: 1, text: 'Si' }, { id: 2, text: 'No' }], required: false },
                         { label: 'Qué mascota tienes?', name: 'tipo_mascota', type: 'text', required: false }
                     ]
@@ -718,7 +715,7 @@ export default {
                     title: 'Referencias Familiares',
                     model: 'nuevaReferencia',
                     fields: [
-                        { label: 'Nombre de Familiar', name: 'nombre_familiar', type: 'text', required: false },
+                        { label: 'Nombre de Familiar', name: 'nombre_familiar', type: 'text', required: true },
                         {
                             label: 'Parentesco', name: 'parentesco', type: 'select', options: [
                                 { id: 1, text: 'PAPÁ' },
@@ -732,10 +729,10 @@ export default {
                                 { id: 9, text: 'HIJO/A' },
                                 { id: 10, text: 'ABUELO/A' }
                             ],
-                            required: false
+                            required: true
                         },
-                        { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento_ref', type: 'date', required: false },
-                        { label: 'Celular', name: 'celular_ref', type: 'number', required: false },
+                        { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento_ref', type: 'date', required: true },
+                        { label: 'Celular', name: 'celular_ref', type: 'number', required: true },
                         { label: 'Celular 2', name: 'celular_ref2', type: 'number', required: false },
                         { label: 'Teléfono Fijo', name: 'telefono_fijo', type: 'number', required: false },
                     ]
@@ -756,14 +753,13 @@ export default {
                         { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento_hijo', type: 'date', required: false },
                         { label: 'DNI', name: 'dni_hijo', type: 'text', required: false },
                         { label: 'Biológico/No Biológico', name: 'biologico', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
-                        { label: 'Adjuntar DNI', name: 'dni_file', type: 'file', required: false }
                     ]
                 },
                 {
                     title: 'Contacto de Emergencia',
                     model: 'nuevoContactoEmergencia',
                     fields: [
-                        { label: 'Nombre de Contacto', name: 'nombre_contacto_emergencia', type: 'text', required: false },
+                        { label: 'Nombre de Contacto', name: 'nombre_contacto_emergencia', type: 'text', required: true },
                         {
                             label: 'Parentesco', name: 'parentesco_contacto_emergencia', type: 'select', options: [
                                 { id: 1, text: 'PAPÁ' },
@@ -776,9 +772,9 @@ export default {
                                 { id: 8, text: 'SOBRINO/A' },
                                 { id: 9, text: 'HIJO/A' },
                                 { id: 10, text: 'ABUELO/A' }
-                            ], required: false
+                            ], required: true
                         },
-                        { label: 'Celular', name: 'celular_contacto_emergencia', type: 'number', required: false },
+                        { label: 'Celular', name: 'celular_contacto_emergencia', type: 'number', required: true },
                         { label: 'Celular 2', name: 'celular2_contacto_emergencia', type: 'number', required: false },
                         { label: 'Teléfono Fijo', name: 'telefono_fijo_contacto_emergencia', type: 'number', required: false }
                     ]
@@ -795,7 +791,7 @@ export default {
                                 { id: 3, text: 'Avanzado' },
                                 { id: 4, text: 'No Aplica' },
                             ],
-                            required: false
+                            required: true
                         },
                         {
                             label: '¿Nivel de Word?', name: 'nivel_word', type: 'select',
@@ -805,7 +801,7 @@ export default {
                                 { id: 3, text: 'Avanzado' },
                                 { id: 4, text: 'No Aplica' },
                             ],
-                            required: false
+                            required: true
                         },
                         {
                             label: '¿Nivel de PowerPoint?', name: 'nivel_powerpoint', type: 'select',
@@ -815,7 +811,7 @@ export default {
                                 { id: 3, text: 'Avanzado' },
                                 { id: 4, text: 'No Aplica' },
                             ],
-                            required: false
+                            required: true
                         },
                     ]
                 },
@@ -832,7 +828,7 @@ export default {
                                 { id: 4, text: 'Portugués' },
                                 { id: 5, text: 'No Aplica' },
                             ],
-                            required: false
+                            required: true
                         },
                         {
                             label: 'Lectura', name: 'lectura', type: 'select', options:
@@ -842,7 +838,7 @@ export default {
                                     { id: 3, text: 'Avanzado' },
                                     { id: 4, text: 'No Aplica' },
                                 ],
-                            required: false
+                            required: true
                         },
                         {
                             label: 'Escritura', name: 'escritura', type: 'select', options:
@@ -852,7 +848,7 @@ export default {
                                     { id: 3, text: 'Avanzado' },
                                     { id: 4, text: 'No Aplica' },
                                 ],
-                            required: false
+                            required: true
                         },
                         {
                             label: 'Conversación', name: 'conversacion', type: 'select', options:
@@ -862,7 +858,7 @@ export default {
                                     { id: 3, text: 'Avanzado' },
                                     { id: 4, text: 'No Aplica' },
                                 ],
-                            required: false
+                            required: true
                         },
 
                     ]
@@ -877,7 +873,6 @@ export default {
                             required: false,
                             options: [],
                         },
-                        { label: 'Adjuntar Certificado', name: 'certificado', type: 'file', onchange: 'handleFileUpload', required: false }
 
                     ]
                 },
@@ -893,7 +888,6 @@ export default {
                         { label: 'Importe de Remuneración', name: 'importe_remuneracion', type: 'number', required: false },
                         { label: 'Nombre Referencia', name: 'nombre_referencia', type: 'text', required: false },
                         { label: 'Número Contacto Referencia', name: 'numero_contacto_referencia', type: 'number', required: false },
-                        { label: 'Adjuntar Constancia', name: 'constancia', type: 'file', required: false }
                     ]
 
                 },
@@ -939,7 +933,7 @@ export default {
                                 { id: 8, text: 'AB+' },
                                 { id: 9, text: 'Desconoce' },
                             ],
-                            required: false
+                            required: true
                         },
                     ]
                 },
@@ -958,9 +952,9 @@ export default {
                                     { id: 5, text: 'RADIO' },
                                     { id: 6, text: 'OTROS' },
                                 ],
-                            required: false
+                            required: true
                         },
-                        { label: 'Especifique Otros', name: 'especifique_otros', type: 'text', required: false },
+                        { label: 'Especifique Otros', name: 'especifique_otros', type: 'text', required: true },
 
                     ]
                 },
@@ -968,9 +962,9 @@ export default {
                     title: 'Adjuntar Documentacion',
                     model: 'adjuntarDocumentacion',
                     fields: [
-                        { label: 'Adjuntar curriculum vitae', name: 'adjuntar_cv', type: 'file', required: false },
-                        { label: 'Foto DNI (ambas caras)', name: 'foto_dni', type: 'file', required: false },
-                        { label: 'Copia de recibo de agua y luz', name: 'copia_agua_luz', type: 'file', required: false },
+                        { label: 'Adjuntar curriculum vitae', name: 'adjuntar_cv', type: 'file', required: true },
+                        { label: 'Foto DNI (ambas caras)', name: 'foto_dni', type: 'file', required: true },
+                        { label: 'Copia de recibo de agua y luz', name: 'copia_agua_luz', type: 'file', required: true },
 
                     ]
                 },
@@ -991,7 +985,7 @@ export default {
                                 { id: 6, text: 'XXL' },
                                 { id: 7, text: 'XXXL' }
                             ],
-                            required: false
+                            required: true
                         },
                         {
                             label: 'Camisa',
@@ -1011,7 +1005,7 @@ export default {
                                 { id: 30, text: '18' },
                                 { id: 36, text: '18.5' }
                             ],
-                            required: false
+                            required: true
                         },
                         {
                             label: 'Pantalón',
@@ -1025,7 +1019,7 @@ export default {
                                 { id: 23, text: '34' },
                                 { id: 24, text: '36' }
                             ],
-                            required: false
+                            required: true
                         },
                         {
                             label: 'Zapato',
@@ -1045,7 +1039,7 @@ export default {
                                 { id: 18, text: '44' },
                                 { id: 37, text: '45' }
                             ],
-                            required: false
+                            required: true
                         }
                     ]
 
@@ -1054,19 +1048,24 @@ export default {
                     title: 'Sistema Pensionario',
                     model: 'sistemapensionario',
                     fields: [
-                        { label: 'Pertenece a algún sistema pensionario', name: 'sistema_pensionario', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
+                        { label: 'Pertenece a algún sistema pensionario', name: 'sistema_pensionario', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: true },
                         {
                             label: 'Indique el sistema pensionaro al que pertenece', name: 'tipo_sistema', type: 'select',
-                            ptions: [
+                            options: [
+                                { id: 1, text: 'ONP' },
+                                { id: 2, text: 'AFP' },],
+
+                            required: false
+                        },
+                        {
+                            label: 'Si indico AFP elija', name: 'afp', type: 'select', options: [
                                 { id: 1, text: 'INTEGRA' },
                                 { id: 2, text: 'PRIMA' },
                                 { id: 3, text: 'PROFUTURO' },
                                 { id: 4, text: 'HABITAT' },
                                 { id: 5, text: 'HORIZONTE' },
-                                { id: 6, text: 'ONP' }], 
-                                required: false
+                                { id: 6, text: 'ONP' }], required: false
                         },
-                        { label: 'Si indico AFP elija', name: 'afp', type: 'select', options: ['AFP Integra', 'Prima AFP', 'Profuturo AFP', 'AFP Habitat'], required: false },
 
                     ]
                 },
@@ -1074,7 +1073,7 @@ export default {
                     title: 'Número de Cuenta',
                     model: 'cuentabancaria',
                     fields: [
-                        { label: '¿Cuéntas con cuenta bancaria?', name: 'cuenta_bancaria', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
+                        { label: '¿Cuéntas con cuenta bancaria?', name: 'cuenta_bancaria', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: true },
                         {
                             label: 'Indique la entidad bancaria', name: 'entidad_bancaria', type: 'select',
                             options:
@@ -1084,7 +1083,6 @@ export default {
                                     { id: 3, text: 'Scotiabank' },
                                     { id: 4, text: 'BBVA' },
                                     { id: 5, text: 'Banco De La Nacion' },
-                                    { id: 6, text: 'ONP' }
                                 ]
                             , required: false
                         },
@@ -1116,7 +1114,6 @@ export default {
                     }));
                     // Asignar las opciones de departamento al campo 'id_departamento'
                     this.sections[8].fields.find(field => field.name === 'anio').options = this.anios;
-                    console.log(this.anios);
 
                 })
                 .catch(error => {
@@ -1133,10 +1130,8 @@ export default {
                         id: item.id_departamento, // Asegúrate de que este campo existe en la respuesta
                         text: item.nombre_departamento // Asegúrate de que este campo también existe en la respuesta
                     }));
-
                     // Asignar las opciones de departamento al campo 'id_departamento'
                     this.sections[1].fields.find(field => field.name === 'id_departamento').options = this.departamentos;
-                    // console.log(this.departamentos);
 
                 })
                 .catch(error => {
@@ -1153,8 +1148,6 @@ export default {
 
             axios.get('/provincias', { params: { id_departamento: this.formData.id_departamento } })
                 .then(response => {
-                    console.log("Provincias recibidas:", response.data);
-
                     this.provincias = response.data.map(item => ({
                         id: item.id_provincia,
                         text: item.nombre_provincia
@@ -1192,51 +1185,107 @@ export default {
                 });
         },
 
-
-
         cerrarPopup(event) {
             event.preventDefault();
             this.mostrarPopup = false;
         },
-        previewImage(event) {
-            const input = event.target;
-            this.$nextTick(() => {
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        document.getElementById('uploadContainer').appendChild(imgElement);
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                }
-            });
+
+        handleFileUploadDni(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                // ✅ Guardar en el modelo `hijos` para que se refleje en el JSON
+                this.form.hijos[index].dni_file = file;
+
+                // ✅ Agregarlo a `FormData` para enviarlo correctamente al backend
+                this.formData.append(`dni_file_${index}`, file.name);
+            }
+        },
+        handleFileUploadCurso(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                // ✅ Guardar en el modelo `cursos` para que se refleje en el JSON
+                this.form.cursos[index].certificado = file;
+                // ✅ Agregarlo a `FormData` para enviarlo correctamente al backend
+                this.formData.append(`certificado_${index}`, file.name);
+            }
+        },
+        handleFileUploadConstancia(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                // ✅ Guardar en el modelo `experienciasLaborales` para que se refleje en el JSON
+                this.form.experienciasLaborales[index].constancia = file.name;
+                // ✅ Agregarlo a `FormData` para enviarlo correctamente al backend
+                this.formData.append(`certificadolb_${index}`, file);
+            }
+        },
+
+        updateFile({ fieldName, file }) {
+            if (!this.form.adjuntarDocumentacion) {
+                this.form.adjuntarDocumentacion = {};
+            }
+            this.form.adjuntarDocumentacion[fieldName] = file;
         },
         async submitForm() {
             try {
-                // ✅ Recuperar `userSession` y asegurarse de que sea un objeto
+                this.isSubmitting = true; // 🔹 Deshabilita el botón
                 const userSessionString = localStorage.getItem('userSession');
-                const userSession = JSON.parse(userSessionString); // ✅ Convertir JSON string a objeto
-                console.log(userSession.id_usuario)
-                console.log("@@")
-                const response = await axios.post('/gestionpersonas/store_colaborador', {
-                    formulario: this.form,
-                    id_usuario: userSession.id_usuario,  // ✅ Ahora `id_usuario` sí tiene valor
+                const userSession = JSON.parse(userSessionString);
+
+                // Inicializa correctamente FormData
+                this.formData = new FormData();
+                this.formData.append('id_usuario', userSession.id_usuario);
+                this.formData.append('formulario', JSON.stringify(this.form));
+
+                // 🔹 Adjuntar archivos si existen
+                if (this.form.adjuntarDocumentacion.adjuntar_cv) {
+                    this.formData.append('adjuntar_cv', this.form.adjuntarDocumentacion.adjuntar_cv);
+                }
+                if (this.form.adjuntarDocumentacion.foto_dni) {
+                    this.formData.append('foto_dni', this.form.adjuntarDocumentacion.foto_dni);
+                }
+                if (this.form.adjuntarDocumentacion.copia_agua_luz) {
+                    this.formData.append('copia_agua_luz', this.form.adjuntarDocumentacion.copia_agua_luz);
+                }
+
+                // 🔹 Enviar datos al servidor
+                await axios.post('/gestionpersonas/store_colaborador', this.formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
                 });
+                if (userSession) {
+                    // 🔹 Modificar inducción a 1
+                    userSession.datos_completos = 1;
+                    localStorage.setItem('userSession', JSON.stringify(userSession));
+                    // 🔹 Emitir evento para notificar el cambio
+                    window.dispatchEvent(new Event("storage"));
+                }
+                // 🔹 Mostrar mensaje de éxito
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Registro exitoso!',
+                    text: `${userSession.nombre_completo}ha sido registrado correctamente.`,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    willClose: () => {
+                        router.push('/home');
+                    }
+                });
+
             } catch (error) {
                 console.error("Error al enviar el formulario:", error);
+                // 🔹 Mostrar error en Swal
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un problema al registrar el postulante.',
+                });
+
+            } finally {
+                this.isSubmitting = false; // 🔹 Habilita el botón nuevamente
             }
         },
         agregarReferencia() {
             this.form.referenciasFamiliares.push({ ...this.form.nuevaReferencia });
-            this.form.nuevaReferencia = {
-                nombre_familiar: '',
-                parentesco: '',
-                fecha_nacimiento_ref: '',
-                celular_ref: '',
-                celular_ref2: '',
-                telefono_fijo: ''
-            };
         },
         eliminarReferencia(index, event) {
             event.preventDefault();
@@ -1244,13 +1293,6 @@ export default {
         },
         agregarContactoEmergencia() {
             this.form.contactosEmergencia.push({ ...this.form.nuevoContactoEmergencia });
-            this.form.nuevoContactoEmergencia = {
-                nombre_contacto_emergencia: '',
-                parentesco_contacto_emergencia: '',
-                celular_contacto_emergencia: '',
-                celular2_contacto_emergencia: '',
-                telefono_fijo_contacto_emergencia: ''
-            };
         },
         eliminarHijos(index, event) {
             event.preventDefault();
@@ -1258,15 +1300,6 @@ export default {
         },
         agregarHijos() {
             this.form.hijos.push({ ...this.form.nuevoHijo });
-            this.form.nuevoHijo = {
-                respuesta: '',
-                nombre_hijo: '',
-                genero_hijo: '',
-                fecha_nacimiento_hijo: '',
-                dni_hijo: '',
-                biologico: '',
-                dni_file: ''
-            };
         },
         eliminarContactoEmergencia(index, event) {
             event.preventDefault();
@@ -1274,30 +1307,13 @@ export default {
         },
         agregarIdioma() {
             this.form.idiomas.push({ ...this.form.nuevoIdioma });
-            this.form.nuevoIdioma = {
-                idioma: '',
-                lectura: '',
-                escritura: '',
-                conversacion: ''
-            };
         },
         eliminarIdioma(index, event) {
             event.preventDefault();
             this.form.idiomas.splice(index, 1);
         },
-        handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                this.form.nuevoCurso.certificado = file.name; // Guarda solo el nombre del archivo
-            }
-        },
         agregarCurso() {
             this.form.cursos.push({ ...this.form.nuevoCurso });
-            this.form.nuevoCurso = {
-                curso: '',
-                anio: '',
-                certificado: '',
-            };
         },
         eliminarCurso(index, event) {
             event.preventDefault();
@@ -1305,17 +1321,6 @@ export default {
         },
         agregarExperiencia() {
             this.form.experienciasLaborales.push({ ...this.form.nuevaExperienciaLaboral });
-            this.form.nuevaExperienciaLaboral = {
-                empresa: '',
-                cargo: '',
-                fecha_inicio: '',
-                fecha_fin: '',
-                motivo_salida: '',
-                importe_remuneracion: '',
-                nombre_referencia: '',
-                numero_contacto_referencia: '',
-                constancia: ''
-            };
         },
         eliminarExperiencia(index, event) {
             event.preventDefault();
@@ -1323,11 +1328,6 @@ export default {
         },
         agregarEnfermedad() {
             this.form.enfermedades.push({ ...this.form.nuevaEnfermedad });
-            this.form.nuevaEnfermedad = {
-                padece_enfermedad: '',
-                enfermedad: '',
-                fecha_diagnostico: ''
-            };
         },
         eliminarEnfermedad(index, event) {
             event.preventDefault();
@@ -1335,10 +1335,6 @@ export default {
         },
         agregarAlergia() {
             this.form.alergias.push({ ...this.form.nuevaAlergia });
-            this.form.nuevaAlergia = {
-                respuesta_alergico: '',
-                alergia: '',
-            };
         },
         eliminarAlergia(index, event) {
             event.preventDefault();
@@ -1357,7 +1353,6 @@ export default {
             },
             immediate: true // Ejecuta el watcher inmediatamente después de la carga del componente
         },
-
         'formData.id_provincia': {
             handler(newProvincia) {
                 if (newProvincia) {
@@ -1376,23 +1371,6 @@ export default {
 <style scoped>
 /* Estilo del fondo oscuro */
 
-
-.upload-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.upload-container input[type="file"] {
-    display: none;
-}
-
-.upload-container p {
-    margin: 0;
-    cursor: pointer;
-    color: #007bff;
-}
 
 .form-container-postulante {
     display: flex;

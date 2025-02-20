@@ -1,24 +1,20 @@
 <template>
-    <nav class="navbar">
+    <nav class="navbar_main">
         <div class="navbar-logo">
             <img src="/assets/imgs/Grupo-LN1.png" alt="Grupo LN1 Logo" />
         </div>
 
         <ul class="navbar-menu">
             <li v-for="(item, index) in filteredNavItems" :key="index" class="navbar-item">
-                <!-- Si es una sección interna, usa scroll -->
-
                 <a v-if="isInternalSection(item.label)" class="navbar-link"
                     :class="{ 'active-link': activeSection === getSectionId(item.label) }"
                     @click="scrollToSection(getSectionId(item.label))">
                     {{ item.label }}
                 </a>
-                <!-- Si no es interna, usa router-link -->
                 <router-link v-else :to="item.route" class="navbar-link" active-class="active-link">
                     {{ item.label }}
                 </router-link>
 
-                <!-- Submenús solo si no es una sección interna -->
                 <ul v-if="item.subitems.length > 0 && !isInternalSection(item.label)" class="sub-menu">
                     <li v-for="(subitem, subIndex) in item.subitems" :key="subIndex">
                         <router-link :to="subitem.route" class="navbar-link">
@@ -29,124 +25,155 @@
             </li>
         </ul>
 
-        <div class="navbar-right">
-            <!-- Si hay sesión, mostrar perfil -->
-            <div v-if="userSession" class="nav-item dropdown">
-                <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown">
+
+        <div class="navbar-right d-flex align-items-center">
+            <div v-if="userSession" class="dropdown">
+                <!-- Icono de usuario que activa el dropdown -->
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle user text-white d-flex align-items-center"
+                    id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="white" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                 </a>
-                <div class="dropdown-menu">
-                    <div class="user-profile-section">
-                        <h5>{{ userSession.nombre_completo }}</h5>
-                    </div>
-                    <div class="dropdown-item" @click="handleLogout">
-                        <a href="javascript:void(0);">
-                            <img :src="assetsUrl + 'icons/quit.svg'" alt="Salir" />
+
+                <!-- Dropdown de Bootstrap -->
+                <ul class="dropdown-menu dropdown-menu-end  text-white" aria-labelledby="userProfileDropdown">
+                    <li class="dropdown-header text-center fw-bold text-white">
+                        {{ userSession.nombre_completo }}
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);"
+                            class="dropdown-item  d-flex align-items-center text-white"
+                            @click="handleLogout">
+                            <img :src="assetsUrl + 'icons/quit.svg'" alt="Salir" class="me-2" width="20" />
                             <span>Salir</span>
                         </a>
-                    </div>
-                </div>
+                    </li>
+
+                </ul>
             </div>
 
-            <!-- Si NO hay sesión, mostrar login -->
-            <button v-if="!userSession" id="btn-primary" class="btn-secondary" @click="handleLoginClick">
+            <!-- Botón de inicio de sesión -->
+            <button v-if="!userSession" class="btn-primary ms-3" @click="handleLoginClick">
                 Iniciar sesión
             </button>
 
-            <!-- Modal -->
             <login-modal :isVisible="showModal" @update:isVisible="showModal = $event" />
         </div>
     </nav>
 </template>
 
 <script>
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 import LoginModal from './modals/LoginModal.vue';
 
 export default {
     components: {
         LoginModal,
     },
-    data() {
-        return {
-            navItems: [
-                { label: 'Inicio', route: 'inicio', subitems: [] },
-                { label: 'Home', route: '/home', subitems: [] },
-                { label: 'Inducción', route: '/induccion', subitems: [] },
-                { label: 'Ecommerce', route: '/ecommerce', subitems: [] },
-                {
-                    label: 'Gestión de Personas',
-                    route: '/gestionpersonas',
-                    subitems: [
-                        { label: 'Papeletas', route: '/gestionpersonas/registro_papeletas' },
-                        { label: 'Datos Colaboradores', route: '/gestionpersonas/registro_colaboradores' }
-                    ]
-                },
-                {
-                    label: 'Producción', route: '/produccion',
-                    subitems: [
-                        { label: 'Fichas Técnicas', route: '/produccion/fichas_produccion' }
-                    ]
-                },
-                { label: 'Identidad Corporativa', route: 'identidadcorporativa', subitems: [] },
-                { label: 'Empresas', route: 'empresas', subitems: [] },
-                { label: 'Productos', route: 'productos', subitems: [] },
-                { label: 'Blog', route: 'blog', subitems: [] }
-            ],
-            userSession: null, // Se obtiene desde el localStorage
-            assetsUrl: '/assets/', // Ruta de assets
-            isDarkMode: false, // Control de modo oscuro
-            showModal: false,
-            activeSection: null,
+    setup() {
+        const router = useRouter();
+        const userSession = ref(null);
+        const showModal = ref(false);
+        const activeSection = ref(null);
+        const assetsUrl = '/assets/';
+
+        // Lista de navegación
+        const navItems = [
+            { label: 'Inicio', route: 'inicio', subitems: [] },
+            { label: 'Home', route: '/home', subitems: [] },
+            {
+                label: 'Inducción',
+                route: '/induccion',
+                subitems: [{ label: 'Video Inducción', route: '/induccion/video_induccion' }]
+            },
+            { label: 'Ecommerce', route: '/ecommerce', subitems: [] },
+            {
+                label: 'Gestión de Personas',
+                route: '/gestionpersonas',
+                subitems: [
+                    { label: 'Papeletas', route: '/gestionpersonas/registro_papeletas' },
+                    { label: 'Datos Colaboradores', route: '/gestionpersonas/registro_colaboradores' }
+                ]
+            },
+            {
+                label: 'Producción', route: '/produccion',
+                subitems: [{ label: 'Fichas Técnicas', route: '/produccion/fichas_produccion' }]
+            },
+            { label: 'Identidad Corporativa', route: 'identidadcorporativa', subitems: [] },
+            { label: 'Empresas', route: 'empresas', subitems: [] },
+            { label: 'Productos', route: 'productos', subitems: [] },
+            { label: 'Blog', route: 'blog', subitems: [] }
+        ];
+
+        // Cargar usuario desde localStorage
+        const updateUserSession = () => {
+            userSession.value = JSON.parse(localStorage.getItem('userSession')) || null;
         };
-    },
-    mounted() {
-        window.addEventListener("scroll", this.updateActiveSection);
-        window.addEventListener("storage", this.updateUserSession); // Escuchar cambios en localStorage
-        this.updateUserSession(); // Cargar datos al montar
-        const storedSession = localStorage.getItem('userSession');
-        if (storedSession) {
-            this.userSession = JSON.parse(storedSession);
-        }
-    },
-    beforeDestroy() {
-        window.removeEventListener("scroll", this.updateActiveSection);
-    },
-    computed: {
-        filteredNavItems() {
-            return this.userSession
-                ? this.navItems.filter(item => ['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label))
-                : this.navItems.filter(item => !['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
-        }
-    },
-    methods: {
-        updateUserSession() {
-            const storedSession = localStorage.getItem('userSession');
-            this.userSession = storedSession ? JSON.parse(storedSession) : null;
-        },
-        updateActiveSection() {
+
+        // Escuchar cambios en localStorage y scroll
+        onMounted(() => {
+            updateUserSession();
+            window.addEventListener("storage", updateUserSession);
+            window.addEventListener("scroll", updateActiveSection);
+        });
+
+        onUnmounted(() => {
+            window.removeEventListener("storage", updateUserSession);
+            window.removeEventListener("scroll", updateActiveSection);
+        });
+
+        // Actualizar la sección activa en el scroll
+        const updateActiveSection = () => {
             const sections = document.querySelectorAll("section");
             let currentSection = "";
 
             sections.forEach(section => {
                 const rect = section.getBoundingClientRect();
-                if (rect.top <= 100 && rect.bottom >= 100) { // Detectar la sección visible
+                if (rect.top <= 100 && rect.bottom >= 100) {
                     currentSection = section.id;
                 }
             });
 
-            this.activeSection = currentSection;
-            this.$emit("update-active-section", currentSection); // Emitimos la sección activa
+            activeSection.value = currentSection;
+        };
 
-        },
-        isInternalSection(label) {
-            return ['Inicio', 'Ecommerce', 'Identidad Corporativa', 'Empresas', 'Productos', 'Blog'].includes(label);
-        },
-        getSectionId(label) {
-            // Asigna los valores correctos para los IDs de las secciones en `InicioPage.vue`
+        // Filtrar elementos de navegación dinámicamente
+        const filteredNavItems = computed(() => {
+            if (!userSession.value) {
+                return navItems.filter(item => !['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
+            }
+            const userRestrictions = {
+                induccion: userSession.value.induccion === 1,
+                datosCompletos: userSession.value.datos_completos === 1
+            };
+            return navItems
+                .filter(item => {
+                    if (userRestrictions.induccion) {
+                        return ['Home', 'Gestión de Personas', 'Producción'].includes(item.label);
+                    }
+                    return ['Home', 'Inducción'].includes(item.label);
+                })
+                .map(item => ({
+                    ...item,
+                    subitems: item.subitems.filter(subitem => {
+                        if (userRestrictions.induccion && userRestrictions.datosCompletos && subitem.label === 'Datos Colaboradores') {
+                            return false;
+                        }
+                        return true;
+                    })
+                }));
+        });
+
+
+
+        // Métodos de navegación
+        const isInternalSection = label => ['Inicio', 'Ecommerce', 'Identidad Corporativa', 'Empresas', 'Productos', 'Blog'].includes(label);
+
+        const getSectionId = label => {
             const sectionMap = {
                 'Inicio': 'inicio',
                 'Ecommerce': 'ecommerce',
@@ -156,71 +183,79 @@ export default {
                 'Blog': 'blog'
             };
             return sectionMap[label] || '';
-        },
-        scrollToSection(sectionId) {
-            console.log(sectionId);
-            this.$nextTick(() => {
+        };
+
+        const scrollToSection = sectionId => {
+            setTimeout(() => {
                 const section = document.getElementById(sectionId);
                 if (section) {
-                    section.style.scrollMarginTop = "20px"; // Ajusta el margen según necesites
+                    section.style.scrollMarginTop = "20px";
                     section.scrollIntoView({ behavior: "smooth" });
                 }
-            });
-        },
-        handleLoginClick() {
-            this.showModal = true;
-        },
-        handleLogout() {
+            }, 100);
+        };
+
+        const handleLoginClick = () => {
+            showModal.value = true;
+        };
+
+        const handleLogout = () => {
             localStorage.removeItem('userSession');
-            this.userSession = null;
-            this.$router.push('/inicio');
-        }
+            userSession.value = null;
+            router.push('/inicio');
+        };
+
+        return {
+            userSession,
+            filteredNavItems,
+            updateUserSession,
+            updateActiveSection,
+            handleLogout,
+            handleLoginClick,
+            showModal,
+            activeSection,
+            assetsUrl,
+            isInternalSection,
+            getSectionId,
+            scrollToSection
+        };
     }
 };
 </script>
 
+
+
 <style>
-/* Activo: mismo estilo de active para router-link y scroll interno */
-.active-link {
-    color: #00aaff !important;
-    font-weight: bold;
-    border-bottom: 2px solid #00aaff;
-    padding-bottom: 2px;
+/* 🔹 Estilos globales */
+:root {
+    --navbar-bg: var(--dark-secondary-bg-transparent);
+    --submenu-bg: var(--dark-secondary-bg-transparent);
+    --dropdown-bg: var(--dark-secondary-bg-transparent);
+    --dropdown-hover-bg: var(--menu-hover);
+    --text-color: white;
 }
 
-/* Efecto para hacer que se note más la transición */
-.active-link,
-.navbar-link:hover {
-    transition: all 0.3s ease-in-out;
-}
-
-/* Estilos globales para la barra de navegación */
-.navbar {
+/* 🔹 Barra de navegación principal */
+.navbar_main {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: var(--dark-secondary-bg);
-    /* Fondo oscuro, cambia según tu tema */
-    color: white;
+    background-color: var(--navbar-bg);
+    color: var(--text-color);
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
-
-
 }
 
-
-
-/* Estilos de la imagen de logo */
+/* 🔹 Logo */
 .navbar-logo img {
     max-height: 40px;
-    /* Ajusta el tamaño del logo */
 }
 
-/* Estilos para los enlaces de la barra de navegación */
+/* 🔹 Enlaces de navegación */
 .navbar-menu {
     list-style: none;
     display: flex;
@@ -231,38 +266,40 @@ export default {
 .navbar-item {
     position: relative;
     margin-right: 2rem;
+    cursor: pointer;
 }
 
 .navbar-link {
     text-decoration: none;
-    color: white;
+    color: var(--text-color);
     font-size: 1rem;
     font-weight: bold;
     padding: 0.5rem 1rem;
     display: inline-block;
+    transition: all 0.3s ease-in-out;
 }
 
-.navbar-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    /* Fondo al pasar el ratón */
+.navbar-link:hover,
+.active-link {
+    background-color: var(--dropdown-hover-bg);
     border-radius: 5px;
 }
 
-.navbar-item:hover .sub-menu {
-    display: block;
-}
-
-/* Submenú */
+/* 🔹 Submenú */
 .sub-menu {
     list-style: none;
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #444;
+    background-color: var(--submenu-bg);
     display: none;
     padding: 0;
     margin: 0;
     z-index: 10;
+}
+
+.navbar-item:hover .sub-menu {
+    display: block;
 }
 
 .sub-menu li {
@@ -270,39 +307,28 @@ export default {
 }
 
 .sub-menu li a {
-    color: white;
+    color: var(--text-color);
 }
 
 .sub-menu li a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--dropdown-hover-bg);
 }
 
-/* Estilo para la sección de la derecha (login, usuario, tema) */
+/* 🔹 Sección derecha de la navbar */
 .navbar-right {
     display: flex;
     align-items: center;
 }
 
-
-/* Icono de usuario y dropdown */
+/* 🔹 Dropdown (Usuario) */
 .nav-item.dropdown {
     position: relative;
 }
 
-.nav-item .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #444;
-    border-radius: 5px;
+.dropdown-menu {
+    background-color:  var(--dropdown-bg) !important;
+    border: none;
     min-width: 200px;
-    display: none;
-    z-index: 10;
-}
-
-.nav-item .dropdown-menu .user-profile-section {
-    padding: 1rem;
-    background-color: #333;
 }
 
 .nav-item:hover .dropdown-menu {
@@ -310,6 +336,7 @@ export default {
 }
 
 .dropdown-item {
+    color: var(--text-color) !important;
     padding: 0.75rem;
     display: flex;
     align-items: center;
@@ -322,29 +349,22 @@ export default {
 }
 
 .dropdown-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--dropdown-hover-bg) !important;
 }
 
-
+/* 🔹 Media Queries para responsive */
 @media (max-width: 1380px) {
     .navbar-link {
-        text-decoration: none;
-        color: white;
         font-size: 0.8rem;
-        font-weight: bold;
         padding: 0.5rem 0.8rem;
-        display: inline-block;
     }
-
 }
 
-/* Media queries for responsive design */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
         align-items: flex-start;
         position: static;
-        /* Elimina el efecto de sticky/fixed */
     }
 
     .navbar-logo {
@@ -378,12 +398,9 @@ export default {
     }
 }
 
-/* Media queries for very small screens */
 @media (max-width: 480px) {
     .navbar {
         padding: 0.5rem 1rem;
-        position: static;
-        /* Asegura que no sea sticky/fixed */
     }
 
     .navbar-logo img {

@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class RespuestaInduccion extends Model
 {
+    use HasFactory;
+    protected $connection = 'mysql_intranet';
+
     protected $table = 'respuesta_induccion';  // Nombre correcto de la tabla
 
     protected $primaryKey = 'id_respuesta';  // Clave primaria personalizada

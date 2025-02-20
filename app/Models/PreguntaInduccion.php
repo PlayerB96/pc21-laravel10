@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PreguntaInduccion extends Model
 {
+
+    use HasFactory;
+    protected $connection = 'mysql_intranet';
+
     protected $table = 'pregunta_induccion';  // Nombre correcto de la tabla
 
     protected $primaryKey = 'id_pregunta';  // Clave primaria personalizada
