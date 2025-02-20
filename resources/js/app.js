@@ -5,8 +5,16 @@ import FooterComponent from "./components/FooterComponent.vue";
 import Chatbot from "./components/Chatbot.vue";
 import router from "./router";
 import axios from "axios";
+import VueLazyload from 'vue-lazyload';
+
 import "../css/global.css";
 
+// Importar estilos de Bootstrap 5
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap";
+
+// Importar Bootstrap Icons (opcional)
+import "bootstrap-icons/font/bootstrap-icons.css";
 // Configura la URL base para Axios
 // axios.defaults.baseURL = 'http://localhost:8000/api/';
 axios.defaults.baseURL = `${window.location.origin}/api/`;
@@ -24,6 +32,7 @@ app.component("chatbot", Chatbot);
 
 // Usa el router
 app.use(router);
+app.use(VueLazyload);
 
 // Monta la aplicación si el div con id 'app' existe
 if (document.querySelector("#app")) {

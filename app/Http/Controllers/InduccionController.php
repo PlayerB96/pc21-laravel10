@@ -53,11 +53,13 @@ class InduccionController extends Controller
         // Calcular el porcentaje de aciertos
         $porcentaje = $puntajeMaximo > 0 ? ($puntajeTotal / $puntajeMaximo) * 100 : 0;
         $porcentajeEntero = intval($porcentaje);
-        Log::error('porcentaje:', ['valor' => $porcentaje]);
-        if ($porcentajeEntero < 80) {
+
+
+        if ($porcentajeEntero > 10) {
+            Log::error('INGRESO AUQI:', ['valor' => $id_usuario]);
             UserIntranet::where('id_usuario', $id_usuario)
                 ->update([
-                    'induccion' => 1, // No tiene enfermedades
+                    'induccion' => 1, // Ya aprobo el formulario de Inducción
                     'fec_act' => now(),
                     'user_act' => $id_usuario
                 ]);

@@ -32,7 +32,7 @@
         this.contenidoVisible = true;
       },
       descargarManual() {
-        window.location.href = "/ruta/al/manual.pdf"; // Reemplaza con la URL real del manual
+        window.location.href = ""; // Reemplaza con la URL real del manual
       },
       continuar() {
         this.$router.push("/induccion/formulario_induccion"); // Ajusta según tu configuración de rutas en Vue Router

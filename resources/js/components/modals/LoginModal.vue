@@ -8,8 +8,12 @@
             <form @submit.prevent="handleLogin" class="login-form">
                 <input type="text" v-model="dni" placeholder="Ingrese su DNI" required class="input-field"
                     @input="validateDNI" autocomplete="off" />
-                <input type="password" v-model="password" placeholder="Contraseña" required class="input-field"
-                    autocomplete="off" />
+                <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="Contraseña" required
+                    class="input-field password-input" autocomplete="off" />
+                <!-- <button type="button" class="toggle-password" @click="togglePassword">
+                    {{ showPassword ? '👁' : '🙈' }}
+                </button> -->
+
                 <button type="submit" class="submit-button" :disabled="loading">
                     <!-- Mostrar spinner cuando loading es true -->
                     <span v-if="loading" class="spinner"></span>
@@ -39,6 +43,7 @@ export default {
         return {
             dni: '',
             password: '',
+            showPassword: false,
             loading: false // Estado para el spinner
         };
     },
@@ -48,6 +53,9 @@ export default {
         },
         validateDNI() {
             this.dni = this.dni.replace(/\D/g, ''); // Solo números
+        },
+        togglePassword() {
+            this.showPassword = !this.showPassword; // 🔹 Alternar visibilidad de la contraseña
         },
         async handleLogin() {
             if (this.dni.length < 8 || isNaN(this.dni)) {
@@ -90,7 +98,6 @@ export default {
                 this.closeModal(); // Cerrar el modal
 
             } catch (error) {
-                console.log('Respuesta completa:', error);
                 let errorMessage = 'Ocurrió un error desconocido.';
                 if (error.response && error.response.data) {
                     errorMessage = error.response.data.error || errorMessage;

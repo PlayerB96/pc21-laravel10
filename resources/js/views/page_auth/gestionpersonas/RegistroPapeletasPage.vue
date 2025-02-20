@@ -111,8 +111,6 @@ export default {
         } else {
             await this.buscar_papeletas(true);
             await this.permissions(userSession);
-            console.log("Valor final de canApprove:", this.canApprove); // 📌 Verificar si se actualiza
-
             this.intervalId = setInterval(async () => {
                 if (!document.hidden) {
                     await this.buscar_papeletas(false);
@@ -132,12 +130,8 @@ export default {
                     id_area: -1,
                     id_sub_gerencia: -1
                 });
-
-                console.log("Respuesta del servidor:", response.data); // 📌 Verifica qué devuelve el backend
-
                 if (response.data && response.data.acceso !== undefined) {
                     this.canApprove = response.data.acceso;
-                    console.log("Permiso para aprobar:", this.canApprove);
                 } else {
                     console.warn("La respuesta no contiene 'acceso'. Verifica la estructura del backend.");
                     this.canApprove = false;
@@ -177,8 +171,7 @@ export default {
                     hora_retorno: this.getHoraRetorno(papeleta.sin_retorno, papeleta.hora_retorno),
                     estado_solicitud: this.getEstadoSolicitud(papeleta.estado_solicitud),
                 })) || [];
-                console.log(this.papeletas)
-                console.log("#papeletas")
+
                 this.$nextTick(this.initDataTable);
             } catch (error) {
                 console.error('Error al buscar papeletas:', error);
@@ -238,7 +231,6 @@ export default {
                     });
 
                 if (response.status === 200) {
-                    console.log('Acción realizada:', response.data);
                     Swal.fire({
                         title: 'Aprobado',
                         text: 'La papeleta ha sido aprobada correctamente.',

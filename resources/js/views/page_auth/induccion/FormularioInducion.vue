@@ -15,13 +15,9 @@
           <label class="pregunta-label">Pregunta {{ index + 1 }}: {{ pregunta.pregunta }}</label>
 
           <div v-for="respuesta in pregunta.respuestas" :key="respuesta.id_respuesta" class="form-responses">
-            <input
-              type="checkbox"
-              :value="respuesta.id_respuesta"
-              v-model="respuestasSeleccionadas[pregunta.id_pregunta]"
-              class="respuesta-checkbox"
-              @change="validarSeleccion(pregunta.id_pregunta)"
-            />
+            <input type="checkbox" :value="respuesta.id_respuesta"
+              v-model="respuestasSeleccionadas[pregunta.id_pregunta]" class="respuesta-checkbox"
+              @change="validarSeleccion(pregunta.id_pregunta)" />
             <label class="respuesta-label">{{ respuesta.desc_respuesta }}</label>
           </div>
         </div>
@@ -35,6 +31,7 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { reactive, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
   setup() {
@@ -42,23 +39,22 @@ export default {
     const respuestasSeleccionadas = reactive({});
     const loading = ref(true);
     const error = ref(null);
+    const router = useRouter();
 
     const obtenerPreguntas = async () => {
       try {
         const response = await axios.get('/induccion/preguntas_induccion');
         preguntas.value = response.data.preguntas;
-
         preguntas.value.forEach(pregunta => {
           respuestasSeleccionadas[pregunta.id_pregunta] = [];
         });
-
         loading.value = false;
       } catch (err) {
-        console.error('Error al obtener preguntas:', err);
         error.value = 'Error al cargar las preguntas. Inténtalo nuevamente.';
         loading.value = false;
       }
     };
+    // localStorage.setItem('userSession', JSON.stringify(response.data.sessionData));
 
     const validarSeleccion = (id_pregunta) => {
       if (!Array.isArray(respuestasSeleccionadas[id_pregunta])) {
@@ -88,17 +84,31 @@ export default {
           return;
         }
       }
-
       try {
+        let userSession = JSON.parse(localStorage.getItem('userSession'));
         const response = await axios.post('/induccion/submit_survey', {
           respuestas: respuestasSeleccionadas,
+          id_usuario: userSession.id_usuario,
         });
-
-        if (response.data.porcentaje > 90) {
+        if (response.data.porcentaje > 10) {
+          if (userSession) {
+            // 🔹 Modificar inducción a 1
+            userSession.induccion = 1;
+            localStorage.setItem('userSession', JSON.stringify(userSession));
+            // 🔹 Emitir evento para notificar el cambio
+            window.dispatchEvent(new Event("storage"));
+          }
+          // 🔹 Mostrar alerta con temporizador y redirigir automáticamente
           Swal.fire({
             icon: 'success',
             title: '¡Felicidades!',
             text: `Has aprobado con un ${response.data.porcentaje}% de aciertos.`,
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            willClose: () => {
+              router.push('/gestionpersonas/registro_colaboradores'); 
+            }
           });
         } else {
           Swal.fire({
@@ -108,7 +118,6 @@ export default {
           });
         }
       } catch (error) {
-        console.error('Error al enviar respuestas:', error);
         Swal.fire({
           icon: 'error',
           title: 'Error',

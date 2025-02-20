@@ -191,34 +191,42 @@ class GestionPersonas extends Controller
     {
         $formulario = json_decode($request->input('formulario'), true);
         $id_usuario =  $request->id_usuario;
-        if ($formulario['personalInfo']['fecha_nacimiento']) {
-            // Asegurar que la fecha tiene el formato correcto
+
+        // ✅ Validar y formatear fecha de nacimiento
+        if (!empty($formulario['personalInfo']['fecha_nacimiento'])) {
             $timestamp = strtotime($formulario['personalInfo']['fecha_nacimiento']);
             $dia_nac = date('d', $timestamp);
             $mes_nac = date('m', $timestamp);
             $anio_nac = date('Y', $timestamp);
+        } else {
+            $dia_nac = '00';
+            $mes_nac = '00';
+            $anio_nac = '0000';
         }
-
-        // // ✅ Actualizar los datos en UserIntranet
-        UserIntranet::where('id_usuario', $request->id_usuario)->update([
-            'usuario_apater' => addslashes($formulario['personalInfo']['apellido_paterno']),
-            'usuario_amater' => addslashes($formulario['personalInfo']['apellido_materno']),
-            'usuario_nombres' => addslashes($formulario['personalInfo']['nombres']),
-            'id_nacionalidad' => $formulario['personalInfo']['nacionalidad'],
-            'id_estado_civil' => $formulario['personalInfo']['estado_civil'],
-            'fec_nac' => $formulario['personalInfo']['fecha_nacimiento'],
-            'dia_nac' => $dia_nac ?? '00',
-            'mes_nac' => $mes_nac ?? '00',
-            'anio_nac' => $anio_nac ?? '0000',
-            'id_genero' => $formulario['personalInfo']['genero'],
-            'id_tipo_documento' => $formulario['personalInfo']['tipo_documento'],
-            'num_doc' => $formulario['personalInfo']['numero_documento'],
-            'usuario_email' => $formulario['personalInfo']['correo'],
-            'num_celp' => $formulario['personalInfo']['celular'],
-            'num_fijop' => $personalInfo['telefono'] ?? null,
-            'fec_act' => now(),
-            'user_act' => $id_usuario,
-        ]);
+        // ✅ Verificar si el usuario existe antes de actualizar
+        $existeUsuario = UserIntranet::where('id_usuario', $request->id_usuario)->exists();
+        if ($existeUsuario) {
+            // ✅ Actualizar los datos en UserIntranet
+            UserIntranet::where('id_usuario', $request->id_usuario)->update([
+                'usuario_apater' => addslashes($formulario['personalInfo']['apellido_paterno']),
+                'usuario_amater' => addslashes($formulario['personalInfo']['apellido_materno']),
+                'usuario_nombres' => addslashes($formulario['personalInfo']['nombres']),
+                'id_nacionalidad' => $formulario['personalInfo']['nacionalidad'],
+                'id_estado_civil' => $formulario['personalInfo']['estado_civil'],
+                'fec_nac' => $formulario['personalInfo']['fecha_nacimiento'],
+                'dia_nac' => $dia_nac,
+                'mes_nac' => $mes_nac,
+                'anio_nac' => $anio_nac,
+                'id_genero' => $formulario['personalInfo']['genero'],
+                'id_tipo_documento' => $formulario['personalInfo']['tipo_documento'],
+                'num_doc' => $formulario['personalInfo']['numero_documento'],
+                'usuario_email' => $formulario['personalInfo']['correo'],
+                'num_celp' => $formulario['personalInfo']['celular'],
+                'num_fijop' => $formulario['personalInfo']['telefono'] ?? null,
+                'fec_act' => now(),
+                'user_act' => $id_usuario,
+            ]);
+        }
 
         // ✅ Actualizar los datos en DomicilioUser
         $domicilioData = [
@@ -239,15 +247,18 @@ class GestionPersonas extends Controller
             'departamento' => $formulario['domicilio']['numero_departamento'],
             'piso' => $formulario['domicilio']['piso'],
             'id_tipo_vivienda' => $formulario['domicilio']['tipo_vivienda'],
-            //     'lat' => $domicilio['lat'],
-            //     'lng' => $domicilio['lng'],
         ];
-
         $domicilioData['user_act'] = $domicilioData['user_reg'] = $id_usuario;
         $domicilioData['fec_act'] = now();
         $domicilioData['fec_reg'] = now();
         $domicilioData['estado'] = 1;
-        DomicilioUser::create($domicilioData);
+        $existeDomicilio = DomicilioUser::where('id_usuario', $id_usuario)->exists();
+
+        if ($existeDomicilio) {
+            DomicilioUser::where('id_usuario', $id_usuario)->update($domicilioData);
+        } else {
+            DomicilioUser::create($domicilioData);
+        }
 
         // ✅ Actualizar los datos en GustoPreferenciaUser
         $gustosPreferenciasData = [
@@ -265,62 +276,61 @@ class GestionPersonas extends Controller
             'fec_act' => now(),
             'user_act' => $id_usuario,
         ];
-
-        $updateData = GustoPreferenciaUser::where('id_usuario', $id_usuario)
-            ->where('estado', 1)
-            ->exists();
-
-        if ($updateData) {
-            GustoPreferenciaUser::where('id_usuario', $id_usuario)
-                ->update($gustosPreferenciasData);
+        $existeRegistro = GustoPreferenciaUser::where('id_usuario', $id_usuario)->where('estado', 1)->exists();
+        if ($existeRegistro) {
+            GustoPreferenciaUser::where('id_usuario', $id_usuario)->update($gustosPreferenciasData);
         } else {
-            GustoPreferenciaUser::create([
+            GustoPreferenciaUser::create(array_merge([
                 'id_usuario' => $id_usuario,
                 'fec_reg' => now(),
                 'user_reg' => $id_usuario,
                 'estado' => 1,
-            ] + $gustosPreferenciasData); // Merge both arrays for insert
+            ], $gustosPreferenciasData));
         }
+
 
         // ✅ Actualizar los datos en ReferenciaFamiliar
         foreach ($formulario['referenciasFamiliares'] as $referencia) {
-            if ($referencia['fecha_nacimiento_ref']) {
+            if (!empty($referencia['fecha_nacimiento_ref'])) {
                 // Asegurar que la fecha tiene el formato correcto
                 $timestamp = strtotime($referencia['fecha_nacimiento_ref']);
                 $dia_nac = date('d', $timestamp);
                 $mes_nac = date('m', $timestamp);
                 $anio_nac = date('Y', $timestamp);
             }
-            ReferenciaFamiliar::create([
-                'id_usuario' => $id_usuario,
-                'nom_familiar' => $referencia['nombre_familiar'] ?? null,
-                'id_parentesco' => $referencia['parentesco'] ?? null,
-                'dia_nac' => $dia_nac ?? '00',
-                'mes_nac' => $mes_nac ?? '00',
-                'anio_nac' => $anio_nac ?? '0000',
-                'celular1' => $referencia['celular_ref'] ?? null,
-                'celular2' => $referencia['celular_ref2'] ?? null,
-                'fijo' => $referencia['telefono_fijo'] ?? null,
-                'fec_nac' => $referencia['fecha_nacimiento_ref'] ?? null,
-                'fec_reg' => now(),
-                'user_reg' => $id_usuario,
-                'estado' => 1
-            ]);
+            // 🔹 Verificar si la referencia ya existe para el usuario
+            $existeReferencia = ReferenciaFamiliar::where('id_usuario', $id_usuario)
+                ->where('nom_familiar', $referencia['nombre_familiar'] ?? null)
+                ->where('id_parentesco', $referencia['parentesco'] ?? null)
+                ->exists();
+            if (!$existeReferencia) {
+                ReferenciaFamiliar::create([
+                    'id_usuario' => $id_usuario,
+                    'nom_familiar' => $referencia['nombre_familiar'] ?? null,
+                    'id_parentesco' => $referencia['parentesco'] ?? null,
+                    'dia_nac' => $dia_nac ?? '00',
+                    'mes_nac' => $mes_nac ?? '00',
+                    'anio_nac' => $anio_nac ?? '0000',
+                    'celular1' => $referencia['celular_ref'] ?? null,
+                    'celular2' => $referencia['celular_ref2'] ?? null,
+                    'fijo' => $referencia['telefono_fijo'] ?? null,
+                    'fec_nac' => $referencia['fecha_nacimiento_ref'] ?? null,
+                    'fec_reg' => now(),
+                    'user_reg' => $id_usuario,
+                    'estado' => 1
+                ]);
+            }
         }
 
 
-        // ✅ Actualizar los datos en Hijos Y UserIntranet
-        // Log::info("Archivo subido formulario hijos: " . json_encode($formulario['hijos']));
-
+        // // ✅ Actualizar los datos en Hijos Y UserIntranet
         try {
             $hijos = $formulario['hijos'] ?? [];
             $archivosSubidos = [];
-
             // 🔹 Conectar al servidor FTP
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
-
             $con_id = ftp_connect($ftp_server);
             if (!$con_id) {
                 return response()->json(['error' => 'No se pudo conectar al servidor FTP'], 500);
@@ -331,7 +341,6 @@ class GestionPersonas extends Controller
                 return response()->json(['error' => 'Error en la autenticación FTP'], 500);
             }
             ftp_pasv($con_id, true);
-
             // 🔹 Si no hay hijos, solo actualiza UserIntranet y detiene el proceso
             if (empty($hijos)) {
                 UserIntranet::where('id_usuario', $id_usuario)
@@ -340,11 +349,8 @@ class GestionPersonas extends Controller
                         'fec_act' => now(),
                         'user_act' => $id_usuario
                     ]);
-
                 ftp_close($con_id);
-                // return response()->json(['message' => 'Formulario procesado sin hijos'], 200);
             }
-
             // 🔹 Procesar cada hijo y subir su archivo
             foreach ($hijos as $index => &$hijo) {
                 if ($request->hasFile("dni_file_{$index}")) {
@@ -356,7 +362,6 @@ class GestionPersonas extends Controller
                         $codigoUnico = strtoupper(bin2hex(random_bytes(10)));
                         $nombre = "dochijo_" . ($hijo['id_hijos'] ?? 'sin_id') . "_{$codigoUnico}_{$fechaHoraActual}.{$extension}";
                         $nombre_archivo = "PERFIL/DOCUMENTACION/DATOS_HIJOS/" . $nombre;
-
                         // 🔹 Subir archivo al FTP
                         if (@ftp_put($con_id, $nombre_archivo, $source_file, FTP_BINARY)) {
                             $hijo['dni_file'] = $nombre; // Guardar el nombre del archivo en el array
@@ -369,9 +374,7 @@ class GestionPersonas extends Controller
                     }
                 }
             }
-
             ftp_close($con_id);
-
             // 🔹 Actualizar UserIntranet con la respuesta de hijos
             UserIntranet::where('id_usuario', $id_usuario)
                 ->update([
@@ -379,49 +382,50 @@ class GestionPersonas extends Controller
                     'fec_act' => now(),
                     'user_act' => $id_usuario
                 ]);
-
-            // 🔹 Crear registros en la tabla Hijos si hay datos
+            // 🔹 Crear registros en la tabla Hijos si no existen
             foreach ($hijos as $hij) {
                 if (!empty($hij['fecha_nacimiento_hijo'])) {
-                    // Asegurar que la fecha tiene el formato correcto
                     $timestamp = strtotime($hij['fecha_nacimiento_hijo']);
                     $dia_nac = date('d', $timestamp);
                     $mes_nac = date('m', $timestamp);
                     $anio_nac = date('Y', $timestamp);
                 }
 
-                Hijos::create([
-                    'id_usuario' => $id_usuario,
-                    'nom_hijo' => $hij['nombre_hijo'],
-                    'id_genero' => $hij['genero_hijo'],
-                    'dia_nac' => $dia_nac ?? null,
-                    'mes_nac' => $mes_nac ?? null,
-                    'anio_nac' => $anio_nac ?? null,
-                    'id_biologico' => $hij['biologico'],
-                    'num_doc' => $hij['dni_hijo'],
-                    'documento' => $hij['dni_file'] ?? null,
-                    'fec_nac' => $hij['fecha_nacimiento_hijo'] ?? null,
-                    'fec_reg' => now(),
-                    'user_reg' => $id_usuario,
-                    'estado' => 1,
-                    'id_tipo_documento' => 0,
-                    'id_vinculo' => 0,
-                    'id_situacion' => 0,
-                    'id_motivo_baja' => 0,
-                    'id_tipo_via' => 0,
-                    'id_zona' => 0,
-                    'carta_medica' => 0,
-                    'n_certificado_medico' => 0,
-                    'nom_via' => 0,
-                    'num_via' => 0,
-                    'interior' => 0,
-                    'nom_zona' => 0,
-                    'referencia' => 0,
-                    'documento_nombre' => 0,
-                ]);
+                $existeHijo = Hijos::where('id_usuario', $id_usuario)
+                    ->where('num_doc', $hij['dni_hijo'])
+                    ->exists();
+                if (!$existeHijo) {
+                    Hijos::create([
+                        'id_usuario' => $id_usuario,
+                        'nom_hijo' => $hij['nombre_hijo'],
+                        'id_genero' => $hij['genero_hijo'],
+                        'dia_nac' => $dia_nac ?? null,
+                        'mes_nac' => $mes_nac ?? null,
+                        'anio_nac' => $anio_nac ?? null,
+                        'id_biologico' => $hij['biologico'],
+                        'num_doc' => $hij['dni_hijo'],
+                        'documento' => $hij['dni_file'] ?? null,
+                        'fec_nac' => $hij['fecha_nacimiento_hijo'] ?? null,
+                        'fec_reg' => now(),
+                        'user_reg' => $id_usuario,
+                        'estado' => 1,
+                        'id_tipo_documento' => 0,
+                        'id_vinculo' => 0,
+                        'id_situacion' => 0,
+                        'id_motivo_baja' => 0,
+                        'id_tipo_via' => 0,
+                        'id_zona' => 0,
+                        'carta_medica' => 0,
+                        'n_certificado_medico' => 0,
+                        'nom_via' => 0,
+                        'num_via' => 0,
+                        'interior' => 0,
+                        'nom_zona' => 0,
+                        'referencia' => 0,
+                        'documento_nombre' => 0,
+                    ]);
+                }
             }
-
-            // return response()->json(['message' => 'Formulario procesado', 'archivos' => $archivosSubidos], 200);
         } catch (\Exception $e) {
             Log::error("Error en store_colaborador Hijos: " . $e->getMessage());
             return response()->json(['error' => 'Ocurrió un error en el servidor'], 500);
@@ -429,41 +433,38 @@ class GestionPersonas extends Controller
 
 
 
-
         // ✅ Actualizar los datos en ContactoEmergencia
         foreach ($formulario['contactosEmergencia'] as $contactoE) {
-            ContactoEmergencia::create([
-                'id_usuario' => $id_usuario,
-                'nom_contacto' => $contactoE['nombre_contacto_emergencia'],
-                'id_parentesco' => $contactoE['parentesco_contacto_emergencia'],
-                'celular1' => $contactoE['celular_contacto_emergencia'],
-                'celular2' => $contactoE['celular2_contacto_emergencia'],
-                'fijo' => $contactoE['telefono_fijo_contacto_emergencia'],
-                'fec_reg' => now(),
-                'user_reg' =>  $id_usuario,
-                'estado' => 1,
-            ]);
+            // 🔹 Verificar si el contacto ya existe para el usuario
+            $existeContacto = ContactoEmergencia::where('id_usuario', $id_usuario)
+                ->where('nom_contacto', $contactoE['nombre_contacto_emergencia'])
+                ->where('id_parentesco', $contactoE['parentesco_contacto_emergencia'])
+                ->exists();
+            if (!$existeContacto) {
+                ContactoEmergencia::create([
+                    'id_usuario' => $id_usuario,
+                    'nom_contacto' => $contactoE['nombre_contacto_emergencia'],
+                    'id_parentesco' => $contactoE['parentesco_contacto_emergencia'],
+                    'celular1' => $contactoE['celular_contacto_emergencia'],
+                    'celular2' => $contactoE['celular2_contacto_emergencia'],
+                    'fijo' => $contactoE['telefono_fijo_contacto_emergencia'],
+                    'fec_reg' => now(),
+                    'user_reg' =>  $id_usuario,
+                    'estado' => 1,
+                ]);
+            }
         }
 
-        // ✅ Actualizar los datos en ConociOffice
-        ConociOffice::create([
-            'id_usuario' => $id_usuario,
-            'nl_excel' => $formulario['conocimientoOffice']['nivel_excel'],
-            'nl_word' => $formulario['conocimientoOffice']['nivel_word'],
-            'nl_ppoint' => $formulario['conocimientoOffice']['nivel_powerpoint'],
-            'fec_reg' => now(),
-            'user_reg' => $id_usuario,
-            'estado' => 1
-        ]);
 
-        // ✅ Actualizar los datos en ConociIdiomas
-        foreach ($formulario['idiomas'] as $idioma) {
-            ConociIdiomas::create([
+        // ✅ Verificar si ya existe un registro en ConociOffice
+        $existeConociOffice = ConociOffice::where('id_usuario', $id_usuario)->exists();
+        if (!$existeConociOffice) {
+            // ✅ Insertar los datos en ConociOffice si no existe
+            ConociOffice::create([
                 'id_usuario' => $id_usuario,
-                'nom_conoci_idiomas' => $idioma['idioma'],
-                'lect_conoci_idiomas' => $idioma['lectura'],
-                'escrit_conoci_idiomas' => $idioma['escritura'],
-                'conver_conoci_idiomas' => $idioma['conversacion'],
+                'nl_excel' => $formulario['conocimientoOffice']['nivel_excel'],
+                'nl_word' => $formulario['conocimientoOffice']['nivel_word'],
+                'nl_ppoint' => $formulario['conocimientoOffice']['nivel_powerpoint'],
                 'fec_reg' => now(),
                 'user_reg' => $id_usuario,
                 'estado' => 1
@@ -471,7 +472,29 @@ class GestionPersonas extends Controller
         }
 
 
-        // ✅ Actualizar los datos en CursoComplementario
+        // ✅ Actualizar los datos en ConociIdiomas
+        foreach ($formulario['idiomas'] as $idioma) {
+            // 🔹 Verificar si el idioma ya existe para el usuario
+            $existeIdioma = ConociIdiomas::where('id_usuario', $id_usuario)
+                ->where('nom_conoci_idiomas', $idioma['idioma'])
+                ->exists();
+            if (!$existeIdioma) {
+                ConociIdiomas::create([
+                    'id_usuario' => $id_usuario,
+                    'nom_conoci_idiomas' => $idioma['idioma'],
+                    'lect_conoci_idiomas' => $idioma['lectura'],
+                    'escrit_conoci_idiomas' => $idioma['escritura'],
+                    'conver_conoci_idiomas' => $idioma['conversacion'],
+                    'fec_reg' => now(),
+                    'user_reg' => $id_usuario,
+                    'estado' => 1
+                ]);
+            }
+        }
+
+
+
+        // // ✅ Actualizar los datos en CursoComplementario
         try {
             $cursos = $formulario['cursos'] ?? [];
             $archivosSubidos = [];
@@ -533,9 +556,10 @@ class GestionPersonas extends Controller
 
         // ✅ Actualizar los datos en ExperienciaLaboral
         try {
-            $experiencias = $formulario['experienciasLaborales'] ?? [];
-            $archivosSubidos = [];
 
+            $experiencias = $formulario['experienciasLaborales'] ?? [];
+            Log::error("experienciasLaborales: " . json_encode($formulario['experienciasLaborales'] ?? []));
+            $archivosSubidos = [];
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
@@ -613,7 +637,6 @@ class GestionPersonas extends Controller
 
 
         // ✅ Actualizar los datos en EnfermedadUsuario y UserIntranet
-        // Verificar si `enfermedades` existe y no está vacío
         if (empty($formulario['enfermedades'])) {
             // 🔹 Si no hay enfermedades, actualizar `UserIntranet` y detener el proceso
             UserIntranet::where('id_usuario', $id_usuario)
@@ -625,10 +648,8 @@ class GestionPersonas extends Controller
 
             // return response()->json(['message' => 'Formulario procesado sin enfermedades'], 200);
         }
-
         // 🔹 Si hay enfermedades, obtener el primer valor de `padece_enfermedad`
         $padeceEnfermedad = $formulario['enfermedades'][0]['padece_enfermedad'] ?? 0;
-
         // 🔹 Actualizar UserIntranet con el valor de `padece_enfermedad`
         UserIntranet::where('id_usuario', $id_usuario)
             ->update([
@@ -674,11 +695,11 @@ class GestionPersonas extends Controller
 
 
         // ✅ Actualizar los datos en GestacionUsuario 
-        $timestamp = strtotime($formulario['gestacion']['fecha_parto']);
-        $dia_ges = date('d', $timestamp);
-        $mes_ges = date('m', $timestamp);
-        $anio_ges = date('Y', $timestamp);
         if ($formulario['gestacion']['respuesta_gestacion'] == 1) {
+            $timestamp = strtotime($formulario['gestacion']['fecha_parto']);
+            $dia_ges = date('d', $timestamp);
+            $mes_ges = date('m', $timestamp);
+            $anio_ges = date('Y', $timestamp);
             GestacionUsuario::create([
                 'id_usuario' => $id_usuario,
                 'id_respuesta' => $formulario['gestacion']['respuesta_gestacion'],
@@ -692,82 +713,102 @@ class GestionPersonas extends Controller
             ]);
         } else {
             GestacionUsuario::create([
-                'id_usuario' => $formulario['gestacion']['id_usuario'],
+                'id_usuario' => $id_usuario,
                 'id_respuesta' => $formulario['gestacion']['respuesta_gestacion'],
-                'dia_ges' => $dia_ges,
-                'mes_ges' =>  $mes_ges,
-                'anio_ges' =>  $anio_ges,
-                'fec_ges' => $formulario['gestacion']['fecha_parto'],
+                'dia_ges' => null,
+                'mes_ges' => null,
+                'anio_ges' => null,
+                'fec_ges' => null,
                 'fec_reg' => now(),
                 'user_reg' => $id_usuario,
                 'estado' => 1,
             ]);
         }
 
+
         // ✅ Actualizar los datos en AlergiaUsuario y UserIntranet
+        $existeAlergias = AlergiaUsuario::where('id_usuario', $id_usuario)->exists();
         if (empty($formulario['alergias'])) {
-            // 🔹 Si no hay alergias, actualizar `UserIntranet` y detener el proceso
+            // 🔹 Si no hay alergias, actualizar `UserIntranet` y marcar registros existentes como inactivos
             UserIntranet::where('id_usuario', $id_usuario)
                 ->update([
                     'alergia' => 0, // No tiene alergias
                     'fec_act' => now(),
                     'user_act' => $id_usuario
                 ]);
-
-            // return response()->json(['message' => 'Formulario procesado sin alergias'], 200);
-        }
-        // 🔹 Si hay alergias, obtener el primer valor de `respuesta_alergico`
-        $respuestaAlergico = $formulario['alergias'][0]['respuesta_alergico'] ?? 0;
-        // 🔹 Actualizar UserIntranet con el valor de `respuesta_alergico`
-        UserIntranet::where('id_usuario', $id_usuario)
-            ->update([
-                'alergia' => $respuestaAlergico,
-                'fec_act' => now(),
-                'user_act' => $id_usuario
-            ]);
-
-        // 🔹 Si `respuesta_alergico == 1`, registrar alergias
-        if ($respuestaAlergico == 1) {
-            foreach ($formulario['alergias'] as $alergia) {
-                AlergiaUsuario::create([
-                    'id_usuario' => $id_usuario,
-                    'nom_alergia' => $alergia['alergia'],
-                    'fec_reg' => now(),
-                    'user_reg' => $id_usuario,
-                    'estado' => 1,
-                ]);
+            if ($existeAlergias) {
+                AlergiaUsuario::where('id_usuario', $id_usuario)
+                    ->update([
+                        'estado' => 2,
+                        'fec_act' => now(),
+                        'user_act' => $id_usuario
+                    ]);
             }
         } else {
-            // 🔹 Si no tiene alergias pero existen registros, marcarlos como `estado = 2`
-            AlergiaUsuario::where('id_usuario', $id_usuario)
+            // 🔹 Si hay alergias, obtener el primer valor de `respuesta_alergico`
+            $respuestaAlergico = $formulario['alergias'][0]['respuesta_alergico'] ?? 0;
+            UserIntranet::where('id_usuario', $id_usuario)
                 ->update([
-                    'estado' => 2,
+                    'alergia' => $respuestaAlergico,
                     'fec_act' => now(),
                     'user_act' => $id_usuario
                 ]);
+            if ($respuestaAlergico == 1) {
+                foreach ($formulario['alergias'] as $alergia) {
+                    // 🔹 Verificar si la alergia ya existe para el usuario
+                    $existeAlergia = AlergiaUsuario::where('id_usuario', $id_usuario)
+                        ->where('nom_alergia', $alergia['alergia'])
+                        ->exists();
+                    if (!$existeAlergia) {
+                        AlergiaUsuario::create([
+                            'id_usuario' => $id_usuario,
+                            'nom_alergia' => $alergia['alergia'],
+                            'fec_reg' => now(),
+                            'user_reg' => $id_usuario,
+                            'estado' => 1,
+                        ]);
+                    }
+                }
+            } else {
+                // 🔹 Si no tiene alergias pero existen registros, marcarlos como `estado = 2`
+                AlergiaUsuario::where('id_usuario', $id_usuario)
+                    ->update([
+                        'estado' => 2,
+                        'fec_act' => now(),
+                        'user_act' => $id_usuario
+                    ]);
+            }
         }
 
 
+        // ✅ Verificar si ya existe un registro en OtrosUsuario
+        $existeOtrosUsuario = OtrosUsuario::where('id_usuario', $id_usuario)->exists();
+        if (!$existeOtrosUsuario) {
+            // ✅ Insertar los datos en OtrosUsuario si no existe
+            OtrosUsuario::create([
+                'id_usuario' => $id_usuario,
+                'id_grupo_sanguineo' => $formulario['otros']['tipo_sangre'],
+                'cert_vacu_covid' => '',
+                'fec_reg' => now(),
+                'user_reg' => $id_usuario,
+                'estado' => 1,
+            ]);
+        }
 
-        // ✅ Actualizar los datos en OtrosUsuario
-        OtrosUsuario::create([
-            'id_usuario' => $id_usuario,
-            'id_grupo_sanguineo' => $formulario['otros']['tipo_sangre'],
-            'cert_vacu_covid' => '',
-            'fec_reg' => now(),
-            'user_reg' => $id_usuario,
-            'estado' => 1,
-        ]);
+        // ✅ Verificar si ya existe un registro en ReferenciaConvocatoria
+        $existeReferenciaConvocatoria = ReferenciaConvocatoria::where('id_usuario', $id_usuario)->exists();
+        if (!$existeReferenciaConvocatoria) {
+            // ✅ Insertar los datos en ReferenciaConvocatoria si no existe
+            ReferenciaConvocatoria::create([
+                'id_usuario' => $id_usuario,
+                'id_referencia_laboral' => $formulario['referenciaConvocatoria']['puesto_referencia'],
+                'otros' => $formulario['referenciaConvocatoria']['especifique_otros'],
+                'fec_reg' => now(),
+                'user_reg' => $id_usuario,
+                'estado' => 1
+            ]);
+        }
 
-        // ✅ Actualizar los datos en ReferenciaConvocatoria
-        ReferenciaConvocatoria::create([
-            'id_usuario' => $id_usuario,
-            'id_referencia_laboral' => $formulario['referenciaConvocatoria']['puesto_referencia'],
-            'otros' => $formulario['referenciaConvocatoria']['especifique_otros'],
-            'fec_reg' => now(),
-            'user_reg' => $id_usuario,
-            'estado' => 1
-        ]);
 
         // ✅ Actualizar los datos en DocumentacionUsuario
         try {
@@ -819,55 +860,80 @@ class GestionPersonas extends Controller
             }
             ftp_close($con_id);
             // 🔹 Guardar la información en la base de datos
-            DocumentacionUsuario::insert([
-                'id_usuario' => $id_usuario,
-                'cv_doc' => $archivosSubidos['cv_doc'],
-                'dni_doc' => $archivosSubidos['dni_doc'],
-                'recibo_doc' => $archivosSubidos['recibo_doc'],
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => $id_usuario
-            ]);
-            return response()->json(['success' => 'Archivos subidos correctamente']);
+            // ✅ Verificar si ya existe un registro en DocumentacionUsuario
+            $existeDocumentacion = DocumentacionUsuario::where('id_usuario', $id_usuario)->exists();
+            if (!$existeDocumentacion) {
+                // ✅ Insertar los datos en DocumentacionUsuario si no existe
+                DocumentacionUsuario::insert([
+                    'id_usuario' => $id_usuario,
+                    'cv_doc' => $archivosSubidos['cv_doc'],
+                    'dni_doc' => $archivosSubidos['dni_doc'],
+                    'recibo_doc' => $archivosSubidos['recibo_doc'],
+                    'estado' => 1,
+                    'fec_reg' => now(),
+                    'user_reg' => $id_usuario
+                ]);
+            }
+
+            // return response()->json(['success' => 'Archivos subidos correctamente']);
         } catch (\Exception $e) {
             Log::error("Error en store_colaborador DocumentacionUsuario: " . $e->getMessage());
             return response()->json(['error' => 'Ocurrió un error en el servidor'], 500);
         }
 
 
-        // ✅ Actualizar los datos en RopaUsuario
-        RopaUsuario::insert([
-            'id_usuario' => $id_usuario,
-            'polo' => $formulario['uniforme']['talla_polo'],
-            'camisa' => $formulario['uniforme']['talla_camisa'],
-            'pantalon' => $formulario['uniforme']['talla_pantalon'],
-            'zapato' => $formulario['uniforme']['talla_zapato'],
-            'fec_reg' => now(),
-            'user_reg' => $id_usuario,
-            'estado' => 1
-        ]);
+        // ✅ Verificar si ya existe un registro en RopaUsuario
+        $existeRopa = RopaUsuario::where('id_usuario', $id_usuario)->exists();
+        if (!$existeRopa) {
+            // ✅ Insertar los datos en RopaUsuario si no existe
+            RopaUsuario::insert([
+                'id_usuario' => $id_usuario,
+                'polo' => $formulario['uniforme']['talla_polo'],
+                'camisa' => $formulario['uniforme']['talla_camisa'],
+                'pantalon' => $formulario['uniforme']['talla_pantalon'],
+                'zapato' => $formulario['uniforme']['talla_zapato'],
+                'fec_reg' => now(),
+                'user_reg' => $id_usuario,
+                'estado' => 1
+            ]);
+        }
 
-        // ✅ Actualizar los datos en SistPensUsuario
-        SistPensUsuario::create([
-            'id_usuario' => $id_usuario,
-            'id_respuestasp' => $formulario['sistemapensionario']['sistema_pensionario'],
-            'id_sistema_pensionario' => $formulario['sistemapensionario']['tipo_sistema'],
-            'id_afp' => $formulario['sistemapensionario']['afp'],
-            'user_reg' => $id_usuario,
-            'fec_reg' => now(),
-            'estado' => 1,
-        ]);
+        // ✅ Verificar si ya existe un registro en SistPensUsuario
+        $existeSistPens = SistPensUsuario::where('id_usuario', $id_usuario)->exists();
+        if (!$existeSistPens) {
+            // ✅ Insertar los datos en SistPensUsuario si no existe
+            SistPensUsuario::create([
+                'id_usuario' => $id_usuario,
+                'id_respuestasp' => $formulario['sistemapensionario']['sistema_pensionario'],
+                'id_sistema_pensionario' => $formulario['sistemapensionario']['sistema_pensionario'] == 2 ? null : $formulario['sistemapensionario']['tipo_sistema'],
+                'id_afp' => $formulario['sistemapensionario']['sistema_pensionario'] == 2 ? null : $formulario['sistemapensionario']['afp'],
+                'user_reg' => $id_usuario,
+                'fec_reg' => now(),
+                'estado' => 1,
+            ]);
+        }
 
         // ✅ Actualizar los datos en CuentaBancaria
-        CuentaBancaria::insert([
-            'id_usuario' => $id_usuario,
-            'id_banco' => $formulario['cuentabancaria']['entidad_bancaria'],
-            'cuenta_bancaria' => $formulario['cuentabancaria']['cuenta_bancaria'],
-            'num_cuenta_bancaria' => $formulario['cuentabancaria']['numero_cuenta'],
-            'num_codigo_interbancario' => $formulario['cuentabancaria']['codigo_interbancario'],
-            'fec_reg' => now(),
-            'user_reg' => $id_usuario,
-            'estado' => 1
-        ]);
+        $existeRegistro = CuentaBancaria::where('id_usuario', $id_usuario)->exists();
+        if (!$existeRegistro) {
+            CuentaBancaria::insert([
+                'id_usuario' => $id_usuario,
+                'id_banco' => $formulario['cuentabancaria']['cuenta_bancaria'] == 2 ? null : $formulario['cuentabancaria']['entidad_bancaria'],
+                'cuenta_bancaria' => $formulario['cuentabancaria']['cuenta_bancaria'],
+                'num_cuenta_bancaria' => $formulario['cuentabancaria']['cuenta_bancaria'] == 2 ? '' : $formulario['cuentabancaria']['numero_cuenta'],
+                'num_codigo_interbancario' => $formulario['cuentabancaria']['cuenta_bancaria'] == 2 ? '' : $formulario['cuentabancaria']['codigo_interbancario'],
+                'fec_reg' => now(),
+                'user_reg' => $id_usuario,
+                'estado' => 1
+            ]);
+        }
+
+        // ✅ Actualizar los datos en UserItranet para datos_completos=1
+        UserIntranet::where('id_usuario', $id_usuario)
+            ->update([
+                'datos_completos' => 1,  // Si no hay hijos, se guarda como 0
+                'fec_act' => now(),
+                'user_act' => $id_usuario
+            ]);
     }
 }

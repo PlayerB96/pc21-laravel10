@@ -3,10 +3,6 @@
         <h2>Datos de Colaborador</h2>
         <div class="widget-container-section-content">
 
-            <div class="upload-container" id="uploadContainer">
-                <input type="file" id="foto" name="foto" accept="image/*" @change="previewImage">
-                <p>Actualizar imagen</p>
-            </div>
 
             <form @submit.prevent="submitForm">
                 <div class="form-container-postulante">
@@ -261,69 +257,56 @@
                 </div>
 
 
-                <button type="submit" class="btn-primary-postulante">Registrar Postulante</button>
+                <!-- <button type="submit" class="btn-primary-postulante">Registrar Datos</button>-->
+                <button type="submit" class="btn-primary-postulante" :disabled="isSubmitting">
+                    <span v-if="isSubmitting" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                    {{ isSubmitting ? 'Registrando...' : 'Registrar Datos' }}
+                </button>
+
             </form>
             <div>
-                <button @click="mostrarPopup = true" class="btn-primary">Ver Términos y Condiciones</button>
+                <!-- Botón para abrir el modal -->
+                <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal"
+                    data-bs-target="#terminosModal">
+                    Ver Términos y Condiciones
+                </button>
 
-                <div v-if="mostrarPopup" class="modal-overlay" @click.self="cerrarPopup($event)">
-                    <div class="modal-content">
-                        <h2><b>Por Política de Privacidad</b></h2>
-                        <p>La número 1 estamos comprometidos con mantener la privacidad y protección de información
-                            de
-                            nuestros colaboradores. Asimismo tiene un compromiso por el respeto y cumplimiento de lo
-                            dispuesto
-                            por la Ley N°29733-Ley de Protección de Datos Personales y su reglamento aprobado por
-                            Decreto
-                            Supremo N°003-2013-JUS.</p>
-                        <p>La protección de datos es una cuestión de confianza y privacidad, por ello es importante
-                            para
-                            nosotros. Por lo tanto, utilizaremos solamente su nombre y otra información referente a
-                            Ud. bajo
-                            los términos previstos en nuestra Política de Privacidad.</p>
-                        <p>Nuestra Política de Privacidad explica cómo recolectamos, utilizamos y divulgamos su
-                            información
-                            personal y explica las medidas que hemos tomado para asegurar su información personal.
-                            La empresa adopta los niveles de seguridad de protección de los datos personales
-                            legalmente
-                            requeridos.</p>
-                        <p>Nosotros recogeremos, almacenaremos y procesaremos los datos para el procesamiento fines
-                            de recursos
-                            humanos y para cualquier información posterior. Podemos recopilar información personal,
-                            incluyendo
-                            pero no limitado a, el título, nombre, fecha de nacimiento, dirección de correo
-                            electrónico, número
-                            de teléfono, número de teléfono celular y otros datos.</p>
-                        <p>Cada colaborador se compromete y garantiza que los Datos Personales que suministre a La
-                            Empresa son
-                            veraces y actuales. En tal sentido, será el responsable de comunicar oportunamente,
-                            mediante las
-                            vías establecidas por esta, sobre cualquier corrección o modificación que se produzca en
-                            ellos.</p>
-                        <p>Los colaboradores tendrán total libertad para ejercitar los derechos establecidos en la
-                            Ley No.
-                            29733 y su reglamento, sobre los derechos ARCO (Acceso, Rectificación, Cancelación y
-                            Oposición);
-                            la empresa garantiza por su parte, el respeto y observancia al ejercicio de dichos
-                            derechos, para lo
-                            cual puede enviar una comunicación al correo electrónico
-                            <a href="mailto:sistemas@lanumero1.com.pe">sistemas@lanumero1.com.pe</a>
-                        </p>
-                        <p>La empresa requiere del consentimiento libre, previo, expreso, inequívoco e informado del
-                            titular
-                            de los datos personales para el tratamiento de los mismos, en consecuencia desde el
-                            momento de su
-                            ingreso o uso de nuestro sitio web, el titular de datos otorga su total consentimiento
-                            para el
-                            tratamiento de los datos personales que consigna al dar check en la opción Acepto los
-                            términos y
-                            condiciones y dar clic en el botón de envío de formulario.</p>
-
-                        <button @click="cerrarPopup" class="btn-primary">Cerrar</button>
+                <!-- Modal de Bootstrap -->
+                <div class="modal fade" id="terminosModal" tabindex="-1" aria-labelledby="terminosModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="terminosModalLabel"><b>Por Política de Privacidad</b></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>La número 1 estamos comprometidos con mantener la privacidad y protección de
+                                    información de
+                                    nuestros colaboradores...</p>
+                                <p>La protección de datos es una cuestión de confianza y privacidad...</p>
+                                <p>Nosotros recogeremos, almacenaremos y procesaremos los datos para fines de recursos
+                                    humanos...
+                                </p>
+                                <p>Cada colaborador se compromete y garantiza que los Datos Personales que suministre
+                                    son veraces y
+                                    actuales...</p>
+                                <p>Los colaboradores tendrán total libertad para ejercitar los derechos establecidos en
+                                    la Ley No.
+                                    29733...</p>
+                                <p>Para más información, puedes enviar una comunicación al correo electrónico:
+                                    <a href="mailto:sistemas@lanumero1.com.pe">sistemas@lanumero1.com.pe</a>
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -338,6 +321,7 @@ export default {
         FormSection, MapComponent
     },
     computed: {
+
         idiomasConTexto() {
             const getText = (campo, id) => {
                 return this.sections.find(s => s.model === 'nuevoIdioma')
@@ -592,8 +576,8 @@ export default {
                             ],
                             required: true
                         },
-                        { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento', type: 'date', required: true },
-                        { label: 'Edad', name: 'edad', type: 'number', required: true },
+                        { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento', type: 'date', required: false },
+                        { label: 'Edad', name: 'edad', type: 'number', required: false },
                         {
                             label: 'Género',
                             name: 'genero',
@@ -673,7 +657,7 @@ export default {
                             ], required: true
                         },
 
-                        { label: 'Nombre de vía', name: 'nombre_via', type: 'text', required: true },
+                        { label: 'Nombre de vía', name: 'nombre_via', type: 'text', required: false },
                         { label: 'Número de vía', name: 'numero_via', type: 'text', required: false },
                         { label: 'KM', name: 'km', type: 'text', required: false },
                         { label: 'MZ', name: 'mz', type: 'text', required: false },
@@ -714,16 +698,16 @@ export default {
                     title: 'Gustos y Preferencias',
                     model: 'gustosPreferencias',
                     fields: [
-                        { label: 'Plato y postre favorito', name: 'plato_postre_favorito', type: 'text', required: true },
+                        { label: 'Plato y postre favorito', name: 'plato_postre_favorito', type: 'text', required: false },
                         { label: 'Galletas y golosinas favoritas', name: 'galletas_golosinas_favoritas', type: 'text', required: false },
                         { label: 'Actividades de ocio o pasatiempos', name: 'actividades_ocio', type: 'text', required: false },
                         { label: 'Artistas o banda favorita', name: 'artistas_banda_favorita', type: 'text', required: false },
                         { label: 'Género musical favorito', name: 'genero_musical_favorito', type: 'text', required: false },
                         { label: 'Película o serie favorita', name: 'pelicula_serie_favorita', type: 'text', required: true },
-                        { label: 'Colores favoritos', name: 'colores_favoritos', type: 'text', required: true },
+                        { label: 'Colores favoritos', name: 'colores_favoritos', type: 'text', required: false },
                         { label: 'Redes sociales favoritas', name: 'redes_sociales_favoritas', type: 'text', required: false },
                         { label: 'Deporte favorito', name: 'deporte_favorito', type: 'text', required: true },
-                        { label: '¿Tiene mascota?', name: 'tiene_mascota', type: 'select', options: [{ id: 1, text: 'Si' }, { id: 2, text: 'No' }], required: true },
+                        { label: '¿Tiene mascota?', name: 'tiene_mascota', type: 'select', options: [{ id: 1, text: 'Si' }, { id: 2, text: 'No' }], required: false },
                         { label: 'Qué mascota tienes?', name: 'tipo_mascota', type: 'text', required: false }
                     ]
                 },
@@ -749,8 +733,8 @@ export default {
                         },
                         { label: 'Fecha de Nacimiento', name: 'fecha_nacimiento_ref', type: 'date', required: true },
                         { label: 'Celular', name: 'celular_ref', type: 'number', required: true },
-                        { label: 'Celular 2', name: 'celular_ref2', type: 'number', required: true },
-                        { label: 'Teléfono Fijo', name: 'telefono_fijo', type: 'number', required: true },
+                        { label: 'Celular 2', name: 'celular_ref2', type: 'number', required: false },
+                        { label: 'Teléfono Fijo', name: 'telefono_fijo', type: 'number', required: false },
                     ]
                 },
                 {
@@ -791,8 +775,8 @@ export default {
                             ], required: true
                         },
                         { label: 'Celular', name: 'celular_contacto_emergencia', type: 'number', required: true },
-                        { label: 'Celular 2', name: 'celular2_contacto_emergencia', type: 'number', required: true },
-                        { label: 'Teléfono Fijo', name: 'telefono_fijo_contacto_emergencia', type: 'number', required: true }
+                        { label: 'Celular 2', name: 'celular2_contacto_emergencia', type: 'number', required: false },
+                        { label: 'Teléfono Fijo', name: 'telefono_fijo_contacto_emergencia', type: 'number', required: false }
                     ]
                 },
                 {
@@ -883,10 +867,10 @@ export default {
                     title: 'Cursos Complementarios',
                     model: 'nuevoCurso',
                     fields: [
-                        { label: 'Curso', name: 'curso', type: 'text', required: true },
+                        { label: 'Curso', name: 'curso', type: 'text', required: false },
                         {
                             label: 'Año', name: 'anio', type: 'select',
-                            required: true,
+                            required: false,
                             options: [],
                         },
 
@@ -896,14 +880,14 @@ export default {
                     title: 'Experiencia Laboral',
                     model: 'nuevaExperienciaLaboral',
                     fields: [
-                        { label: 'Empresa', name: 'empresa', type: 'text', required: true },
-                        { label: 'Cargo', name: 'cargo', type: 'text', required: true },
-                        { label: 'Fecha de Inicio', name: 'fecha_inicio', type: 'date', required: true },
-                        { label: 'Fecha de Fin', name: 'fecha_fin', type: 'date', required: true },
-                        { label: 'Motivo de Salida', name: 'motivo_salida', type: 'text', required: true },
-                        { label: 'Importe de Remuneración', name: 'importe_remuneracion', type: 'number', required: true },
-                        { label: 'Nombre Referencia', name: 'nombre_referencia', type: 'text', required: true },
-                        { label: 'Número Contacto Referencia', name: 'numero_contacto_referencia', type: 'number', required: true },
+                        { label: 'Empresa', name: 'empresa', type: 'text', required: false },
+                        { label: 'Cargo', name: 'cargo', type: 'text', required: false },
+                        { label: 'Fecha de Inicio', name: 'fecha_inicio', type: 'date', required: false },
+                        { label: 'Fecha de Fin', name: 'fecha_fin', type: 'date', required: false },
+                        { label: 'Motivo de Salida', name: 'motivo_salida', type: 'text', required: false },
+                        { label: 'Importe de Remuneración', name: 'importe_remuneracion', type: 'number', required: false },
+                        { label: 'Nombre Referencia', name: 'nombre_referencia', type: 'text', required: false },
+                        { label: 'Número Contacto Referencia', name: 'numero_contacto_referencia', type: 'number', required: false },
                     ]
 
                 },
@@ -911,9 +895,9 @@ export default {
                     title: 'Enfermedades',
                     model: 'nuevaEnfermedad',
                     fields: [
-                        { label: 'Indique si padece alguna enfermedad', name: 'padece_enfermedad', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: true },
-                        { label: 'Especifique la Enfermedad', name: 'enfermedad', type: 'text', required: true },
-                        { label: 'Fecha de Diagnóstico', name: 'fecha_diagnostico', type: 'date', required: true },
+                        { label: 'Indique si padece alguna enfermedad', name: 'padece_enfermedad', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
+                        { label: 'Especifique la Enfermedad', name: 'enfermedad', type: 'text', required: false },
+                        { label: 'Fecha de Diagnóstico', name: 'fecha_diagnostico', type: 'date', required: false },
 
                     ]
                 },
@@ -921,15 +905,15 @@ export default {
                     title: 'Gestación',
                     model: 'gestacion',
                     fields: [
-                        { label: 'Indique si se encuentra en gestación', name: 'respuesta_gestacion', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: true },
-                        { label: 'Fecha de inicio de gestación', name: 'fecha_parto', type: 'date', required: true }]
+                        { label: 'Indique si se encuentra en gestación', name: 'respuesta_gestacion', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
+                        { label: 'Fecha de inicio de gestación', name: 'fecha_parto', type: 'date', required: false }]
                 },
                 {
                     title: 'Alergias',
                     model: 'nuevaAlergia',
                     fields: [
-                        { label: 'Es alérgico a algun medicamento', name: 'respuesta_alergico', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: true },
-                        { label: 'Indique el nombre del medicamento', name: 'alergia', type: 'text', required: true }
+                        { label: 'Es alérgico a algun medicamento', name: 'respuesta_alergico', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
+                        { label: 'Indique el nombre del medicamento', name: 'alergia', type: 'text', required: false }
                     ]
                 },
                 {
@@ -970,7 +954,7 @@ export default {
                                 ],
                             required: true
                         },
-                        { label: 'Especifique Otros', name: 'especifique_otros', type: 'text', required: false },
+                        { label: 'Especifique Otros', name: 'especifique_otros', type: 'text', required: true },
 
                     ]
                 },
@@ -1071,7 +1055,7 @@ export default {
                                 { id: 1, text: 'ONP' },
                                 { id: 2, text: 'AFP' },],
 
-                            required: true
+                            required: false
                         },
                         {
                             label: 'Si indico AFP elija', name: 'afp', type: 'select', options: [
@@ -1080,7 +1064,7 @@ export default {
                                 { id: 3, text: 'PROFUTURO' },
                                 { id: 4, text: 'HABITAT' },
                                 { id: 5, text: 'HORIZONTE' },
-                                { id: 6, text: 'ONP' }], required: true
+                                { id: 6, text: 'ONP' }], required: false
                         },
 
                     ]
@@ -1089,7 +1073,7 @@ export default {
                     title: 'Número de Cuenta',
                     model: 'cuentabancaria',
                     fields: [
-                        { label: '¿Cuéntas con cuenta bancaria?', name: 'cuenta_bancaria', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: false },
+                        { label: '¿Cuéntas con cuenta bancaria?', name: 'cuenta_bancaria', type: 'select', options: [{ id: 1, text: 'Sí' }, { id: 2, text: 'No' }], required: true },
                         {
                             label: 'Indique la entidad bancaria', name: 'entidad_bancaria', type: 'select',
                             options:
@@ -1130,7 +1114,6 @@ export default {
                     }));
                     // Asignar las opciones de departamento al campo 'id_departamento'
                     this.sections[8].fields.find(field => field.name === 'anio').options = this.anios;
-                    console.log(this.anios);
 
                 })
                 .catch(error => {
@@ -1147,10 +1130,8 @@ export default {
                         id: item.id_departamento, // Asegúrate de que este campo existe en la respuesta
                         text: item.nombre_departamento // Asegúrate de que este campo también existe en la respuesta
                     }));
-
                     // Asignar las opciones de departamento al campo 'id_departamento'
                     this.sections[1].fields.find(field => field.name === 'id_departamento').options = this.departamentos;
-                    // console.log(this.departamentos);
 
                 })
                 .catch(error => {
@@ -1167,8 +1148,6 @@ export default {
 
             axios.get('/provincias', { params: { id_departamento: this.formData.id_departamento } })
                 .then(response => {
-                    console.log("Provincias recibidas:", response.data);
-
                     this.provincias = response.data.map(item => ({
                         id: item.id_provincia,
                         text: item.nombre_provincia
@@ -1206,26 +1185,11 @@ export default {
                 });
         },
 
-
-
         cerrarPopup(event) {
             event.preventDefault();
             this.mostrarPopup = false;
         },
-        previewImage(event) {
-            const input = event.target;
-            this.$nextTick(() => {
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        document.getElementById('uploadContainer').appendChild(imgElement);
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                }
-            });
-        },
+
         handleFileUploadDni(event, index) {
             const file = event.target.files[0];
             if (file) {
@@ -1233,7 +1197,7 @@ export default {
                 this.form.hijos[index].dni_file = file;
 
                 // ✅ Agregarlo a `FormData` para enviarlo correctamente al backend
-                this.formData.append(`dni_file_${index}`, file);
+                this.formData.append(`dni_file_${index}`, file.name);
             }
         },
         handleFileUploadCurso(event, index) {
@@ -1242,14 +1206,14 @@ export default {
                 // ✅ Guardar en el modelo `cursos` para que se refleje en el JSON
                 this.form.cursos[index].certificado = file;
                 // ✅ Agregarlo a `FormData` para enviarlo correctamente al backend
-                this.formData.append(`certificado_${index}`, file);
+                this.formData.append(`certificado_${index}`, file.name);
             }
         },
         handleFileUploadConstancia(event, index) {
             const file = event.target.files[0];
             if (file) {
                 // ✅ Guardar en el modelo `experienciasLaborales` para que se refleje en el JSON
-                this.form.experienciasLaborales[index].constancia = file;
+                this.form.experienciasLaborales[index].constancia = file.name;
                 // ✅ Agregarlo a `FormData` para enviarlo correctamente al backend
                 this.formData.append(`certificadolb_${index}`, file);
             }
@@ -1264,7 +1228,6 @@ export default {
         async submitForm() {
             try {
                 this.isSubmitting = true; // 🔹 Deshabilita el botón
-
                 const userSessionString = localStorage.getItem('userSession');
                 const userSession = JSON.parse(userSessionString);
 
@@ -1288,12 +1251,24 @@ export default {
                 await axios.post('/gestionpersonas/store_colaborador', this.formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
-
+                if (userSession) {
+                    // 🔹 Modificar inducción a 1
+                    userSession.datos_completos = 1;
+                    localStorage.setItem('userSession', JSON.stringify(userSession));
+                    // 🔹 Emitir evento para notificar el cambio
+                    window.dispatchEvent(new Event("storage"));
+                }
                 // 🔹 Mostrar mensaje de éxito
                 Swal.fire({
                     icon: 'success',
-                    title: 'Registro exitoso',
-                    text: 'El postulante ha sido registrado correctamente.',
+                    title: '¡Registro exitoso!',
+                    text: `${userSession.nombre_completo}ha sido registrado correctamente.`,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    willClose: () => {
+                        router.push('/home');
+                    }
                 });
 
             } catch (error) {
@@ -1396,23 +1371,6 @@ export default {
 <style scoped>
 /* Estilo del fondo oscuro */
 
-
-.upload-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.upload-container input[type="file"] {
-    display: none;
-}
-
-.upload-container p {
-    margin: 0;
-    cursor: pointer;
-    color: #007bff;
-}
 
 .form-container-postulante {
     display: flex;

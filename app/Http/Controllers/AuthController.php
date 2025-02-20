@@ -48,6 +48,7 @@ class AuthController extends Controller
             'ubicacion' => $user->ubicacion,
             'id_usuario' => $user->id_usuario,
             'emailp' => $user->emailp,
+            'datos_completos' => $user->datos_completos,
             'induccion' => $user->induccion,
             'foto' => $user->foto,
             'registro_masivo' => $user->permisoPapeletasSalida->registro_masivo ?? null,
