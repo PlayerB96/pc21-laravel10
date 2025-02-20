@@ -55,7 +55,7 @@ class InduccionController extends Controller
         $porcentajeEntero = intval($porcentaje);
 
 
-        if ($porcentajeEntero > 10) {
+        if ($porcentajeEntero > 90) {
             Log::error('INGRESO AUQI:', ['valor' => $id_usuario]);
             UserIntranet::where('id_usuario', $id_usuario)
                 ->update([

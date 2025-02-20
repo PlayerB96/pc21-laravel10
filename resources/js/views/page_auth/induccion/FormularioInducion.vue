@@ -90,7 +90,7 @@ export default {
           respuestas: respuestasSeleccionadas,
           id_usuario: userSession.id_usuario,
         });
-        if (response.data.porcentaje > 10) {
+        if (response.data.porcentaje > 90) {
           if (userSession) {
             // 🔹 Modificar inducción a 1
             userSession.induccion = 1;
