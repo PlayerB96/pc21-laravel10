@@ -4,17 +4,17 @@
 <head>
   <title>Redes de Tiendas</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <link rel="icon" type="image/png" href="{{ asset('web_ln1/img/favicon.png') }}" sizes="16x16">
-  <link href="{{ asset('web_ln1/assets/css/loader.css') }}" rel="stylesheet" type="text/css" />
-  <link href="{{ asset('web_ln1/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-  <link href="{{ asset('web_ln1/assets/css/plugins.css') }}" rel="stylesheet" type="text/css" />
-  <link href="{{ asset('web_ln1/assets/css/components/custom-modal.css') }}" rel="stylesheet" type="text/css" />
+  <link rel="icon" type="image/png" href="{{ secure_asset('web_ln1/img/favicon.png') }}" sizes="16x16">
+  <link href="{{ secure_asset('web_ln1/assets/css/loader.css') }}" rel="stylesheet" type="text/css" />
+  <link href="{{ secure_asset('web_ln1/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+  <link href="{{ secure_asset('web_ln1/assets/css/plugins.css') }}" rel="stylesheet" type="text/css" />
+  <link href="{{ secure_asset('web_ln1/assets/css/components/custom-modal.css') }}" rel="stylesheet" type="text/css" />
 </head>
 
 <style>
   @font-face {
     font-family: Poppins;
-    src: url("{{ asset('web_ln1/POPPINS.TTF') }}");
+    src: url("{{ secure_asset('web_ln1/POPPINS.TTF') }}");
   }
 
   html,
@@ -67,7 +67,7 @@
   }
 
   .popup-bubble-anchor {
-    background-image: url("{{ asset('web_ln1/img/ubicacion.png') }}");
+    background-image: url("{{ secure_asset('web_ln1/img/ubicacion.png') }}");
     position: absolute;
     width: 100%;
     bottom: 8px;
@@ -264,9 +264,9 @@
     <div id="map" class="in-flex">
     </div>
   </section>
-  <script src="{{ asset('web_ln1/docs/js/jquery-3.2.1.min.js') }}"></script>
-  <script src="{{ asset('web_ln1/assets/js/loader.js') }}"></script>
-  <script src="{{ asset('web_ln1/bootstrap/js/bootstrap.min.js') }}"></script>
+  <script src="{{ secure_asset('web_ln1/docs/js/jquery-3.2.1.min.js') }}"></script>
+  <script src="{{ secure_asset('web_ln1/assets/js/loader.js') }}"></script>
+  <script src="{{ secure_asset('web_ln1/bootstrap/js/bootstrap.min.js') }}"></script>
   <script>
     $(document).ready(function() {
       $("#ModalTiendas").on("show.bs.modal", function(e) {
@@ -277,55 +277,55 @@
   </script>
   <!--TUMBES-->
   <div id="content1" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/1') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>
   <!--SULLANA-->
   <div id="content2" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/2') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>
   <!--PIURA-->
   <div id="content3" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/3') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>  
   <!--CAJAMARCA-->
   <div id="content4" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/4') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>  
   <!--IQUITOS 1-->
   <div id="content5" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/5') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>
   <!--CHICLAYO-->
   <div id="content6" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/6') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>  
   <!--TRUJILLO ZELA-->
   <div id="content7" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/7') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>  
   <!--TRUJILLO GAMARRA-->
   <div id="content8" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/8') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>  
   <!--CHIMBOTE-->
   <div id="content9" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/9') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>
   <!--CHINCHA-->
   <div id="content10" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/10') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>  
   <!--IQUITOS 2-->
   <div id="content11" class="" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/11') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>
   <!--TACNA-->
   <div id="content12" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/12') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>
   <!--AREQUIPA-->
   <div id="content13" data-toggle="modal" data-target="#ModalTiendas" app_tiendas="{{ url('api/modal_nuestras_tiendas/13') }}">
-    <img src="{{ asset('web_ln1/img/ubicacion.png') }}" width="50px">
+    <img src="{{ secure_asset('web_ln1/img/ubicacion.png') }}" width="50px">
   </div>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD71lAXSpu6pRw4rGk53QlvLLY6sGWReIE&callback=initMap&v=weekly&channel=2" async></script>
   <script>
