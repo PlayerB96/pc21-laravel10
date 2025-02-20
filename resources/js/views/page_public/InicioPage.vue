@@ -13,10 +13,15 @@
         
         <!-- Contenido de la página -->
         <section v-for="(section, index) in sections" :key="index" :id="section.id" class="section">
-            <div class="container text-center">
-                <h2 class="fw-bold">{{ section.title }}</h2>
-                <p>{{ section.description }}</p>
-                <a :href="'https://www.google.com'" target="_blank" class="btn-primary">Ir a Sitio</a>
+            <div class="container text-center d-flex align-items-center">
+                <div class="text-content">
+                    <h2 class="fw-bold">{{ section.title }}</h2>
+                    <p>{{ section.description }}</p>
+                    <a :href="'https://www.google.com'" target="_blank" class="btn-primary">Ir a Sitio</a>
+                </div>
+                <div class="image-content">
+                    <img src="/assets/imgs/ilustrationln1.png" alt="Illustration" class="illustration">
+                </div>
             </div>
         </section>
     </div>
@@ -35,36 +40,7 @@ export default {
                 { id: 'productos', title: 'Productos', description: 'Descubre nuestra variedad...' },
                 { id: 'blog', title: 'Blog', description: 'Últimas noticias...' }
             ]
-            // sections: [
-            //     { id: 'ecommerce', title: 'Ecommerce', description: 'Compra fácil...', background: '/assets/imgs/ecommerce_ln1.jpg' },
-            //     { id: 'identidadcorporativa', title: 'Identidad Corporativa', description: 'Nuestra identidad...', background: '/assets/imgs/identidad_ln1.jpg' },
-            //     { id: 'empresas', title: 'Empresas', description: 'Colaboramos con grandes marcas...', background: '/assets/imgs/empresa1_ln1.jpg' },
-            //     { id: 'productos', title: 'Productos', description: 'Descubre nuestra variedad...', background: '/assets/imgs/productos_ln1.jpg' },
-            //     { id: 'blog', title: 'Blog', description: 'Últimas noticias...', background: '/assets/imgs/blog1_ln1.jpg' }
-            // ]
         };
-    },
-    mounted() {
-        window.addEventListener('scroll', this.updateBackground);
-        this.updateBackground(); // Llamar al cargar la página
-    },
-    beforeDestroy() {
-        window.removeEventListener('scroll', this.updateBackground);
-    },
-    methods: {
-        updateBackground() {
-            requestAnimationFrame(() => {
-                this.sections.forEach(section => {
-                    const sectionElement = document.getElementById(section.id);
-                    if (sectionElement) {
-                        const { top, bottom } = sectionElement.getBoundingClientRect();
-                        if (top < window.innerHeight / 2 && bottom > window.innerHeight / 2) {
-                            this.currentBackground = section.background;
-                        }
-                    }
-                });
-            });
-        }
     }
 };
 </script>
@@ -95,15 +71,6 @@ export default {
     background: rgba(0, 0, 0, 0.5);
 }
 
-.content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    text-align: center;
-}
-
 .dynamic-background {
     position: fixed;
     top: 0;
@@ -123,5 +90,31 @@ export default {
     background: rgba(255, 255, 255, 0.505);
     position: relative;
     z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.text-content {
+    flex: 1;
+    text-align: left;
+}
+
+.image-content {
+    flex: 1;
+    text-align: right;
+}
+
+.illustration {
+    max-width: 300px;
+    height: auto;
 }
 </style>

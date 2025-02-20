@@ -26781,39 +26781,7 @@ __webpack_require__.r(__webpack_exports__);
         title: 'Blog',
         description: 'Últimas noticias...'
       }]
-      // sections: [
-      //     { id: 'ecommerce', title: 'Ecommerce', description: 'Compra fácil...', background: '/assets/imgs/ecommerce_ln1.jpg' },
-      //     { id: 'identidadcorporativa', title: 'Identidad Corporativa', description: 'Nuestra identidad...', background: '/assets/imgs/identidad_ln1.jpg' },
-      //     { id: 'empresas', title: 'Empresas', description: 'Colaboramos con grandes marcas...', background: '/assets/imgs/empresa1_ln1.jpg' },
-      //     { id: 'productos', title: 'Productos', description: 'Descubre nuestra variedad...', background: '/assets/imgs/productos_ln1.jpg' },
-      //     { id: 'blog', title: 'Blog', description: 'Últimas noticias...', background: '/assets/imgs/blog1_ln1.jpg' }
-      // ]
     };
-  },
-  mounted: function mounted() {
-    window.addEventListener('scroll', this.updateBackground);
-    this.updateBackground(); // Llamar al cargar la página
-  },
-  beforeDestroy: function beforeDestroy() {
-    window.removeEventListener('scroll', this.updateBackground);
-  },
-  methods: {
-    updateBackground: function updateBackground() {
-      var _this = this;
-      requestAnimationFrame(function () {
-        _this.sections.forEach(function (section) {
-          var sectionElement = document.getElementById(section.id);
-          if (sectionElement) {
-            var _sectionElement$getBo = sectionElement.getBoundingClientRect(),
-              top = _sectionElement$getBo.top,
-              bottom = _sectionElement$getBo.bottom;
-            if (top < window.innerHeight / 2 && bottom > window.innerHeight / 2) {
-              _this.currentBackground = section.background;
-            }
-          }
-        });
-      });
-    }
   }
 });
 
@@ -28339,13 +28307,16 @@ __webpack_require__.r(__webpack_exports__);
 
 var _hoisted_1 = ["id"];
 var _hoisted_2 = {
-  "class": "container text-center"
+  "class": "container text-center d-flex align-items-center"
 };
 var _hoisted_3 = {
+  "class": "text-content"
+};
+var _hoisted_4 = {
   "class": "fw-bold"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Fondo del video en la sección de inicio "), _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("section", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Fondo del video en la sección de inicio "), _cache[2] || (_cache[2] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("section", {
     id: "inicio",
     "class": "video-background-container"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
@@ -28369,11 +28340,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       key: index,
       id: section.id,
       "class": "section"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(section.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(section.description), 1 /* TEXT */), _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(section.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(section.description), 1 /* TEXT */), _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
       href: 'https://www.google.com',
       target: "_blank",
       "class": "btn-primary"
-    }, "Ir a Sitio", -1 /* HOISTED */))])], 8 /* PROPS */, _hoisted_1);
+    }, "Ir a Sitio", -1 /* HOISTED */))]), _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+      "class": "image-content"
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+      src: "/assets/imgs/ilustrationln1.png",
+      alt: "Illustration",
+      "class": "illustration"
+    })], -1 /* HOISTED */))])], 8 /* PROPS */, _hoisted_1);
   }), 128 /* KEYED_FRAGMENT */))]);
 }
 
@@ -35438,7 +35415,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.video-background-container[data-v-7c70a9ae] {\n    position: relative;\n    width: 100%;\n    height: 100vh;\n    overflow: hidden;\n}\n.video-background[data-v-7c70a9ae] {\n    width: 100%;\n    height: 100%;\n    -o-object-fit: cover;\n       object-fit: cover;\n    position: absolute;\n    top: 0;\n    left: 0;\n}\n.gradient-overlay[data-v-7c70a9ae] {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background: rgba(0, 0, 0, 0.5);\n}\n.content[data-v-7c70a9ae] {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translate(-50%, -50%);\n    color: white;\n    text-align: center;\n}\n.dynamic-background[data-v-7c70a9ae] {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100vh;\n    background-size: cover;\n    background-position: center;\n    background-attachment: fixed;\n    z-index: -1;\n}\n.section[data-v-7c70a9ae] {\n    padding: 100px 50px;\n    text-align: center;\n    min-height: 100vh;\n    background: rgba(255, 255, 255, 0.505);\n    position: relative;\n    z-index: 1;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.video-background-container[data-v-7c70a9ae] {\n    position: relative;\n    width: 100%;\n    height: 100vh;\n    overflow: hidden;\n}\n.video-background[data-v-7c70a9ae] {\n    width: 100%;\n    height: 100%;\n    -o-object-fit: cover;\n       object-fit: cover;\n    position: absolute;\n    top: 0;\n    left: 0;\n}\n.gradient-overlay[data-v-7c70a9ae] {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background: rgba(0, 0, 0, 0.5);\n}\n.dynamic-background[data-v-7c70a9ae] {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100vh;\n    background-size: cover;\n    background-position: center;\n    background-attachment: fixed;\n    z-index: -1;\n}\n.section[data-v-7c70a9ae] {\n    padding: 100px 50px;\n    text-align: center;\n    min-height: 100vh;\n    background: rgba(255, 255, 255, 0.505);\n    position: relative;\n    z-index: 1;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n.container[data-v-7c70a9ae] {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    max-width: 1200px;\n    width: 100%;\n}\n.text-content[data-v-7c70a9ae] {\n    flex: 1;\n    text-align: left;\n}\n.image-content[data-v-7c70a9ae] {\n    flex: 1;\n    text-align: right;\n}\n.illustration[data-v-7c70a9ae] {\n    max-width: 300px;\n    height: auto;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
