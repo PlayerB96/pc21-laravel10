@@ -29,12 +29,19 @@ export default {
         return {
             currentBackground: '/assets/imgs/default.jpg', // Imagen por defecto
             sections: [
-                { id: 'ecommerce', title: 'Ecommerce', description: 'Compra fácil...', background: '/assets/imgs/ecommerce_ln1.jpg' },
-                { id: 'identidadcorporativa', title: 'Identidad Corporativa', description: 'Nuestra identidad...', background: '/assets/imgs/identidad_ln1.jpg' },
-                { id: 'empresas', title: 'Empresas', description: 'Colaboramos con grandes marcas...', background: '/assets/imgs/empresa1_ln1.jpg' },
-                { id: 'productos', title: 'Productos', description: 'Descubre nuestra variedad...', background: '/assets/imgs/productos_ln1.jpg' },
-                { id: 'blog', title: 'Blog', description: 'Últimas noticias...', background: '/assets/imgs/blog1_ln1.jpg' }
+                { id: 'ecommerce', title: 'Ecommerce', description: 'Compra fácil...' },
+                { id: 'identidadcorporativa', title: 'Identidad Corporativa', description: 'Nuestra identidad...' },
+                { id: 'empresas', title: 'Empresas', description: 'Colaboramos con grandes marcas...' },
+                { id: 'productos', title: 'Productos', description: 'Descubre nuestra variedad...' },
+                { id: 'blog', title: 'Blog', description: 'Últimas noticias...' }
             ]
+            // sections: [
+            //     { id: 'ecommerce', title: 'Ecommerce', description: 'Compra fácil...', background: '/assets/imgs/ecommerce_ln1.jpg' },
+            //     { id: 'identidadcorporativa', title: 'Identidad Corporativa', description: 'Nuestra identidad...', background: '/assets/imgs/identidad_ln1.jpg' },
+            //     { id: 'empresas', title: 'Empresas', description: 'Colaboramos con grandes marcas...', background: '/assets/imgs/empresa1_ln1.jpg' },
+            //     { id: 'productos', title: 'Productos', description: 'Descubre nuestra variedad...', background: '/assets/imgs/productos_ln1.jpg' },
+            //     { id: 'blog', title: 'Blog', description: 'Últimas noticias...', background: '/assets/imgs/blog1_ln1.jpg' }
+            // ]
         };
     },
     mounted() {
