@@ -115,7 +115,7 @@ export default {
                 if (!document.hidden) {
                     await this.buscar_papeletas(false);
                 }
-            }, 5000);
+            }, 50000);
         }
     },
     beforeUnmount() {  // Para Vue 3
