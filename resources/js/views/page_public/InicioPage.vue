@@ -7,10 +7,12 @@
                 <source src="/assets/videos/RETAIL_LN1.mp4" type="video/mp4">
             </video>
         </section>
-        
+
         <!-- Fondo dinámico -->
-        <div class="dynamic-background" :style="{ backgroundImage: `url(${currentBackground})`, transition: 'background-image 1s ease-in-out' }"></div>
-        
+        <div class="dynamic-background"
+            :style="{ backgroundImage: `url(${currentBackground})`, transition: 'background-image 1s ease-in-out' }">
+        </div>
+
         <!-- Contenido de la página -->
         <section v-for="(section, index) in sections" :key="index" :id="section.id" class="section">
             <div class="container text-center d-flex align-items-center">
@@ -111,6 +113,11 @@ export default {
 .image-content {
     flex: 1;
     text-align: right;
+}
+
+.image-content img {
+    width: 10rem;
+    height: 10rem;
 }
 
 .illustration {

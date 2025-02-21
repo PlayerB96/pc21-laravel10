@@ -1,10 +1,22 @@
 <template>
     <nav class="navbar_main">
+        <!-- Botón para abrir Sidebar en móvil -->
+        <div v-if=userSession>
+            <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#mobileSidebar">
+                <i class="bi bi-list fs-3"></i>
+            </button>
+        </div>
+
         <div class="navbar-logo">
             <img src="/assets/imgs/Grupo-LN1.png" alt="Grupo LN1 Logo" />
         </div>
 
-        <ul class="navbar-menu">
+
+
+
+        <!-- Menú principal en desktop -->
+        <ul class="navbar-menu d-none d-md-flex">
             <li v-for="(item, index) in filteredNavItems" :key="index" class="navbar-item">
                 <a v-if="isInternalSection(item.label)" class="navbar-link"
                     :class="{ 'active-link': activeSection === getSectionId(item.label) }"
@@ -25,45 +37,70 @@
             </li>
         </ul>
 
+        <!-- Sidebar Mobile -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Menú</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-menu">
+                    <li v-for="(item, index) in filteredNavItems" :key="index" class="navbar-item">
+                        <a v-if="isInternalSection(item.label)" class="navbar-link"
+                            :class="{ 'active-link': activeSection === getSectionId(item.label) }"
+                            @click="scrollToSection(getSectionId(item.label))">
+                            {{ item.label }}
+                        </a>
+                        <router-link v-else :to="item.route" class="navbar-link" active-class="active-link">
+                            {{ item.label }}
+                        </router-link>
 
-        <div class="navbar-right d-flex align-items-center">
+                        <ul v-if="item.subitems.length > 0" class="sub-menu">
+                            <li v-for="(subitem, subIndex) in item.subitems" :key="subIndex">
+                                <router-link :to="subitem.route" class="navbar-link">
+                                    {{ subitem.label }}
+                                </router-link>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Icono de usuario o botón de login -->
+        <div class="navbar-right">
             <div v-if="userSession" class="dropdown">
-                <!-- Icono de usuario que activa el dropdown -->
-                <a href="javascript:void(0);" class="nav-link dropdown-toggle user text-white d-flex align-items-center"
-                    id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <a href="javascript:void(0);" class="nav-link dropdown-toggle user text-white" id="userProfileDropdown"
+                    data-bs-toggle="dropdown">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="white" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                 </a>
-
-                <!-- Dropdown de Bootstrap -->
-                <ul class="dropdown-menu dropdown-menu-end  text-white" aria-labelledby="userProfileDropdown">
+                <ul class="dropdown-menu dropdown-menu-end">
                     <li class="dropdown-header text-center fw-bold text-white">
                         {{ userSession.nombre_completo }}
                     </li>
                     <li>
-                        <a href="javascript:void(0);"
-                            class="dropdown-item  d-flex align-items-center text-white"
+                        <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center text-white"
                             @click="handleLogout">
                             <img :src="assetsUrl + 'icons/quit.svg'" alt="Salir" class="me-2" width="20" />
                             <span>Salir</span>
                         </a>
                     </li>
-
                 </ul>
             </div>
-
-            <!-- Botón de inicio de sesión -->
             <button v-if="!userSession" class="btn-primary ms-3" @click="handleLoginClick">
                 Iniciar sesión
             </button>
-
             <login-modal :isVisible="showModal" @update:isVisible="showModal = $event" />
+
+
         </div>
     </nav>
 </template>
+
 
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
@@ -230,7 +267,7 @@ export default {
 :root {
     --navbar-bg: var(--dark-secondary-bg-transparent);
     --submenu-bg: var(--dark-secondary-bg-transparent);
-    --dropdown-bg: var(--dark-secondary-bg-transparent);
+    --dropdown-bg: var(--dark-secondary-bg);
     --dropdown-hover-bg: var(--menu-hover);
     --text-color: white;
 }
@@ -253,14 +290,6 @@ export default {
 /* 🔹 Logo */
 .navbar-logo img {
     max-height: 40px;
-}
-
-/* 🔹 Enlaces de navegación */
-.navbar-menu {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
 }
 
 .navbar-item {
@@ -321,12 +350,13 @@ export default {
 }
 
 /* 🔹 Dropdown (Usuario) */
+
 .nav-item.dropdown {
     position: relative;
 }
 
 .dropdown-menu {
-    background-color:  var(--dropdown-bg) !important;
+    background-color: var(--dropdown-bg) !important;
     border: none;
     min-width: 200px;
 }
@@ -360,65 +390,80 @@ export default {
     }
 }
 
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        position: static;
+
+@media (max-width: 480px) {
+
+    .offcanvas-header {
+        background-color: var(--dark-secondary-bg);
+        color: white;
     }
 
-    .navbar-logo {
-        margin-bottom: 1rem;
+    .offcanvas-body {
+        background-color: var(--dark-secondary-bg-transparent);
     }
 
+    /* 🔹 Enlaces de navegación */
     .navbar-menu {
-        flex-direction: column;
-        width: 100%;
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
 
     .navbar-item {
-        margin-right: 0;
-        margin-bottom: 1rem;
+        display: block;
+        padding: 8px 0;
+    }
+
+    /* Asegura que los submenús estén siempre visibles y correctamente espaciados */
+    .sub-menu {
+        list-style: none;
+        padding-left: 20px;
+        /* Desplaza un poco a la derecha */
+        margin-top: 5px;
+        display: block;
+        /* Siempre visible */
+        background-color: transparent;
+    }
+
+    .sub-menu li {
+        padding: 5px 0;
+    }
+
+    /* Evita que los submenús se sobrepongan */
+    .navbar-item,
+    .sub-menu {
+        position: relative;
         width: 100%;
+        /* Ocupa todo el ancho disponible */
+    }
+
+    .navbar-toggler-icon {
+        width: 30px;
+        height: 30px;
+        background: url("https://cdn-icons-png.flaticon.com/512/1828/1828859.png") no-repeat center;
+        background-size: contain;
+    }
+
+    .offcanvas {
+        background-color: var(--navbar-bg);
+        color: var(--text-color);
     }
 
     .navbar-link {
-        width: 100%;
-        text-align: left;
+        color: white;
+        text-decoration: none;
+        display: block;
+        padding: 10px 15px;
+        border-left: 4px solid transparent;
+        /* Borde inicial transparente */
+        transition: border-color 0.3s ease-in-out;
     }
 
-    .navbar-right {
-        flex-direction: column;
-        width: 100%;
-        margin-top: 1rem;
+    .navbar-link:hover {
+        color: white;
+        border-left: 4px solid var(--dropdown-hover-bg);
+        /* Borde visible al pasar el mouse */
     }
 
-    .theme-toggle {
-        margin-top: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar {
-        padding: 0.5rem 1rem;
-    }
-
-    .navbar-logo img {
-        max-height: 30px;
-    }
-
-    .navbar-link {
-        font-size: 0.875rem;
-        padding: 0.5rem;
-    }
-
-    .dropdown-item {
-        padding: 0.5rem;
-    }
-
-    .dropdown-item img {
-        max-width: 16px;
-        margin-right: 0.5rem;
-    }
 }
 </style>

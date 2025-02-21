@@ -79,7 +79,7 @@
                             <input type="time" class="form-control" v-model="formulario.hora_retorno"
                                 :disabled="formulario.sin_retorno">
                         </div>
-                       
+
                     </div>
                 </form>
             </div>
@@ -192,13 +192,17 @@ export default {
 
 <style scoped>
 .error-message {
-    color: #ff0000; /* Color rojo para el texto del mensaje de error */
-    background-color: #ffe6e6; /* Fondo ligeramente rojo */
-    border: 1px solid #ff0000; /* Borde rojo */
+    color: #ff0000;
+    /* Color rojo para el texto del mensaje de error */
+    background-color: #ffe6e6;
+    /* Fondo ligeramente rojo */
+    border: 1px solid #ff0000;
+    /* Borde rojo */
     padding: 10px;
     border-radius: 5px;
     margin-top: 10px;
 }
+
 .control-label {
     font-weight: bold;
     display: block;
