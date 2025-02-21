@@ -29,7 +29,7 @@
         </div>
 
         <registrar-papeleta-modal :isVisible="showModal" @update:isVisible="showModal = $event"
-            @papeletaGuardada="buscar_papeletas" />
+            @papeletaGuardada="buscar_papeletas(false)" />
         <SkeletonLoaderTable v-if="busquedaManual" :rows="10" :columns="10" />
 
         <div v-if="!busquedaManual && papeletas.length">
@@ -115,7 +115,21 @@ export default {
                 if (!document.hidden) {
                     await this.buscar_papeletas(false);
                 }
-            }, 50000);
+            }, 5000);
+        }
+    },
+    beforeUnmount() {  // Para Vue 3
+        console.log("Componente desmontado, limpiando intervalo...");
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;  // Asegúrate de resetearlo
+        }
+    },
+    beforeDestroy() {  // Para Vue 2
+        console.log("Componente desmontado, limpiando intervalo...");
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
         }
     },
 
@@ -150,7 +164,6 @@ export default {
             try {
                 const userSession = JSON.parse(localStorage.getItem('userSession'));
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-
                 const { data } = await axios.post('gestionpersonas/buscar_papeletas', {
                     estado_solicitud: this.estadoSeleccionado,
                     id_usuario: userSession.id_usuario,
@@ -162,7 +175,6 @@ export default {
                 }, {
                     headers: { 'X-CSRF-TOKEN': csrfToken }
                 });
-
                 this.papeletas = data.list_papeletas_salida?.map(papeleta => ({
                     ...papeleta,
                     destino: papeleta.destino?.nom_destino || "Sin destino",
@@ -171,7 +183,6 @@ export default {
                     hora_retorno: this.getHoraRetorno(papeleta.sin_retorno, papeleta.hora_retorno),
                     estado_solicitud: this.getEstadoSolicitud(papeleta.estado_solicitud),
                 })) || [];
-
                 this.$nextTick(this.initDataTable);
             } catch (error) {
                 console.error('Error al buscar papeletas:', error);
