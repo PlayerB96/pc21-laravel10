@@ -24,7 +24,7 @@
 export default {
   data() {
     return {
-      contenidoVisible: true,
+      contenidoVisible: false,
     };
   },
   methods: {
