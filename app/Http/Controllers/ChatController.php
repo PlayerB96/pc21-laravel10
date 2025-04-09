@@ -12,7 +12,7 @@ class ChatController extends Controller
     public function chat_response(Request $request)
     {
         $query = strtolower($request->input('message')); // Convertir a minúsculas
-        $chatbotUrl = 'http://localhost:6000/chatbot';
+        $chatbotUrl = 'http://159.223.200.169:6000/chatbot';
 
         // Obtener la IP del cliente
         $ip = $request->ip();
