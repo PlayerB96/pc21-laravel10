@@ -580,9 +580,6 @@ video {
 .collapse{
   visibility: collapse;
 }
-.static{
-  position: static;
-}
 .fixed{
   position: fixed;
 }
@@ -595,6 +592,10 @@ video {
 .mx-auto{
   margin-left: auto;
   margin-right: auto;
+}
+.mx-3{
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
 }
 .mb-4{
   margin-bottom: 1rem;
@@ -663,6 +664,10 @@ video {
 }
 .font-bold{
   font-weight: 700;
+}
+.text-black{
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity, 1));
 }
 .text-white{
   --tw-text-opacity: 1;

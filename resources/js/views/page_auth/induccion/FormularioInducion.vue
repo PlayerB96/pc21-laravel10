@@ -107,7 +107,7 @@ export default {
             timerProgressBar: true,
             showConfirmButton: false,
             willClose: () => {
-              router.push('/gestionpersonas/registro_colaboradores'); 
+              router.push('/gestionpersonas/registro_colaboradores');
             }
           });
         } else {

@@ -2,26 +2,38 @@
     <div v-if="isVisible" class="modal-overlay" @click.self="closeModal">
         <div class="modal-content-login">
             <div class="logo-container">
-                <img src="/assets/imgs/Grupo.LN1NegroFTransp.png" alt="Grupo LN1 Logo" class="logo" />
+                <img src="/assets/imgs/pc21v1.png" alt="Grupo LN1 Logo" class="logo" />
             </div>
-            <h2>Iniciar sesión</h2>
-            <form @submit.prevent="handleLogin" class="login-form">
-                <input type="text" v-model="dni" placeholder="Ingrese su DNI" required class="input-field"
+            <h2>{{ isRegister ? 'Registrar Usuario' : 'Iniciar sesión' }}</h2>
+            <form @submit.prevent="handleSubmit" class="login-form">
+                <input type="number" v-model="username" placeholder="Ingrese su DNI" required class="input-field"
                     @input="validateDNI" autocomplete="off" />
+
+                <input type="number" v-if="isRegister" v-model="telefono" placeholder="Numero de Telefono" required
+                    class="input-field" autocomplete="off" />
+
+                <input type="email" v-if="isRegister" v-model="email" placeholder="Ingrese su Email" required
+                    class="input-field" autocomplete="off" />
+
+
+                <input type="text" v-if="isRegister" v-model="nombreCompleto" placeholder="Nombre Completo" required
+                    class="input-field" autocomplete="off" />
+
                 <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="Contraseña" required
                     class="input-field password-input" autocomplete="off" />
-                <!-- <button type="button" class="toggle-password" @click="togglePassword">
-                    {{ showPassword ? '👁' : '🙈' }}
-                </button> -->
 
                 <button type="submit" class="submit-button" :disabled="loading">
-                    <!-- Mostrar spinner cuando loading es true -->
                     <span v-if="loading" class="spinner"></span>
-                    <span v-else>Iniciar sesión</span>
+                    <span v-else>{{ isRegister ? 'Registrar' : 'Iniciar sesión' }}</span>
                 </button>
+
             </form>
 
-            <p id="mensajeError" class="error-message"></p> <!-- Mensaje de error -->
+            <p id="mensajeError" class="error-message"></p>
+
+            <p class="toggle-mode text-black" @click="toggleMode">
+                {{ isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate' }}
+            </p>
 
             <button @click="closeModal" class="close-button">Cerrar</button>
         </div>
@@ -41,10 +53,14 @@ export default {
     },
     data() {
         return {
-            dni: '',
+            username: '',
+            email: '',
             password: '',
+            nombreCompleto: '',
+            telefono: '',
+            isRegister: false,
             showPassword: false,
-            loading: false // Estado para el spinner
+            loading: false
         };
     },
     methods: {
@@ -52,66 +68,126 @@ export default {
             this.$emit('update:isVisible', false);
         },
         validateDNI() {
-            this.dni = this.dni.replace(/\D/g, ''); // Solo números
+            if (typeof this.username !== 'string') {
+                this.username = String(this.username); // Convertir a string si no lo es
+            }
+            this.username = this.username.replace(/\D/g, ''); // Eliminar caracteres no numéricos
         },
-        togglePassword() {
-            this.showPassword = !this.showPassword; // 🔹 Alternar visibilidad de la contraseña
+
+        toggleMode() {
+            this.isRegister = !this.isRegister;
+            this.clearFields();
         },
-        async handleLogin() {
-            if (this.dni.length < 8 || isNaN(this.dni)) {
+        clearFields() {
+            this.username = '';
+            this.email = '';
+            this.password = '';
+            this.nombreCompleto = '';
+            this.telefono = '';
+
+        },
+        async handleSubmit() {
+            if (this.username.length < 8 || isNaN(this.username)) {
                 alert('Por favor, ingrese un DNI válido (8 dígitos).');
                 return;
             }
-
-            const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
-            if (!csrfMetaTag) {
-                alert('No se encontró el token CSRF en el documento.');
-                return;
-            }
-            const csrfToken = csrfMetaTag.getAttribute('content');
-            this.loading = true; // Activar el spinner
+            this.loading = true;
             try {
-                const response = await axios.post('auth/validate_user', {
-                    username: this.dni,
-                    password: this.password
-                }, {
-                    headers: { 'X-CSRF-TOKEN': csrfToken }
-                });
-                // Éxito en la autenticación
+                let response;
+                if (this.isRegister) {
+                    response = await axios.post('/auth/register', {
+                        username: this.username,
+                        email: this.email,
+                        telefono: this.telefono,
+                        password: this.password,
+                        nombre_completo: this.nombreCompleto
+                    });
+
+                    // 🔥 Enviar mensaje por WhatsApp después del registro
+                    await this.enviarMensajeWhatsApp();
+                } else {
+                    response = await axios.post('/auth/validate_user', {
+                        username: this.username,
+                        password: this.password
+                    });
+                }
+
                 Swal.fire({
                     icon: 'success',
-                    title: `¡Bienvenido, ${response.data.sessionData.nombre_completo}!`,
+                    title: this.isRegister ? 'Registro exitoso' : `¡Bienvenido, ${response.data.sessionData?.nombre_completo || 'Usuario'}!`,
                     text: response.data.message,
-                    imageUrl: response.data.sessionData.foto,
-                    imageWidth: 100,
-                    imageHeight: 100,
-                    imageAlt: 'Foto de perfil',
                     confirmButtonText: 'Aceptar'
                 }).then(() => {
-                    // Almacenar toda la sesión en localStorage
-                    localStorage.setItem('userSession', JSON.stringify(response.data.sessionData));
-                    localStorage.setItem('authToken', response.data.token);
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-                    window.location.reload();
+                    if (!this.isRegister) {
+                        localStorage.setItem('userSession', JSON.stringify(response.data.sessionData));
+                        localStorage.setItem('authToken', response.data.token);
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+                        this.$router.push('/inicio');
+                        window.dispatchEvent(new Event("storage"));
+                    }
                 });
 
-                this.closeModal(); // Cerrar el modal
-
+                this.closeModal();
             } catch (error) {
                 let errorMessage = 'Ocurrió un error desconocido.';
-                if (error.response && error.response.data) {
-                    errorMessage = error.response.data.error || errorMessage;
-                } else if (error.request) {
-                    errorMessage = 'Error de conexión al servidor. Verifique su conexión a Internet.';
-                } else {
-                    errorMessage = `Error inesperado: ${error.message}`;
-                }
+                console.log(error.response?.data?.error);
+                console.log(error.response?.data?.message);
+
+                errorMessage = error.response?.data?.message || error.response?.data?.error || errorMessage;
 
                 document.getElementById('mensajeError').innerText = errorMessage;
             } finally {
-                this.loading = false; // Desactivar el spinner
+                this.loading = false;
+            }
+        },
+
+        // ✅ Función para enviar mensaje de WhatsApp al endpoint
+        async enviarMensajeWhatsApp() {
+            try {
+                // Obtener la geolocalización del usuario
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        console.log(this.telefono)
+                        console.log("####1")
+
+                        // Generar enlace de Google Maps con la ubicación
+                        const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+                        // Definir los números de teléfono
+                        const numeroFijo = `+51986514012`; // Número fijo
+                        const numeroCliente = `+51${this.telefono}`; // Número del cliente con código de país
+
+                        // Mensajes a enviar
+                        const mensajeUbicacion = `📍 Aquí está mi ubicación: ${mapsLink}`;
+                        const mensajeTicket = `✅ Su ticket está en proceso. Nos pondremos en contacto pronto.`;
+
+                        // Enviar mensaje con la ubicación al número fijo
+                        await axios.post('http://localhost:3001/lead', {
+                            phone: numeroFijo,
+                            message: mensajeUbicacion
+                        });
+                        console.log("📩 Ubicación enviada correctamente a:", numeroFijo);
+
+                        // Enviar mensaje de ticket en proceso al cliente
+                        await axios.post('http://localhost:3001/lead', {
+                            phone: numeroCliente,
+                            message: mensajeTicket
+                        });
+                        console.log("📩 Mensaje de ticket enviado correctamente a:", numeroCliente);
+
+                    }, (error) => {
+                        console.error("❌ Error obteniendo la ubicación:", error.message);
+                    });
+                } else {
+                    console.error("❌ Geolocalización no soportada en este navegador.");
+                }
+            } catch (error) {
+                console.error("❌ Error enviando los mensajes:", error.response?.data || error.message);
             }
         }
+
 
     }
 };
@@ -120,6 +196,11 @@ export default {
 
 
 <style scoped>
+.toggle-mode {
+    cursor: pointer;
+    color: #0056b3;
+}
+
 .modal-content-login {
     background: #fff;
     padding: 30px 20px;
@@ -134,8 +215,20 @@ export default {
 }
 
 .logo-container {
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    /* Centra horizontalmente */
+    align-items: center;
+
 }
+
+.logo {
+    width: 160px;
+    /* Ajusta el tamaño según necesidad */
+    height: auto;
+    /* Mantiene la proporción */
+}
+
 
 .logo {
     max-width: 100%;

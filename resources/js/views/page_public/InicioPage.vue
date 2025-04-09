@@ -3,27 +3,65 @@
         <!-- Fondo del video en la sección de inicio -->
         <section id="inicio" class="video-background-container">
             <div class="gradient-overlay"></div>
-            <video autoplay loop muted class="video-background">
-                <source src="/assets/videos/RETAIL_LN1.mp4" type="video/mp4">
-            </video>
+            <img src="/assets/imgs/pexels-cookiecutter-1148820.jpg" alt="Grupo LN1 Logo" class="logo" />
         </section>
 
-        <!-- Fondo dinámico -->
-        <div class="dynamic-background"
-            :style="{ backgroundImage: `url(${currentBackground})`, transition: 'background-image 1s ease-in-out' }">
-        </div>
+        <!-- Sección de Visión -->
+        <section id="vision" class="section vision">
+            <div class="container text-center">
+                <h2 class="fw-bold">Nuestra Visión</h2>
+                <p>Nos esforzamos por ser líderes en innovación y servicio al cliente.</p>
+            </div>
+        </section>
 
-        <!-- Contenido de la página -->
-        <section v-for="(section, index) in sections" :key="index" :id="section.id" class="section">
-            <div class="container text-center d-flex align-items-center">
-                <div class="text-content">
-                    <h2 class="fw-bold">{{ section.title }}</h2>
-                    <p>{{ section.description }}</p>
-                    <a :href="'https://www.google.com'" target="_blank" class="btn-primary">Ir a Sitio</a>
+        <!-- Sección de Servicios -->
+        <section id="servicios" class="section servicios">
+            <div class="container text-center">
+                <h2 class="fw-bold">Nuestros Servicios</h2>
+                <p>Ofrecemos una amplia gama de servicios para satisfacer tus necesidades.</p>
+                <img src="/assets/imgs/identidad.jpg" alt="Servicios" class="illustration">
+            </div>
+        </section>
+
+        <!-- Sección de Productos -->
+        <section id="productos" class="section productos">
+            <div class="container-fluid text-center">
+                <h2 class="fw-bold mb-4">Nuestros Productos</h2>
+                <div id="productosCarousel" class="carousel slide w-100" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item text-center" v-for="(producto, index) in productos" :key="index"
+                            :class="{ 'active': index === 0 }">
+                            <div class="d-flex justify-content-center">
+                                <div class="card" style="width: 18rem;">
+                                    <img :src="producto.imagen" class="card-img-top" :alt="producto.nombre">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">{{ producto.nombre }}</h5>
+                                        <p class="card-text">Precio: ${{ producto.precio }}</p>
+                                        <a href="#" class="btn btn-primary">Comprar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productosCarousel"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productosCarousel"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-                <div class="image-content">
-                    <img src="/assets/imgs/ilustrationln1.png" alt="Illustration" class="illustration">
-                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Garantía -->
+        <section id="garantia" class="section garantia">
+            <div class="container text-center">
+                <h2 class="fw-bold">Nuestra Garantía</h2>
+                <p>Garantizamos la mejor calidad y servicio para nuestros clientes.</p>
             </div>
         </section>
     </div>
@@ -34,13 +72,11 @@ export default {
     name: "InicioPage",
     data() {
         return {
-            currentBackground: '/assets/imgs/default.jpg', // Imagen por defecto
-            sections: [
-                { id: 'ecommerce', title: 'Ecommerce', description: 'Compra fácil...' },
-                { id: 'identidadcorporativa', title: 'Identidad Corporativa', description: 'Nuestra identidad...' },
-                { id: 'empresas', title: 'Empresas', description: 'Colaboramos con grandes marcas...' },
-                { id: 'productos', title: 'Productos', description: 'Descubre nuestra variedad...' },
-                { id: 'blog', title: 'Blog', description: 'Últimas noticias...' }
+            productos: [
+                { nombre: 'Laptop Lenovo', precio: 750, imagen: '/assets/imgs/laptop1.jpg' },
+                { nombre: 'Mouse Gamer', precio: 50, imagen: '/assets/imgs/mouse.jpg' },
+                { nombre: 'Teclado Mecánico', precio: 100, imagen: '/assets/imgs/laptop.jpeg' },
+                { nombre: 'Monitor 27"', precio: 300, imagen: '/assets/imgs/monitor.jpeg' }
             ]
         };
     }
@@ -48,80 +84,26 @@ export default {
 </script>
 
 <style scoped>
-.video-background-container {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-}
-
-.video-background {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-}
-
-.dynamic-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    z-index: -1;
-}
-
 .section {
-    padding: 100px 50px;
+    padding: 50px 0;
     text-align: center;
-    min-height: 100vh;
-    background: rgba(255, 255, 255, 0.505);
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    width: 100%;
+.vision {
+    background-color: #f8f9fa;
 }
 
-.text-content {
-    flex: 1;
-    text-align: left;
+.servicios {
+    background-color: #e9ecef;
 }
 
-.image-content {
-    flex: 1;
-    text-align: right;
-}
-
-.image-content img {
-    width: 10rem;
-    height: 10rem;
+.garantia {
+    background-color: #dee2e6;
 }
 
 .illustration {
-    max-width: 300px;
+    max-width: 100%;
     height: auto;
+    margin-top: 20px;
 }
 </style>

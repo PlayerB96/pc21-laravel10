@@ -4,7 +4,6 @@ import InduccionPage from "./views/page_auth/InduccionPage.vue";
 import EcommercePage from "./views/page_public/EcommercePage.vue";
 import BlogPage from "./views/page_public/BlogPage.vue";
 import ProductosPage from "./views/page_public/ProductosPage.vue";
-import EmpresasPage from "./views/page_public/EmpresasPage.vue";
 import ProduccionPage from "./views/page_auth/ProduccionPage.vue";
 import IdentidadCorporativaPage from "./views/page_public/IdentidadCorporativaPage.vue";
 import GestionPersonasPage from "./views/page_auth/GestionPersonasPage.vue";
@@ -20,25 +19,22 @@ const routes = [
     { path: "/inicio", component: InicioPage },
     { path: "/home", component: HomePage },
     {
-        path: "/induccion", 
+        path: "/induccion",
         component: InduccionPage,
         children: [
             { path: "video_induccion", component: VideoInduccion },
             { path: "formulario_induccion", component: FormularioInducion },
-
         ],
     },
-    { path: "/ecommerce", component: EcommercePage },
+    { path: "/vision", component: EcommercePage },
     {
         path: "/produccion",
         component: ProduccionPage,
         children: [
             { path: "fichas_produccion", component: FichasProduccionPage },
-            
         ],
     },
     { path: "/identidadcorporativa", component: IdentidadCorporativaPage },
-    { path: "/empresas", component: EmpresasPage },
     { path: "/productos", component: ProductosPage },
     { path: "/blog", component: BlogPage },
 

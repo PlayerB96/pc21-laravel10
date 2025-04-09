@@ -10,26 +10,33 @@
       <footer-component></footer-component>
     </footer>
   </div>
+  <floating-button />
 </template>
 
 <script>
 import Navbar from './Navbar.vue';
 import FooterComponent from './FooterComponent.vue';
+import FloatingButton from './FloatingButton.vue';
 
 export default {
   name: 'MainComponent',
   components: {
     Navbar,
-    FooterComponent
+    FooterComponent,
+    FloatingButton
   },
   data() {
     return {
-      activeSection: "" // Guardará la sección activa
+      activeSection: "",
+      isChatbotOpen: false
     };
   },
   methods: {
     updateActiveSection(section) {
       this.activeSection = section;
+    },
+    toggleChatbot() {
+      this.isChatbotOpen = !this.isChatbotOpen;
     }
   }
 };
@@ -47,12 +54,53 @@ export default {
   padding: 0rem;
 }
 
-.main-content.no-padding {
-  padding: 10;
-  /* Quita el padding cuando se está en la sección "Inicio" */
-}
-
 footer {
   margin-top: auto;
+}
+
+/* Estilos del botón flotante */
+.chatbot-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor del chatbot */
+.chatbot-container {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 300px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Botón de cerrar */
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>

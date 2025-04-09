@@ -8,6 +8,8 @@ use App\Http\Controllers\InduccionController;
 use App\Http\Controllers\AuthController; // Asegúrate de importar tu controlador
 use App\Http\Controllers\ProduccionController;
 use App\Http\Controllers\UbigeoController;
+use App\Http\Controllers\ChatController;
+
 use App\Http\Controllers\WebLn1Controller;
 use Illuminate\Session\Middleware\StartSession;
 
@@ -15,6 +17,8 @@ use Illuminate\Session\Middleware\StartSession;
 
 Route::middleware(['api', StartSession::class])->group(function () {
     Route::post('/auth/validate_user', [AuthController::class, 'auth']);
+    Route::post('/auth/register', [AuthController::class, 'register']);
+
     // GESTIÓN PERSONAS: Papeletas de Salida - Registro Colaboradores
     Route::post('/gestionpersonas/buscar_papeletas', [GestionPersonas::class, 'buscar_papeletas']);
     Route::get('/gestionpersonas/cambiar_motivo', [GestionPersonas::class, 'cambiar_motivo']);
@@ -38,6 +42,10 @@ Route::middleware(['api', StartSession::class])->group(function () {
 
     // VERIFICACIÓN DE PERMISOS
     Route::post('/verificar-permisos',  [AuthController::class, 'verificar_permisos']);
+
+    // CHATBOT
+    Route::post('/chat_response',  [ChatController::class, 'chat_response']);
+
 });
 
 //NUESTRAS TIENDAS - WEB LN1

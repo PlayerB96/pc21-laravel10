@@ -9,14 +9,12 @@
         </div>
 
         <div class="navbar-logo">
-            <img src="/assets/imgs/Grupo-LN1.png" alt="Grupo LN1 Logo" />
+            <img src="/assets/imgs/pc21v1.png" alt="Grupo LN1 Logo" />
         </div>
 
 
-
-
         <!-- Menú principal en desktop -->
-        <ul class="navbar-menu d-none d-md-flex">
+        <ul class="navbar-menu d-none d-md-flex ">
             <li v-for="(item, index) in filteredNavItems" :key="index" class="navbar-item">
                 <a v-if="isInternalSection(item.label)" class="navbar-link"
                     :class="{ 'active-link': activeSection === getSectionId(item.label) }"
@@ -127,7 +125,7 @@ export default {
                 route: '/induccion',
                 subitems: [{ label: 'Video Inducción', route: '/induccion/video_induccion' }]
             },
-            { label: 'Ecommerce', route: '/ecommerce', subitems: [] },
+            { label: 'Vision', route: '/vision', subitems: [] },
             {
                 label: 'Gestión de Personas',
                 route: '/gestionpersonas',
@@ -140,10 +138,9 @@ export default {
                 label: 'Producción', route: '/produccion',
                 subitems: [{ label: 'Fichas Técnicas', route: '/produccion/fichas_produccion' }]
             },
-            { label: 'Identidad Corporativa', route: 'identidadcorporativa', subitems: [] },
-            { label: 'Empresas', route: 'empresas', subitems: [] },
+            { label: 'Servicios', route: 'servicios', subitems: [] },
             { label: 'Productos', route: 'productos', subitems: [] },
-            { label: 'Blog', route: 'blog', subitems: [] }
+            { label: 'Garantia', route: 'garantia', subitems: [] }
         ];
 
         // Cargar usuario desde localStorage
@@ -180,44 +177,29 @@ export default {
 
         // Filtrar elementos de navegación dinámicamente
         const filteredNavItems = computed(() => {
+            // Si no hay sesión, mostrar solo los elementos permitidos
             if (!userSession.value) {
                 return navItems.filter(item => !['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
             }
-            const userRestrictions = {
-                induccion: userSession.value.induccion === 1,
-                datosCompletos: userSession.value.datos_completos === 1
-            };
-            return navItems
-                .filter(item => {
-                    if (userRestrictions.induccion) {
-                        return ['Home', 'Gestión de Personas', 'Producción'].includes(item.label);
-                    }
-                    return ['Home', 'Inducción'].includes(item.label);
-                })
-                .map(item => ({
-                    ...item,
-                    subitems: item.subitems.filter(subitem => {
-                        if (userRestrictions.induccion && userRestrictions.datosCompletos && subitem.label === 'Datos Colaboradores') {
-                            return false;
-                        }
-                        return true;
-                    })
-                }));
+
+            // Si hay sesión, mostrar lo mismo que cuando no hay sesión
+            return navItems.filter(item => !['Home', 'Inducción', 'Gestión de Personas', 'Producción'].includes(item.label));
         });
 
 
 
+
         // Métodos de navegación
-        const isInternalSection = label => ['Inicio', 'Ecommerce', 'Identidad Corporativa', 'Empresas', 'Productos', 'Blog'].includes(label);
+        const isInternalSection = label => ['Inicio', 'Vision', 'Servicios', 'Empresas', 'Productos', 'Garantia'].includes(label);
 
         const getSectionId = label => {
             const sectionMap = {
                 'Inicio': 'inicio',
-                'Ecommerce': 'ecommerce',
-                'Identidad Corporativa': 'identidadcorporativa',
+                'Vision': 'vision',
+                'Servicios': 'servicios',
                 'Empresas': 'empresas',
                 'Productos': 'productos',
-                'Blog': 'blog'
+                'Garantia': 'garantia'
             };
             return sectionMap[label] || '';
         };
@@ -278,7 +260,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: var(--navbar-bg);
+    background-color: blue;
     color: var(--text-color);
     position: fixed;
     top: 0;

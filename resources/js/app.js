@@ -2,10 +2,10 @@ import { createApp } from "vue";
 import MainComponent from "./components/MainComponent.vue";
 import Navbar from "./components/Navbar.vue";
 import FooterComponent from "./components/FooterComponent.vue";
-import Chatbot from "./components/Chatbot.vue";
+import FloatingButton from "./components/FloatingButton.vue";
 import router from "./router";
 import axios from "axios";
-import VueLazyload from 'vue-lazyload';
+import VueLazyload from "vue-lazyload";
 
 import "../css/global.css";
 
@@ -28,7 +28,7 @@ const app = createApp(MainComponent);
 app.component("main-component", MainComponent);
 app.component("navbar", Navbar);
 app.component("footer-component", FooterComponent);
-app.component("chatbot", Chatbot);
+app.component("chatbot", FloatingButton);
 
 // Usa el router
 app.use(router);
