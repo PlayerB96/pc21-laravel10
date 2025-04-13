@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log; // Agrega Log para depurar
 use App\Models\Ticket;
+use Illuminate\Support\Facades\DB;
 
 class ChatController extends Controller
 {
