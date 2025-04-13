@@ -15,7 +15,7 @@ class Ticket extends Model
     public $timestamps = true;
 
     // Asegúrate de agregar los campos que serán asignables masivamente (si es necesario)
-    protected $fillable = ['telefono', 'estado', 'fecha_registro'];
+    protected $fillable = ['nombre_solicitante','telefono', 'estado', 'fecha_registro'];
 
     // Puedes agregar relaciones o métodos si lo necesitas
 }

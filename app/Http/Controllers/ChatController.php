@@ -43,7 +43,8 @@ class ChatController extends Controller
                     // Insertar en la tabla tickets
                     DB::table('tickets')->insert([
                         'telefono' => $query,
-                        'estado' => 1,  // Asegúrate de insertar el estado si es necesario
+                        'nombre_solicitante' => 'Usuario no Registrado',  
+
                     ]);
                 }
             
