@@ -28,9 +28,6 @@ RUN mkdir -p /app/storage/logs \
 RUN chown -R www-data:www-data /app \
     && chmod -R 775 /app/storage /app/bootstrap/cache /app/database/database.sqlite
 
-# Instala SQLite (si no está disponible en la imagen base)
-RUN apt-get update && apt-get install -y sqlite3 libsqlite3-dev
-
 # Instala Octane con Swoole
 RUN php artisan octane:install --server="swoole"
 
