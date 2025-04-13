@@ -6,47 +6,74 @@ use App\Models\ChatResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log; // Agrega Log para depurar
+use App\Models\Ticket;
 
 class ChatController extends Controller
 {
     public function chat_response(Request $request)
     {
-        $query = strtolower($request->input('message')); // Convertir a minúsculas
+        $query = strtolower($request->input('message'));
         $chatbotUrl = 'http://159.223.200.169:6000/chatbot';
 
-        // Obtener la IP del cliente
         $ip = $request->ip();
-
-        // Obtener la ubicación (latitud y longitud) desde ipinfo.io
         $location = $this->get_location_by_ip($ip);
-        // Verificar si latitud y longitud están siendo obtenidos correctamente
+
         Log::info('Latitud:', ['lat' => $location['lat']]);
         Log::info('Longitud:', ['long' => $location['long']]);
+
         try {
             $response = Http::post($chatbotUrl, [
                 'message' => $query,
-                'lat' => $location['lat'],  // Latitud obtenida
-                'long' => $location['long'] // Longitud obtenida
+                'lat' => $location['lat'],
+                'long' => $location['long'],
             ]);
-    
+
             if ($response->successful()) {
-                $respuestaChatbot = $response->json()['response'];
-    
+                $responseJson = $response->json();  // Obtener la respuesta como array
+                Log::info('Respuesta del chatbot:', ['response' => $responseJson]);
+            
+                $respuestaChatbot = $responseJson['response'];
+                $status = $responseJson['status'] ?? false;  // Usar null coalescing para evitar errores si no existe
+            
+                Log::info('status:', ['status' => $status]);
+            
+                if ($status === true) {
+                    // Insertar en la tabla tickets
+                    DB::table('tickets')->insert([
+                        'telefono' => $query,
+                        'estado' => 1,  // Asegúrate de insertar el estado si es necesario
+                        'fecha_registro' => now(),  // Fecha de registro automáticamente
+                    ]);
+                }
+            
                 return response()->json([
                     'message' => $respuestaChatbot,
-                    'content' => '' // O puedes omitir este campo si no lo necesitas
+                    'content' => ''
                 ]);
             }
-    
+            
             return response()->json([
                 'message' => "Error al obtener respuesta del chatbot."
             ], 500);
         } catch (\Exception $e) {
+            Log::error('Error en chat_response', ['error' => $e->getMessage()]);
             return response()->json([
                 'message' => "Ocurrió un error, intenta de nuevo más tarde."
             ], 500);
         }
     }
+
+
+    public function getTickets()
+    {
+        // Recuperar todos los tickets de la base de datos
+        $tickets = Ticket::all();
+        Log::info('Tickets:', ['tickets' => $tickets]);
+
+        // Devolver los tickets en formato JSON
+        return response()->json($tickets);
+    }
+
 
     /**
      * Obtener la latitud y longitud de la IP utilizando ipinfo.io

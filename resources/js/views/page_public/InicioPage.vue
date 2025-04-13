@@ -56,7 +56,31 @@
                 </div>
             </div>
         </section>
-
+        <div class="p-6">
+            <h2 class="text-2xl font-bold mb-4">📋 Tickets</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto border-collapse border border-gray-300 shadow-md rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-200 text-left">
+                            <th class="px-4 py-2 border border-gray-300">ID</th>
+                            <th class="px-4 py-2 border border-gray-300">Nombre Completo</th>
+                            <th class="px-4 py-2 border border-gray-300">Teléfono</th>
+                            <th class="px-4 py-2 border border-gray-300">Fecha de Registro</th>
+                            <th class="px-4 py-2 border border-gray-300">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="ticket in tickets" :key="ticket.id" class="hover:bg-gray-100">
+                            <td class="px-4 py-2 border border-gray-300">{{ ticket.id }}</td>
+                            <td class="px-4 py-2 border border-gray-300">{{ ticket.nombre_completo }}</td>
+                            <td class="px-4 py-2 border border-gray-300">{{ ticket.telefono }}</td>
+                            <td class="px-4 py-2 border border-gray-300">{{ ticket.created_at }}</td>
+                            <td class="px-4 py-2 border border-gray-300">{{ ticket.estado }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <!-- Sección de Garantía -->
         <section id="garantia" class="section garantia">
             <div class="container text-center">
@@ -68,6 +92,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: "InicioPage",
     data() {
@@ -77,8 +103,24 @@ export default {
                 { nombre: 'Mouse Gamer', precio: 50, imagen: '/assets/imgs/mouse.jpg' },
                 { nombre: 'Teclado Mecánico', precio: 100, imagen: '/assets/imgs/laptop.jpeg' },
                 { nombre: 'Monitor 27"', precio: 300, imagen: '/assets/imgs/monitor.jpeg' }
-            ]
+            ],
+            tickets: []
+
         };
+    },
+    mounted() {
+        this.fetchTickets();
+    },
+    methods: {
+        async fetchTickets() {
+            try {
+                const response = await axios.get('/tickets');
+                console.log(response)
+                this.tickets = response.data;
+            } catch (error) {
+                console.error('Error al obtener los tickets:', error);
+            }
+        }
     }
 };
 </script>
