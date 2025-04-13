@@ -80,7 +80,7 @@ export default {
 
             try {
                 const response = await axios.post('/chat_response', { message: messageToSend });
-                console.log(response.data);
+                console.log(response.data); // Muestra la respuesta del servidor
 
                 this.messages.pop(); // Quitar mensaje de carga
 
@@ -93,13 +93,31 @@ export default {
                 }
 
             } catch (error) {
-                this.messages.pop();
+                this.messages.pop(); // Quitar mensaje de carga
+
+                // Mostrar detalle completo del error en consola
+                console.error('Error en la solicitud:', error); // Muestra el error completo
+
+                // Si el error tiene respuesta, mostramos la información de la respuesta
+                if (error.response) {
+                    // Si la respuesta tiene error HTTP, mostramos el código de estado y el cuerpo de la respuesta
+                    console.error('Detalles del error HTTP:', error.response.status, error.response.data);
+                } else if (error.request) {
+                    // Si no hay respuesta pero se hizo la solicitud, mostramos los detalles de la solicitud
+                    console.error('Solicitud realizada sin respuesta:', error.request);
+                } else {
+                    // Si el error no es relacionado con la solicitud, muestra el mensaje del error
+                    console.error('Error general:', error.message);
+                }
+
+                // Mostrar mensaje de error al usuario
                 this.messages.push({ text: "Error al obtener respuesta del servidor.", user: false, type: "text" });
             } finally {
                 this.loading = false;
                 this.$nextTick(() => this.scrollToBottom());
             }
         },
+
         scrollToBottom() {
             const chatMessages = this.$refs.chatMessages;
             if (chatMessages) {

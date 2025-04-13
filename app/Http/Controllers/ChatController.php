@@ -29,6 +29,7 @@ class ChatController extends Controller
                 'long' => $location['long'],
             ]);
 
+            // Verificar la respuesta del servidor y loguearla completamente
             if ($response->successful()) {
                 $responseJson = $response->json();  // Obtener la respuesta como array
                 Log::info('Respuesta del chatbot:', ['response' => $responseJson]);
@@ -43,7 +44,6 @@ class ChatController extends Controller
                     DB::table('tickets')->insert([
                         'telefono' => $query,
                         'estado' => 1,  // Asegúrate de insertar el estado si es necesario
-                        'fecha_registro' => now(),  // Fecha de registro automáticamente
                     ]);
                 }
             
@@ -52,17 +52,39 @@ class ChatController extends Controller
                     'content' => ''
                 ]);
             }
+
+            // Si la respuesta no es exitosa, logueamos más detalles
+            Log::error('Error en respuesta del chatbot', [
+                'status_code' => $response->status(),
+                'body' => $response->body(),
+            ]);
             
             return response()->json([
-                'message' => "Error al obtener respuesta del chatbot."
+                'message' => "Error al obtener respuesta del chatbot.",
+                'error_details' => [
+                    'status_code' => $response->status(),
+                    'body' => $response->body()
+                ]
             ], 500);
+
         } catch (\Exception $e) {
-            Log::error('Error en chat_response', ['error' => $e->getMessage()]);
+            // Loguear el error detallado
+            Log::error('Error en chat_response', [
+                'error_message' => $e->getMessage(),
+                'error_trace' => $e->getTraceAsString(),
+            ]);
+            
+            // Enviar la respuesta con más detalles
             return response()->json([
-                'message' => "Ocurrió un error, intenta de nuevo más tarde."
+                'message' => "Ocurrió un error, intenta de nuevo más tarde.",
+                'error_details' => [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]
             ], 500);
         }
     }
+
 
 
     public function getTickets()

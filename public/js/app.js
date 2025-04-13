@@ -23286,7 +23286,8 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               });
             case 14:
               response = _context.sent;
-              console.log(response.data);
+              console.log(response.data); // Muestra la respuesta del servidor
+
               _this.messages.pop(); // Quitar mensaje de carga
 
               if (response.data.content) {
@@ -23305,29 +23306,46 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
                   type: "text"
                 });
               }
-              _context.next = 24;
+              _context.next = 26;
               break;
             case 20:
               _context.prev = 20;
               _context.t0 = _context["catch"](11);
-              _this.messages.pop();
+              _this.messages.pop(); // Quitar mensaje de carga
+
+              // Mostrar detalle completo del error en consola
+              console.error('Error en la solicitud:', _context.t0); // Muestra el error completo
+
+              // Si el error tiene respuesta, mostramos la información de la respuesta
+              if (_context.t0.response) {
+                // Si la respuesta tiene error HTTP, mostramos el código de estado y el cuerpo de la respuesta
+                console.error('Detalles del error HTTP:', _context.t0.response.status, _context.t0.response.data);
+              } else if (_context.t0.request) {
+                // Si no hay respuesta pero se hizo la solicitud, mostramos los detalles de la solicitud
+                console.error('Solicitud realizada sin respuesta:', _context.t0.request);
+              } else {
+                // Si el error no es relacionado con la solicitud, muestra el mensaje del error
+                console.error('Error general:', _context.t0.message);
+              }
+
+              // Mostrar mensaje de error al usuario
               _this.messages.push({
                 text: "Error al obtener respuesta del servidor.",
                 user: false,
                 type: "text"
               });
-            case 24:
-              _context.prev = 24;
+            case 26:
+              _context.prev = 26;
               _this.loading = false;
               _this.$nextTick(function () {
                 return _this.scrollToBottom();
               });
-              return _context.finish(24);
-            case 28:
+              return _context.finish(26);
+            case 30:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[11, 20, 24, 28]]);
+        }, _callee, null, [[11, 20, 26, 30]]);
       }))();
     },
     scrollToBottom: function scrollToBottom() {
