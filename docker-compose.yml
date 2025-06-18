@@ -9,11 +9,13 @@ services:
     restart: always
     ports:
       - "8000:8000"
+    # NO montamos el proyecto entero
     volumes:
-      - .:/app
+      - ./storage:/app/storage
+      - ./bootstrap/cache:/app/bootstrap/cache
     environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
+      - APP_ENV=production
+      - APP_DEBUG=false
       - APP_KEY=base64:SomeGeneratedAppKeyHere
     networks:
       - laravel_net
