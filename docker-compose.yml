@@ -1,25 +1,35 @@
-version: '3.8'
-
 services:
-  laravel:
+  # MÓDULO 1: INTRANET
+  app:
+    platform: linux/amd64
     build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: laravel_octane_app
-    restart: always
+      context: PC21-LARAVEL10
+    image: intranetln1_blade_app
+    container_name: intranetln1_blade
     ports:
-      - "8000:8000"
-    # NO montamos el proyecto entero
-    volumes:
-      - ./storage:/app/storage
-      - ./bootstrap/cache:/app/bootstrap/cache
-    environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
-      - APP_KEY=base64:ivu7ML5cJ9zNzI2Z3yl9gD7SYtynDHZMFKtNds0/o6k=
+      - "9000:9000"
     networks:
-      - laravel_net
+      - appnet
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - PC21-LARAVEL10/public:/var/www/public
+
+  # NGINX reverso
+  nginx:
+    image: nginx:latest
+    container_name: nginx-laravel
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+    volumes:
+      - PC21-LARAVEL10/public:/var/www/public:ro
+      - PC21-LARAVEL10/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - appnet
+    restart: always
 
 networks:
-  laravel_net:
-    driver: bridge
+  appnet:

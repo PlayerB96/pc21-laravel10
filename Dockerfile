@@ -1,49 +1,81 @@
+# Usa imagen oficial de PHP con FPM (FastCGI Process Manager)
 FROM php:8.2-fpm
 
-WORKDIR /app
-
-# 🔹 Instalar dependencias del sistema
+# Instala extensiones y dependencias necesarias
 RUN apt-get update && apt-get install -y \
     git \
-    unzip \
     curl \
+    gnupg2 \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
+    unzip \
     libzip-dev \
-    libsqlite3-dev \
-    sqlite3 \
-    gnupg \
-    nodejs \
-    npm \
-    pkg-config \
+    libcurl4-openssl-dev \
     libssl-dev \
-    && docker-php-ext-install pdo pdo_mysql pdo_sqlite zip pcntl \
-    && pecl install swoole \
-    && docker-php-ext-enable swoole \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    pkg-config \
+    libicu-dev \
+    libpq-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libftp-dev \
+    unixodbc-dev \
+    && pecl install mongodb-1.21.0 \
+    && docker-php-ext-enable mongodb \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip intl sockets ftp \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug
 
-# 🔹 Instala Composer manualmente
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
+# Instala drivers de Microsoft SQL Server, eliminando paquetes en conflicto
+RUN curl -sSL https://packages.microsoft.com/keys/microsoft.asc \
+      | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg && \
+    curl -sSL https://packages.microsoft.com/config/debian/11/prod.list \
+      > /etc/apt/sources.list.d/mssql-release.list && \
+    apt-get update && \
+    # Elimina paquetes con conflicto
+    apt-get remove -y libodbc2 odbcinst unixodbc-common unixodbc && \
+    ACCEPT_EULA=Y apt-get install -y msodbcsql17 unixodbc-dev && \
+    pecl install sqlsrv pdo_sqlsrv && \
+    docker-php-ext-enable sqlsrv pdo_sqlsrv
+
+
+
+# Configura el directorio de trabajo
+WORKDIR /var/www
+
+# Copia todo el proyecto antes de instalar dependencias
 COPY . .
 
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-RUN composer require laravel/octane
+# Copia composer desde una imagen oficial
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN npm install
-RUN npm run build
+# Limpia lock y cache, instala dependencias desde cero (incluyendo tu fork)
+RUN rm -f composer.lock \
+    && composer clear-cache \
+    && composer install --no-interaction --prefer-dist --optimize-autoloader
 
-COPY .env .env
 
-RUN touch /app/database/database.sqlite \
-    && mkdir -p /app/storage/logs /app/bootstrap/cache \
-    && chown -R www-data:www-data /app \
-    && chmod -R 775 /app/storage /app/bootstrap/cache /app/database/database.sqlite
+# Instala nodejs y npm para Vite
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@9
 
-RUN php artisan octane:install --server=swoole
+# Instala dependencias npm y compila assets
+RUN npm install && npm run build
 
-EXPOSE 8000
+# Da permisos correctos a storage y bootstrap/cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-CMD php artisan octane:start --server=swoole --host=0.0.0.0 --port=8000
+# Crear carpeta temporal para mPDF y darle permisos
+RUN mkdir -p /var/www/storage/mpdf-temp \
+    && chown -R www-data:www-data /var/www/storage/mpdf-temp \
+    && chmod -R 775 /var/www/storage/mpdf-temp
+
+
+# Expone el puerto 9000 para PHP-FPM
+EXPOSE 9000
+
+# Comando para arrancar PHP-FPM
+CMD php artisan optimize && php-fpm
