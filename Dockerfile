@@ -1,38 +1,45 @@
-FROM elrincondeisma/php-for-laravel:8.3.7
+FROM php:8.2-fpm
 
-# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia todos los archivos del proyecto
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    libzip-dev \
+    libsqlite3-dev \
+    sqlite3 \
+    gnupg \
+    nodejs \
+    npm \
+    && docker-php-ext-install pdo pdo_mysql pdo_sqlite zip pcntl \
+    && pecl install swoole \
+    && docker-php-ext-enable swoole
+
+# 🔹 Instala Composer manualmente
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+
 COPY . .
 
-# Instala dependencias de PHP
-RUN composer install
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 RUN composer require laravel/octane
 
-# Instala dependencias de Node.js y compila assets
 RUN npm install
-RUN npm run build  # Usa `npm run dev` si estás en desarrollo
+RUN npm run build
 
-# Copia archivo .env
 COPY .env .env
 
-# Asegura que exista la base de datos SQLite (si no existe, la crea vacía)
-RUN touch /app/database/database.sqlite
-
-# Asegura que los directorios necesarios existen
-RUN mkdir -p /app/storage/logs \
-    && mkdir -p /app/bootstrap/cache
-
-# Da permisos necesarios a Laravel
-RUN chown -R www-data:www-data /app \
+RUN touch /app/database/database.sqlite \
+    && mkdir -p /app/storage/logs /app/bootstrap/cache \
+    && chown -R www-data:www-data /app \
     && chmod -R 775 /app/storage /app/bootstrap/cache /app/database/database.sqlite
 
-# Instala Octane con Swoole
-RUN php artisan octane:install --server="swoole"
+RUN php artisan octane:install --server=swoole
 
-# Expone el puerto donde correrá Laravel Octane
 EXPOSE 8000
 
-# Comando de arranque
-CMD php artisan octane:start --server="swoole" --host="0.0.0.0"
+CMD php artisan octane:start --server=swoole --host=0.0.0.0 --port=8000
