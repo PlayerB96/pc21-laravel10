@@ -16,14 +16,20 @@
         <!-- Menú principal en desktop -->
         <ul class="navbar-menu d-none d-md-flex ">
             <li v-for="(item, index) in filteredNavItems" :key="index" class="navbar-item">
-                <a v-if="isInternalSection(item.label)" class="navbar-link"
-                    :class="{ 'active-link': activeSection === getSectionId(item.label) }"
-                    @click="scrollToSection(getSectionId(item.label))">
-                    {{ item.label }}
-                </a>
-                <router-link v-else :to="item.route" class="navbar-link" active-class="active-link">
-                    {{ item.label }}
-                </router-link>
+                <template v-if="item.route">
+                    <a v-if="isInternalSection(item.label)" class="navbar-link"
+                        :class="{ 'active-link': activeSection === getSectionId(item.label) }"
+                        @click="scrollToSection(getSectionId(item.label))">
+                        {{ item.label }}
+                    </a>
+                    <router-link v-else :to="item.route" class="navbar-link" active-class="active-link">
+                        {{ item.label }}
+                    </router-link>
+                </template>
+                <template v-else>
+                    <span class="navbar-link disabled">{{ item.label }}</span>
+                </template>
+
 
                 <ul v-if="item.subitems.length > 0 && !isInternalSection(item.label)" class="sub-menu">
                     <li v-for="(subitem, subIndex) in item.subitems" :key="subIndex">
@@ -139,10 +145,11 @@ export default {
                 label: 'Producción', route: '/produccion',
                 subitems: [{ label: 'Fichas Técnicas', route: '/produccion/fichas_produccion' }]
             },
-            { label: 'Servicios', route: 'servicios', subitems: [] },
-            { label: 'Productos', route: 'productos', subitems: [] },
-            { label: 'Garantia', route: 'garantia', subitems: [] }
+            { label: 'Servicios', route: '/servicios', subitems: [] },
+            { label: 'Productos', route: null, subitems: [] },   // ⬅️ ya no redirige
+            { label: 'Garantia', route: null, subitems: [] }    // ⬅️ ya no redirige
         ];
+
 
         // Cargar usuario desde localStorage
         const updateUserSession = () => {
@@ -191,17 +198,16 @@ export default {
 
 
         // Métodos de navegación
-        const isInternalSection = label => ['Inicio', 'Vision', 'Servicios', 'Empresas', 'Productos', 'Garantia'].includes(label);
+        const isInternalSection = label => ['Inicio', 'Empresas'].includes(label);
 
         const getSectionId = label => {
             const sectionMap = {
                 'Inicio': 'inicio',
-                'Vision': 'vision',
-                'Servicios': 'servicios',
                 'Empresas': 'empresas',
                 'Productos': 'productos',
                 'Garantia': 'garantia'
             };
+
             return sectionMap[label] || '';
         };
 

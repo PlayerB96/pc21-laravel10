@@ -13,6 +13,8 @@ import FichasProduccionPage from "./views/page_auth/fichas_produccion/FichasProd
 import HomePage from "./views/page_auth/HomePage.vue";
 import VideoInduccion from "./views/page_auth/induccion/VideoInduccion.vue";
 import FormularioInducion from "./views/page_auth/induccion/FormularioInducion.vue";
+import VisionPage from "./views/page_public/VisionPage.vue";
+import ServiciosPage from "./views/page_public/ServiciosPage.vue";
 
 const routes = [
     { path: "/", component: InicioPage },
@@ -26,7 +28,8 @@ const routes = [
             { path: "formulario_induccion", component: FormularioInducion },
         ],
     },
-    { path: "/vision", component: EcommercePage },
+    { path: "/vision", component: VisionPage },
+    { path: "/servicios", component: ServiciosPage },
     {
         path: "/produccion",
         component: ProduccionPage,
