@@ -24,7 +24,7 @@
         </section>
 
         <!-- Sección de Productos -->
-        <section id="productos" class="section productos">
+        <!-- <section id="productos" class="section productos">
             <div class="container-fluid text-center">
                 <h2 class="fw-bold mb-4">Nuestros Productos</h2>
                 <div id="productosCarousel" class="carousel slide w-100" data-bs-ride="carousel">
@@ -55,7 +55,7 @@
                     </button>
                 </div>
             </div>
-        </section>
+        </section> -->
         <div class="p-6">
             <h2 class="text-2xl font-bold mb-4">📋 Tickets</h2>
             <div class="overflow-x-auto">
@@ -82,12 +82,12 @@
             </div>
         </div>
         <!-- Sección de Garantía -->
-        <section id="garantia" class="section garantia">
+        <!-- <section id="garantia" class="section garantia">
             <div class="container text-center">
                 <h2 class="fw-bold">Nuestra Garantía</h2>
                 <p>Garantizamos la mejor calidad y servicio para nuestros clientes.</p>
             </div>
-        </section>
+        </section> -->
     </div>
 </template>
 

@@ -89,9 +89,10 @@
                     </li>
                 </ul>
             </div>
-            <button v-if="!userSession" class="btn-primary ms-3" @click="handleLoginClick">
+            <button v-if="!userSession" class="btn btn-danger ms-3" @click="handleLoginClick">
                 Iniciar sesión
             </button>
+
             <login-modal :isVisible="showModal" @update:isVisible="showModal = $event" />
 
 
@@ -260,7 +261,9 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: blue;
+    background-color: #00BFFF;
+    /* DeepSkyBlue */
+
     color: var(--text-color);
     position: fixed;
     top: 0;
