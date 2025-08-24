@@ -56,6 +56,10 @@ RUN rm -f composer.lock \
     && composer clear-cache \
     && composer install --no-interaction --prefer-dist --optimize-autoloader
 
+# Crear base de datos SQLite vacía (si no existe)
+RUN mkdir -p /var/www/database \
+    && touch /var/www/database/database.sqlite \
+    && chown -R www-data:www-data /var/www/database
 
 # Instala nodejs y npm para Vite
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
@@ -78,4 +82,4 @@ RUN mkdir -p /var/www/storage/mpdf-temp \
 EXPOSE 9000
 
 # Comando para arrancar PHP-FPM
-CMD php artisan optimize && php-fpm
+CMD php artisan migrate --force && php artisan optimize && php-fpm

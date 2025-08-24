@@ -14,14 +14,13 @@ class ChatController extends Controller
     public function chat_response(Request $request)
     {
         $query = strtolower($request->input('message'));
-        // $chatbotUrl = 'http://159.223.200.169:6000/chatbot';
         $chatbotUrl = 'http://31.97.11.235:6000/chatbot';
 
         $ip = $request->ip();
         $location = $this->get_location_by_ip($ip);
 
-        Log::info('Latitud:', ['lat' => $location['lat']]);
-        Log::info('Longitud:', ['long' => $location['long']]);
+        // Log::info('Latitud:', ['lat' => $location['lat']]);
+        // Log::info('Longitud:', ['long' => $location['long']]);
 
         try {
             $response = Http::post($chatbotUrl, [
