@@ -33,6 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/productos', function () {
         return view('productos');
     });
+    Route::get('/servicios', function () {
+        return view('servicios');
+    });
     Route::get('/blog', function () {
         return view('blog');
     });

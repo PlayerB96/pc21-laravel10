@@ -38,7 +38,11 @@ export default {
     toggleChatbot() {
       this.isChatbotOpen = !this.isChatbotOpen;
     }
+  },
+  mounted() {
+    console.log('Router:', this.$router);
   }
+
 };
 </script>
 
@@ -51,7 +55,7 @@ export default {
 
 .main-content {
   flex-grow: 1;
-  padding: 0rem;
+  padding: 3rem;
 }
 
 footer {
