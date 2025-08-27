@@ -23456,10 +23456,9 @@ __webpack_require__.r(__webpack_exports__);
     }, {
       label: 'Servicios',
       route: '/servicios'
-    }, {
-      label: 'Garantia',
-      route: '/garantia'
-    }];
+    }
+    //   { label: 'Garantia', route: '/garantia' }
+    ];
     var updateUserSession = function updateUserSession() {
       userSession.value = JSON.parse(localStorage.getItem('userSession')) || null;
     };
@@ -23820,7 +23819,7 @@ __webpack_require__.r(__webpack_exports__);
     var __expose = _ref.expose;
     __expose();
 
-    // Tampoco requiere lógica por ahora
+    // Contenido estático, no requiere lógica
 
     var __returned__ = {};
     Object.defineProperty(__returned__, '__isScriptSetup', {
@@ -23850,7 +23849,7 @@ __webpack_require__.r(__webpack_exports__);
     var __expose = _ref.expose;
     __expose();
 
-    // No requiere lógica por ahora, es estática
+    // Contenido estático, no requiere lógica
 
     var __returned__ = {};
     Object.defineProperty(__returned__, '__isScriptSetup', {
@@ -23958,7 +23957,7 @@ var _hoisted_1 = {
   "class": "footer"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("footer", _hoisted_1, _cache[0] || (_cache[0] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"footer-content\" data-v-abfbddf2><!-- Sección Izquierda: Redes Sociales --><div class=\"footer-section\" data-v-abfbddf2><h3 data-v-abfbddf2>Redes Sociales</h3><div class=\"social-links\" data-v-abfbddf2><a href=\"https://www.facebook.com/PC21GT\" class=\"social-link\" data-v-abfbddf2>Facebook</a><a href=\"#\" class=\"social-link\" data-v-abfbddf2>Twitter</a><a href=\"#\" class=\"social-link\" data-v-abfbddf2>Instagram</a></div></div><!-- Sección Centro: Formas de Pago + QR + Horario --><!-- &lt;div class=&quot;footer-section&quot;&gt;\n                &lt;h3&gt;Formas de Pago&lt;/h3&gt;\n                &lt;img src=&quot;/assets/imgs/YAPE-QR.webp&quot; alt=&quot;QR Plin/Yape&quot; class=&quot;qr-code&quot; /&gt;\n                &lt;p&gt;Escanea el código para pagar con Plin o Yape&lt;/p&gt;\n                &lt;h4&gt;Horario de Atención&lt;/h4&gt;\n                &lt;p&gt;Lunes a Sábado: 9:00 AM - 6:00 PM&lt;/p&gt;\n                &lt;p&gt;Domingo: Cerrado&lt;/p&gt;\n            &lt;/div&gt; --><!-- Sección Derecha: Ubicación --><div class=\"footer-section\" data-v-abfbddf2><h3 data-v-abfbddf2>Ubicación</h3><p data-v-abfbddf2>Huancayo, Perú</p><p data-v-abfbddf2>Dirección: Av. Principal 123</p><p data-v-abfbddf2>Teléfono: +51 986 514 012</p></div></div>", 1)]));
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("footer", _hoisted_1, _cache[0] || (_cache[0] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"footer-content\" data-v-abfbddf2><!-- Sección Izquierda: Redes Sociales --><div class=\"footer-section\" data-v-abfbddf2><h3 data-v-abfbddf2>Redes Sociales</h3><div class=\"social-links\" data-v-abfbddf2><a href=\"https://www.facebook.com/people/Pc21-Laptops/100054459159404/?sk=about_contact_and_basic_info\" class=\"social-link\" data-v-abfbddf2>Facebook</a><a href=\"#\" class=\"social-link\" data-v-abfbddf2>Twitter</a><a href=\"#\" class=\"social-link\" data-v-abfbddf2>Instagram</a></div></div><!-- Sección Centro: Formas de Pago + QR + Horario --><!-- &lt;div class=&quot;footer-section&quot;&gt;\n                &lt;h3&gt;Formas de Pago&lt;/h3&gt;\n                &lt;img src=&quot;/assets/imgs/YAPE-QR.webp&quot; alt=&quot;QR Plin/Yape&quot; class=&quot;qr-code&quot; /&gt;\n                &lt;p&gt;Escanea el código para pagar con Plin o Yape&lt;/p&gt;\n                &lt;h4&gt;Horario de Atención&lt;/h4&gt;\n                &lt;p&gt;Lunes a Sábado: 9:00 AM - 6:00 PM&lt;/p&gt;\n                &lt;p&gt;Domingo: Cerrado&lt;/p&gt;\n            &lt;/div&gt; --><!-- Sección Derecha: Ubicación --><div class=\"footer-section\" data-v-abfbddf2><h3 data-v-abfbddf2>Ubicación</h3><p data-v-abfbddf2>Huancayo, Perú</p><p data-v-abfbddf2>Dirección: Av. Principal 123</p><p data-v-abfbddf2>Teléfono: +51 986 514 012</p></div></div>", 1)]));
 }
 
 /***/ }),
@@ -24437,7 +24436,7 @@ var _hoisted_1 = {
   "class": "container py-5"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, _cache[0] || (_cache[0] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<h1 class=\"text-success mb-4\" data-v-2336fbf2>Nuestros Servicios</h1><ul class=\"list-group\" data-v-2336fbf2><li class=\"list-group-item\" data-v-2336fbf2> ✅ Desarrollo de aplicaciones web personalizadas </li><li class=\"list-group-item\" data-v-2336fbf2> ✅ Integración de sistemas internos y externos </li><li class=\"list-group-item\" data-v-2336fbf2> ✅ Consultoría en transformación digital </li><li class=\"list-group-item\" data-v-2336fbf2> ✅ Soporte técnico y mantenimiento </li></ul>", 2)]));
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, _cache[0] || (_cache[0] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<h1 class=\"text-success mb-4\" data-v-2336fbf2>Servicios</h1><ul class=\"list-group list-group-flush\" data-v-2336fbf2><li class=\"list-group-item\" data-v-2336fbf2> ✅ Venta de laptops, computadoras, tablets, televisores, partes y accesorios </li><li class=\"list-group-item\" data-v-2336fbf2> ✅ Servicio técnico en hardware y software </li><li class=\"list-group-item\" data-v-2336fbf2> ✅ Diseño gráfico, web y multimedia </li><li class=\"list-group-item\" data-v-2336fbf2> ✅ Asesoría en proyectos de tecnología </li></ul>", 2)]));
 }
 
 /***/ }),
@@ -24455,8 +24454,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
+var _hoisted_1 = {
+  "class": "p-5"
+};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Sección de Visión "), _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"p-4\" data-v-fd86b4a8><!-- padding agregado --><div class=\"container text-center\" data-v-fd86b4a8><div class=\"row justify-content-center\" data-v-fd86b4a8><div class=\"col-lg-8\" data-v-fd86b4a8><h2 class=\"display-4 fw-bold text-primary mb-4\" data-v-fd86b4a8>Nuestra Visión</h2><p class=\"lead\" data-v-fd86b4a8>Nos esforzamos por ser líderes en innovación y servicio al cliente, transformando ideas en soluciones que marcan la diferencia.</p><div class=\"mt-4\" data-v-fd86b4a8><span class=\"badge bg-primary fs-6 me-2\" data-v-fd86b4a8>Innovación</span><span class=\"badge bg-secondary fs-6 me-2\" data-v-fd86b4a8>Calidad</span><span class=\"badge bg-success fs-6\" data-v-fd86b4a8>Excelencia</span></div></div></div></div></div>", 1))], 2112 /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */);
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" padding vertical más amplio "), _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"container text-center\" data-v-fd86b4a8><div class=\"row justify-content-center\" data-v-fd86b4a8><div class=\"col-lg-8\" data-v-fd86b4a8><!-- Visión --><h2 class=\"display-4 fw-bold text-primary mb-3\" data-v-fd86b4a8>Visión</h2><p class=\"lead mb-4\" data-v-fd86b4a8> Brindar la mejor calidad de atención al cliente en tecnología para usted y su empresa </p><!-- Misión --><h2 class=\"display-4 fw-bold text-success mb-3\" data-v-fd86b4a8>Misión</h2><p class=\"lead mb-4\" data-v-fd86b4a8> Solucionar sus necesidades tecnológicas con los productos y servicios ofrecidos </p><!-- Meta --><h2 class=\"display-4 fw-bold text-warning mb-3\" data-v-fd86b4a8>Meta</h2><p class=\"lead mb-4\" data-v-fd86b4a8> Colaborar eficaz y eficientemente en la realización de sus proyectos personales y empresariales </p><!-- Badges opcionales --><div class=\"mt-4\" data-v-fd86b4a8><span class=\"badge bg-primary fs-6 me-2\" data-v-fd86b4a8>Innovación</span><span class=\"badge bg-secondary fs-6 me-2\" data-v-fd86b4a8>Calidad</span><span class=\"badge bg-success fs-6\" data-v-fd86b4a8>Excelencia</span></div></div></div></div>", 1))]);
 }
 
 /***/ }),
@@ -31268,7 +31270,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-2336fbf2] {\n  max-width: 800px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.container[data-v-2336fbf2] {\n  max-width: 800px;\n}\n.list-group-item[data-v-2336fbf2] {\n  font-size: 1.1rem;\n  padding: 1rem;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

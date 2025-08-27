@@ -1,29 +1,33 @@
 <template>
   <div class="container py-5">
-    <h1 class="text-success mb-4">Nuestros Servicios</h1>
-    <ul class="list-group">
+    <h1 class="text-success mb-4">Servicios</h1>
+    <ul class="list-group list-group-flush">
       <li class="list-group-item">
-        ✅ Desarrollo de aplicaciones web personalizadas
+        ✅ Venta de laptops, computadoras, tablets, televisores, partes y accesorios
       </li>
       <li class="list-group-item">
-        ✅ Integración de sistemas internos y externos
+        ✅ Servicio técnico en hardware y software
       </li>
       <li class="list-group-item">
-        ✅ Consultoría en transformación digital
+        ✅ Diseño gráfico, web y multimedia
       </li>
       <li class="list-group-item">
-        ✅ Soporte técnico y mantenimiento
+        ✅ Asesoría en proyectos de tecnología
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-// Tampoco requiere lógica por ahora
+// Contenido estático, no requiere lógica
 </script>
 
 <style scoped>
 .container {
   max-width: 800px;
+}
+.list-group-item {
+  font-size: 1.1rem;
+  padding: 1rem;
 }
 </style>

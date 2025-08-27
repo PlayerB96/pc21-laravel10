@@ -104,7 +104,7 @@ export default {
       { label: 'Inicio', route: '/inicio' },
       { label: 'Vision', route: '/vision' },
       { label: 'Servicios', route: '/servicios' },
-      { label: 'Garantia', route: '/garantia' }
+    //   { label: 'Garantia', route: '/garantia' }
     ];
 
     const updateUserSession = () => {

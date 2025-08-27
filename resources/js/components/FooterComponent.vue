@@ -5,7 +5,7 @@
             <div class="footer-section">
                 <h3>Redes Sociales</h3>
                 <div class="social-links">
-                    <a href="https://www.facebook.com/PC21GT" class="social-link">Facebook</a>
+                    <a href="https://www.facebook.com/people/Pc21-Laptops/100054459159404/?sk=about_contact_and_basic_info" class="social-link">Facebook</a>
                     <a href="#" class="social-link">Twitter</a>
                     <a href="#" class="social-link">Instagram</a>
                 </div>
