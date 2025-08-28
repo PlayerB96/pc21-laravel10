@@ -6,7 +6,7 @@
             <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"></div>
             
             <!-- Imagen de fondo -->
-            <img src="/assets/imgs/pexels-cookiecutter-1148820.jpg" 
+            <img src="/assets/imgs/st1_index.jpg" 
                  alt="PC 21 Logo" 
                  class="position-absolute top-0 start-0 w-100 h-50 object-fit-cover" 
                  style="z-index: -1;" />
@@ -82,54 +82,6 @@
             </div>
         </section>
 
-        <!-- Sección comentada de Productos (Carousel Bootstrap) -->
-        <!-- <section id="productos" class="py-5 bg-light">
-            <div class="container-fluid text-center">
-                <h2 class="display-4 fw-bold text-primary mb-5">Nuestros Productos</h2>
-                <div id="productosCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item text-center" v-for="(producto, index) in productos" :key="index"
-                            :class="{ 'active': index === 0 }">
-                            <div class="d-flex justify-content-center">
-                                <div class="card shadow" style="width: 20rem;">
-                                    <img :src="producto.imagen" class="card-img-top" :alt="producto.nombre" style="height: 200px; object-fit: cover;">
-                                    <div class="card-body">
-                                        <h5 class="card-title fw-bold">{{ producto.nombre }}</h5>
-                                        <p class="card-text text-primary fs-5 fw-bold">${{ producto.precio }}</p>
-                                        <a href="#" class="btn btn-primary">
-                                            <i class="bi bi-cart-plus me-2"></i>Comprar
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#productosCarousel"
-                        data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#productosCarousel"
-                        data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-            </div>
-        </section> -->
-
-        <!-- Sección comentada de Garantía -->
-        <!-- <section id="garantia" class="py-5 bg-secondary bg-opacity-25">
-            <div class="container text-center">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <h2 class="display-4 fw-bold text-primary mb-4">Nuestra Garantía</h2>
-                        <p class="lead">Garantizamos la mejor calidad y servicio para nuestros clientes, 
-                           respaldando cada proyecto con nuestro compromiso de excelencia.</p>
-                    </div>
-                </div>
-            </div>
-        </section> -->
     </div>
 </template>
  
