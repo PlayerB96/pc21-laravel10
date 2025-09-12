@@ -673,9 +673,12 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
+<<<<<<< HEAD
 .bg-opacity-25{
   --tw-bg-opacity: 0.25;
 }
+=======
+>>>>>>> 99fb3ba297b6fa3ea31d925eb93867186fbcaef7
 .bg-opacity-50{
   --tw-bg-opacity: 0.5;
 }

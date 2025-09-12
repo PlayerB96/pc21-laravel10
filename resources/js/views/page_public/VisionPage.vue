@@ -1,8 +1,12 @@
 <template>
-  <div class="p-5"> <!-- padding vertical más amplio -->
+  <div class="p-5">
     <div class="container text-center">
+
       <div class="row justify-content-center">
         <div class="col-lg-8">
+
+          <!-- Imagen -->
+          <img src="/assets/imgs/st3_vision.jpg" alt="Servicios" class="img-fluid rounded mb-4" />
 
           <!-- Visión -->
           <h2 class="display-4 fw-bold text-primary mb-3">Visión</h2>
@@ -31,6 +35,7 @@
 
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -38,9 +43,3 @@
 <script setup>
 // Contenido estático, no requiere lógica
 </script>
-
-<style scoped>
-.container {
-  max-width: 800px;
-}
-</style>
