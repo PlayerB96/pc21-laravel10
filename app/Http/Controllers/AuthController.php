@@ -41,9 +41,9 @@ class AuthController extends Controller
     
         // Construir objeto de sesión
         $sessionData = [
-            'usuario_codigo' => $user->id,
+            'id' => $user->id,
             'nombre_completo' => $user->nombre_completo,
-            'correo' => $user->email,
+            'email' => $user->email,
             'telefono' => $user->telefono,
             'username' => $user->username,
         ];

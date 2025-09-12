@@ -13,7 +13,7 @@ class CheckSession
     public function handle(Request $request, Closure $next): Response
     {
         // Verificar si la sesión está iniciada
-        if (!Session::has('usuario_codigo')) {
+        if (!Session::has('id')) {
             return redirect()->route('inicio')->with('error', 'Debes iniciar sesión para acceder a esta página.');
         }
 
