@@ -2,7 +2,8 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-info shadow-sm position-fixed w-100 top-0" style="z-index: 1100;">
     <div class="container-fluid px-4">
       <!-- Botón para abrir Sidebar en móvil -->
-      <button v-if="userSession" class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+      <button v-if="userSession" class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
+        data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -12,8 +13,8 @@
       </router-link>
 
       <!-- Botón menú móvil -->
-      <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
-              data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+      <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"
+        aria-controls="mobileSidebar">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -21,12 +22,8 @@
       <div class="collapse navbar-collapse justify-content-center">
         <ul class="navbar-nav me-auto">
           <li v-for="(item, index) in filteredNavItems" :key="index" class="nav-item">
-            <router-link 
-              :to="item.route" 
-              class="nav-link fw-bold px-3" 
-              exact-active-class="active"
-              @click.prevent="$router.push(item.route)"
-            >
+            <router-link :to="item.route" class="nav-link fw-bold px-3" exact-active-class="active"
+              @click.prevent="$router.push(item.route)">
               {{ item.label }}
             </router-link>
           </li>
@@ -36,19 +33,16 @@
       <!-- Sidebar Mobile -->
       <div class="offcanvas offcanvas-start bg-info text-white" tabindex="-1" id="mobileSidebar" ref="mobileSidebarRef">
         <div class="offcanvas-header border-bottom border-light">
-          <h5 class="offcanvas-title" >Menú</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          <h5 class="offcanvas-title">Menú</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
           <ul class="navbar-nav">
             <li v-for="(item, index) in filteredNavItems" :key="index" class="nav-item">
-              <router-link 
-                :to="item.route" 
-                class="nav-link py-2 px-3 text-white" 
-                exact-active-class="active bg-primary rounded"
-                @click.prevent="$router.push(item.route)"
-                data-bs-dismiss="offcanvas"
-              >
+              <router-link :to="item.route" class="nav-link py-2 px-3 text-white"
+                exact-active-class="active bg-primary rounded" @click.prevent="$router.push(item.route)"
+                data-bs-dismiss="offcanvas">
                 {{ item.label }}
               </router-link>
             </li>
@@ -59,15 +53,30 @@
       <!-- Sección derecha: Usuario o Login -->
       <div class="d-flex align-items-center">
         <div v-if="userSession" class="dropdown">
-          <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+          <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button"
+            id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" class="me-1">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           </a>
           <ul class="dropdown-menu dropdown-menu-end bg-dark">
-            <li><h6 class="dropdown-header text-info text-center">{{ userSession.nombre_completo }}</h6></li>
-            <li><hr class="dropdown-divider border-secondary"></li>
+
+            <!-- Nombre completo -->
+            <li>
+              <h6 class="dropdown-header text-info text-center">{{ userSession.nombre_completo }}</h6>
+            </li>
+            <li>
+              <hr class="dropdown-divider border-secondary">
+            </li>
+            <!-- Nuevo enlace: Mi Perfil -->
+            <li>
+              <a href="#" class="dropdown-item d-flex align-items-center text-white" @click.prevent="goToProfile">
+                <span>Mi Perfil</span>
+              </a>
+            </li>
+            <!-- Salir -->
             <li>
               <a href="#" class="dropdown-item d-flex align-items-center text-white" @click="handleLogout">
                 <img :src="assetsUrl + 'icons/quit.svg'" alt="Salir" class="me-2" width="20">
@@ -76,6 +85,7 @@
             </li>
           </ul>
         </div>
+
 
         <button v-if="!userSession" class="btn btn-danger" @click="handleLoginClick">
           Iniciar sesión
@@ -104,7 +114,7 @@ export default {
       { label: 'Inicio', route: '/inicio' },
       { label: 'Vision', route: '/vision' },
       { label: 'Servicios', route: '/servicios' },
-    //   { label: 'Garantia', route: '/garantia' }
+      //   { label: 'Garantia', route: '/garantia' }
     ];
 
     const updateUserSession = () => {
@@ -128,12 +138,16 @@ export default {
       userSession.value = null;
       router.push('/inicio');
     };
+    const goToProfile = () => {
+      router.push('/perfil'); // Redirige a la ruta del componente perfil
+    };
 
     return {
       userSession,
       filteredNavItems,
       handleLogout,
       handleLoginClick,
+      goToProfile,
       showModal,
       assetsUrl
     };

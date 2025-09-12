@@ -79,7 +79,13 @@ export default {
             this.$nextTick(() => this.scrollToBottom());
 
             try {
-                const response = await axios.post('/chat_response', { message: messageToSend });
+                // 👇 obtenemos el nombre del usuario desde localStorage
+                const userSession = JSON.parse(localStorage.getItem("userSession")) || {};
+                const nombreCompleto = userSession.nombre_completo || "Usuario no Registrado";
+
+                const response = await axios.post('/chat_response', {
+                    message: messageToSend, nombre_completo: nombreCompleto
+                });
                 console.log(response.data); // Muestra la respuesta del servidor
 
                 this.messages.pop(); // Quitar mensaje de carga

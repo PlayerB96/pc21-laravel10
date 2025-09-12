@@ -46,6 +46,9 @@ Route::middleware(['api', StartSession::class])->group(function () {
     // CHATBOT
     Route::post('/chat_response',  [ChatController::class, 'chat_response']);
     Route::get('/tickets',  [ChatController::class, 'getTickets']);
+    Route::get('/tickets/user', [ChatController::class, 'getTicketsByUser']);
+
+    Route::put('/users/{id}', [ChatController::class, 'update']);
 
 
 });

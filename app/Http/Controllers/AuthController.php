@@ -44,6 +44,7 @@ class AuthController extends Controller
             'usuario_codigo' => $user->id,
             'nombre_completo' => $user->nombre_completo,
             'correo' => $user->email,
+            'telefono' => $user->telefono,
             'username' => $user->username,
         ];
     

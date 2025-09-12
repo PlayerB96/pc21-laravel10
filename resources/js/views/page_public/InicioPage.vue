@@ -21,7 +21,7 @@
 
        
         <!-- Sección de Tickets (Tabla mejorada con Bootstrap) -->
-        <section class="py-5 bg-white">
+        <!-- <section class="py-5 bg-white">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12">
@@ -80,7 +80,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
 
         <!-- Sección comentada de Productos (Carousel Bootstrap) -->
         <!-- <section id="productos" class="py-5 bg-light">
