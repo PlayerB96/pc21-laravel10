@@ -95,3 +95,5 @@ extraClass="full-modal"
     <p>Este modal ocupa todo el ancho disponible.</p>
 </x-modal>
 ```
+
+## CAMBIAR default.conf por localdefault.conf en local
