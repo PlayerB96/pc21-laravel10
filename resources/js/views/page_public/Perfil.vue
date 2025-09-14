@@ -29,37 +29,32 @@
       <!-- Tabla de Tickets -->
       <div class="card shadow">
         <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-hover table-striped mb-0">
-              <thead class="table-primary">
+          <div class="flex justify-end p-2">
+            <button @click="exportExcel" class="btn btn-success">Exportar a Excel</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="table-auto w-full border-collapse border border-gray-300">
+              <thead class="bg-blue-200">
                 <tr>
-                  <th>ID</th>
-                  <th>Nombre Completo</th>
-                  <th>Teléfono</th>
-                  <th>Fecha de Registro</th>
-                  <!-- <th>Estado</th> -->
+                  <th class="border px-4 py-2">ID</th>
+                  <th class="border px-4 py-2">Nombre Completo</th>
+                  <th class="border px-4 py-2">Teléfono</th>
+                  <th class="border px-4 py-2">Fecha de Registro</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="ticket in tickets" :key="ticket.id">
-                  <td>{{ ticket.id }}</td>
-                  <td>{{ ticket.nombre_solicitante }}</td>
-                  <td><a :href="'tel:' + ticket.telefono">{{ ticket.telefono }}</a></td>
-                  <td>{{ ticket.fecha_registro }}</td>
-                  <!-- <td>
-                    <span class="badge" :class="{
-                      'bg-success': ticket.estado === 'Completado',
-                      'bg-warning': ticket.estado === 'En Proceso',
-                      'bg-danger': ticket.estado === 'Pendiente',
-                      'bg-secondary': ticket.estado === 'Cancelado'
-                    }">
-                      {{ ticket.estado }}
-                    </span>
-                  </td> -->
+                <tr v-for="ticket in tickets" :key="ticket.id" class="hover:bg-gray-100">
+                  <td class="border px-4 py-2">{{ ticket.id }}</td>
+                  <td class="border px-4 py-2">{{ ticket.nombre_solicitante }}</td>
+                  <td class="border px-4 py-2">
+                    <a :href="'tel:' + ticket.telefono" class="text-blue-600 hover:underline">
+                      {{ ticket.telefono }}
+                    </a>
+                  </td>
+                  <td class="border px-4 py-2">{{ ticket.fecha_registro }}</td>
                 </tr>
                 <tr v-if="tickets.length === 0">
-                  <td colspan="5" class="text-center py-5 text-muted">
-                    <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                  <td colspan="4" class="text-center py-5 text-gray-500">
                     No hay tickets disponibles
                   </td>
                 </tr>
@@ -75,18 +70,18 @@
 <script>
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 export default {
   setup() {
     const user = ref(JSON.parse(localStorage.getItem('userSession')) || {});
     const tickets = ref([]);
     const loading = ref(false);
-    console.log(user.value);
+
     const fetchTickets = async () => {
       try {
-        // console.log(user.value.id);
         const response = await axios.get(`/tickets?telefono=${user.value.telefono}`);
-        console.log(response.data);
         tickets.value = response.data || [];
       } catch (error) {
         console.error('Error fetching tickets:', error);
@@ -101,7 +96,6 @@ export default {
           email: user.value.email,
           telefono: user.value.telefono,
         });
-
         localStorage.setItem('userSession', JSON.stringify(response.data));
         alert('Perfil actualizado correctamente');
       } catch (error) {
@@ -112,12 +106,23 @@ export default {
       }
     };
 
+    const exportExcel = () => {
+      if (tickets.value.length === 0) {
+        alert('No hay datos para exportar');
+        return;
+      }
+      const ws = XLSX.utils.json_to_sheet(tickets.value);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Tickets');
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'tickets.xlsx');
+    };
 
     onMounted(() => {
       fetchTickets();
     });
 
-    return { user, tickets, updateProfile, loading };
-  }
+    return { user, tickets, loading, updateProfile, exportExcel };
+  },
 };
 </script>
