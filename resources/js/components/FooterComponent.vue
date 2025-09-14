@@ -5,11 +5,10 @@
             <div class="footer-section">
                 <h3>Contacto</h3>
                 <div class="social-links">
-                    <a href="https://www.facebook.com/people/Pc21-Laptops/100054459159404/?sk=about_contact_and_basic_info"
-                        class="social-link">
-                        Facebook
+                    <a href="https://www.instagram.com/pc21laptops/" class="social-link">
+                        +51 986 514 012
                     </a>
-                
+
                     <a href="https://wa.me/51986514012" target="_blank" class="social-link flex">
                         <!-- Icono de WhatsApp con Lucide -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-whatsapp"
@@ -21,6 +20,21 @@
                         </svg>
                         WhatsApp
                     </a>
+
+                    <a href="https://www.facebook.com/people/Pc21-Laptops/100054459159404/?sk=about_contact_and_basic_info"
+                        class="social-link flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-facebook"
+                            width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                            fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path
+                                d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3c-2.761 0 -5 2.239 -5 5v2h-3z" />
+                        </svg>
+                        Facebook
+                    </a>
+
+
+
                 </div>
             </div>
 
@@ -39,9 +53,7 @@
             <div class="footer-section">
                 <h3>Ubicación</h3>
                 <p>1-Lima</p>
-                <p>2-Huancayo, Perú</p>
-                <p>Dirección: Av. Principal 123</p>
-                <p>Teléfono: +51 986 514 012</p>
+                <p>2-Huancayo</p>
             </div>
         </div>
     </footer>
@@ -107,6 +119,24 @@ export default {
         flex-direction: column;
         align-items: center;
         text-align: center;
+    }
+
+    .social-links {
+        flex-direction: column;
+        /* se apilan */
+        align-items: center;
+        /* centran horizontal */
+        justify-content: center;
+        /* centran vertical */
+        text-align: center;
+    }
+
+    .social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* ícono y texto centrados */
+        gap: 0.5rem;
     }
 }
 </style>
