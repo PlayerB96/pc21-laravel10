@@ -75,7 +75,24 @@ import { saveAs } from 'file-saver';
 
 export default {
   setup() {
-    const user = ref(JSON.parse(localStorage.getItem('userSession')) || {});
+    // Función helper para obtener userSession de forma segura
+    const getUserSession = () => {
+      try {
+        const sessionData = localStorage.getItem('userSession');
+        if (!sessionData) return {};
+        try {
+          return JSON.parse(sessionData) || {};
+        } catch (e) {
+          console.warn('Error al parsear userSession:', e);
+          localStorage.removeItem('userSession');
+          return {};
+        }
+      } catch (e) {
+        console.error('Error al leer userSession:', e);
+        return {};
+      }
+    };
+    const user = ref(getUserSession());
     const tickets = ref([]);
     const loading = ref(false);
 

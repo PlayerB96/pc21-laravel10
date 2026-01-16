@@ -15,59 +15,121 @@ class ChatController extends Controller
 {
     public function chat_response(Request $request)
     {
-        $query = strtolower($request->input('message'));
-        $nombreCompleto = $request->input('nombre_completo', 'Usuario no Registrado'); // 👈
-
-        $chatbotUrl = 'http://31.97.11.235:6000/chatbot';
-
-        $ip = $request->ip();
-        $location = $this->get_location_by_ip($ip);
-
+        // Asegurar que siempre devolvemos JSON
         try {
-            $response = Http::post($chatbotUrl, [
-                'message' => $query,
-                'lat' => $location['lat'],
-                'long' => $location['long'],
+            // Log de la petición entrante
+            Log::info('=== Petición recibida en chat_response ===', [
+                'method' => $request->method(),
+                'url' => $request->fullUrl(),
+                'headers' => $request->headers->all(),
+                'telefono' => $request->input('telefono'),
+                'nombre_completo' => $request->input('nombre_completo'),
+                'todos_los_datos' => $request->all(),
+                'content_type' => $request->header('Content-Type'),
+                'accept' => $request->header('Accept')
             ]);
 
-            // Verificar la respuesta del servidor y loguearla completamente
-            if ($response->successful()) {
-                $responseJson = $response->json();  // Obtener la respuesta como array
+            $solicitud = $request->input('solicitud');
+            $nombreCompleto = $request->input('nombre_completo', 'Usuario no Registrado');
 
-                $respuestaChatbot = $responseJson['response'];
-                $status = $responseJson['status'] ?? false;  // Usar null coalescing para evitar errores si no existe
+            // Número de WhatsApp por defecto (configurar aquí)
+            $numeroWhatsAppDefault = '+51986514012'; // Número por defecto para recibir solicitudes
 
-                if ($status === true) {
-                    // Insertar en la tabla tickets
-                    DB::table('tickets')->insert([
-                        'telefono' => $query,
-                        'nombre_solicitante' => $nombreCompleto,
-
-
-                    ]);
-                }
+            // Validar que se envíe la solicitud
+            if (!$solicitud || trim($solicitud) === '') {
                 return response()->json([
-                    'message' => $respuestaChatbot,
-                    'content' => ''
-                ]);
+                    'success' => false,
+                    'message' => 'Por favor, describe tu solicitud o consulta.',
+                    'error' => 'Solicitud requerida'
+                ], 400)->header('Content-Type', 'application/json');
             }
 
+            // Generar número de ticket iterativo
+            try {
+                $ultimoTicket = DB::table('tickets')->whereNotNull('numero_ticket')->orderBy('numero_ticket', 'desc')->first();
+                $numeroTicket = $ultimoTicket && isset($ultimoTicket->numero_ticket) ? $ultimoTicket->numero_ticket + 1 : 1;
+            } catch (\Exception $e) {
+                $ultimoTicket = DB::table('tickets')->orderBy('id', 'desc')->first();
+                $numeroTicket = $ultimoTicket ? $ultimoTicket->id + 1 : 1;
+            }
+
+            // Insertar en la tabla tickets (sin teléfono)
+            $ticketData = [
+                'telefono' => 'N/A',
+                'nombre_solicitante' => $nombreCompleto,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+            
+            try {
+                $ticketData['numero_ticket'] = $numeroTicket;
+                DB::table('tickets')->insert($ticketData);
+            } catch (\Exception $e) {
+                unset($ticketData['numero_ticket']);
+                DB::table('tickets')->insert($ticketData);
+                $ticketInsertado = DB::table('tickets')->where('nombre_solicitante', $nombreCompleto)
+                    ->orderBy('id', 'desc')
+                    ->first();
+                if ($ticketInsertado) {
+                    $numeroTicket = $ticketInsertado->id;
+                }
+            }
+
+            // Construir mensaje para enviar al número de WhatsApp por defecto
+            $mensajeParaWhatsApp = "📋 *Nueva Solicitud Recibida*\n\n";
+            $mensajeParaWhatsApp .= "👤 *Cliente:* {$nombreCompleto}\n";
+            $mensajeParaWhatsApp .= "🎫 *Ticket:* #{$numeroTicket}\n\n";
+            $mensajeParaWhatsApp .= "💬 *Solicitud:*\n{$solicitud}";
+            
+            // Remover el + para la URL de WhatsApp
+            $numeroWhatsAppSinPrefijo = str_replace('+', '', $numeroWhatsAppDefault);
+            
+            // Construir la URL de WhatsApp con el mensaje preformateado
+            $mensajeCodificado = urlencode($mensajeParaWhatsApp);
+            $whatsappUrl = 'https://wa.me/' . $numeroWhatsAppSinPrefijo . '?text=' . $mensajeCodificado;
+
+            Log::info('Solicitud procesada exitosamente', [
+                'numero_ticket' => $numeroTicket,
+                'nombre_completo' => $nombreCompleto,
+                'solicitud' => $solicitud,
+                'whatsapp_url' => $whatsappUrl
+            ]);
+
             return response()->json([
-                'message' => "Error al obtener respuesta del chatbot.",
-                'error_details' => [
-                    'status_code' => $response->status(),
-                    'body' => $response->body()
-                ]
-            ], 500);
+                'success' => true,
+                'message' => "¡Tu solicitud ha sido recibida! Tu número de ticket es #{$numeroTicket}.",
+                'numero_ticket' => $numeroTicket,
+                'whatsapp_url' => $whatsappUrl
+            ], 200)->header('Content-Type', 'application/json');
+            
+        } catch (\Illuminate\Database\QueryException $dbError) {
+            Log::error('Error de base de datos en chat_response', [
+                'error' => $dbError->getMessage(),
+                'code' => $dbError->getCode(),
+                'sql' => $dbError->getSql() ?? 'N/A',
+                'telefono' => $telefono ?? 'N/A'
+            ]);
+
+            return response()->json([
+                'message' => "Ocurrió un error con la base de datos. Por favor, intenta de nuevo más tarde.",
+                'error' => 'Database error',
+                'error_details' => env('APP_DEBUG') ? $dbError->getMessage() : 'Error interno'
+            ], 500)->header('Content-Type', 'application/json');
+            
         } catch (\Exception $e) {
-            // Enviar la respuesta con más detalles
+            Log::error('Error general en chat_response', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'telefono' => $telefono ?? 'N/A'
+            ]);
+
             return response()->json([
                 'message' => "Ocurrió un error, intenta de nuevo más tarde.",
-                'error_details' => [
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]
-            ], 500);
+                'error' => 'Server error',
+                'error_details' => env('APP_DEBUG') ? $e->getMessage() : 'Error interno'
+            ], 500)->header('Content-Type', 'application/json');
         }
     }
 
@@ -105,49 +167,6 @@ class ChatController extends Controller
      * @param string $ip
      * @return array
      */
-    private function get_location_by_ip($ip)
-    {
-        try {
-            // $ip = '190.123.123.123';  // Una IP pública para pruebas
-
-            // Solicitar datos de geolocalización mediante ipinfo.io
-            $response = Http::get('http://ipinfo.io/' . $ip . '/json');
-
-            // Verificar si la respuesta es exitosa
-            if ($response->successful()) {
-                $data = $response->json();
-
-                // Verificar si el campo 'loc' está presente y no está vacío
-                if (isset($data['loc']) && !empty($data['loc'])) {
-                    $loc = $data['loc']; // 'loc' contiene latitud y longitud
-                    $location = explode(",", $loc); // Separar latitud y longitud
-
-                    // Verificar que se obtuvieron correctamente lat y long
-                    if (count($location) == 2) {
-                        return [
-                            'lat' => $location[0] ?? null,
-                            'long' => $location[1] ?? null
-                        ];
-                    }
-                } else {
-                    // Si no se encuentra 'loc' o está vacío
-                    Log::warning("No se encontró la ubicación para la IP: " . $ip);
-                }
-            } else {
-                // Si la solicitud a ipinfo.io no fue exitosa
-                Log::warning("Error al obtener datos de geolocalización para la IP: " . $ip);
-            }
-        } catch (\Exception $e) {
-            // Si ocurre una excepción en la solicitud
-            Log::error("Error al obtener la ubicación para la IP: " . $ip . ". Error: " . $e->getMessage());
-        }
-
-        // Si no se pudo obtener la latitud y longitud, devolver valores nulos
-        return [
-            'lat' => null,
-            'long' => null
-        ];
-    }
 
     public function update(Request $request, $id)
     {

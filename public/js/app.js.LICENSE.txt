@@ -1,30 +1,48 @@
 /*!
+  * Bootstrap v5.3.8 (https://getbootstrap.com/)
+  * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+  */
+
+/*!
+  * vue-router v4.5.1
+  * (c) 2025 Eduardo San Martin Morote
+  * @license MIT
+  */
+
+/*!
  * The buffer module from node.js, for the browser.
  *
  * @author   Feross Aboukhadijeh <http://feross.org>
  * @license  MIT
  */
 
-/*! #__NO_SIDE_EFFECTS__ */
+/*!
+ * Vue-Lazyload.js v3.0.0
+ * (c) 2023 Awe <hilongjw@gmail.com>
+ * Released under the MIT License.
+ */
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 
-/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */
+
+/*! sheetjs (C) 2013-present SheetJS -- http://sheetjs.com */
 
 /**
-* @vue/runtime-core v3.5.13
+* @vue/runtime-core v3.5.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
 
 /**
-* @vue/runtime-dom v3.5.13
+* @vue/runtime-dom v3.5.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
 
 /**
-* @vue/shared v3.5.13
+* @vue/shared v3.5.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/

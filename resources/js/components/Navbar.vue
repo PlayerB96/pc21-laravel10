@@ -118,7 +118,25 @@ export default {
     ];
 
     const updateUserSession = () => {
-      userSession.value = JSON.parse(localStorage.getItem('userSession')) || null;
+      try {
+        const sessionData = localStorage.getItem('userSession');
+        if (!sessionData) {
+          userSession.value = null;
+          return;
+        }
+        // Intentar parsear el JSON, si falla (como con datos cifrados), establecer null
+        try {
+          userSession.value = JSON.parse(sessionData);
+        } catch (e) {
+          console.warn('Error al parsear userSession de localStorage:', e);
+          // Limpiar el valor inválido del localStorage
+          localStorage.removeItem('userSession');
+          userSession.value = null;
+        }
+      } catch (e) {
+        console.error('Error al leer userSession:', e);
+        userSession.value = null;
+      }
     };
 
     onMounted(() => {

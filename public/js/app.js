@@ -28267,6 +28267,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -28278,7 +28282,11 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     return {
       chatOpen: false,
       newMessage: "",
-      messages: [],
+      messages: [{
+        text: "¡Hola! 👋 Bienvenido a nuestro servicio de atención al cliente. Por favor, envía tu solicitud o consulta y te ayudaremos pronto.",
+        user: false,
+        type: "text"
+      }],
       loading: false,
       expanded: false
     };
@@ -28291,9 +28299,20 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       };
     }
   },
-  methods: {
+  methods: _defineProperty(_defineProperty({
     toggleChat: function toggleChat() {
       this.chatOpen = !this.chatOpen;
+      // Resetear el estado cuando se cierra el chat
+      if (!this.chatOpen) {
+        this.resetChatState();
+      }
+    },
+    resetChatState: function resetChatState() {
+      this.messages = [{
+        text: "¡Hola! 👋 Bienvenido a nuestro servicio de atención al cliente. Por favor, envía tu solicitud o consulta y te ayudaremos pronto.",
+        user: false,
+        type: "text"
+      }];
     },
     toggleExpand: function toggleExpand() {
       this.expanded = !this.expanded;
@@ -28301,9 +28320,9 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     sendMessage: function sendMessage() {
       var _this = this;
       return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-        var userMessage, messageToSend, loadingMessage, userSession, nombreCompleto, response, _t;
+        var userMessage, messageText, loadingMessage;
         return _regenerator().w(function (_context) {
-          while (1) switch (_context.p = _context.n) {
+          while (1) switch (_context.n) {
             case 0:
               if (!(_this.newMessage.trim() === "")) {
                 _context.n = 1;
@@ -28320,11 +28339,13 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this.$nextTick(function () {
                 return _this.scrollToBottom();
               });
-              messageToSend = _this.newMessage;
+              messageText = _this.newMessage.trim();
               _this.newMessage = "";
               _this.loading = true;
+
+              // Procesar solicitud directamente
               loadingMessage = {
-                text: "......",
+                text: "Procesando tu solicitud...",
                 user: false,
                 type: "text"
               };
@@ -28332,85 +28353,250 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this.$nextTick(function () {
                 return _this.scrollToBottom();
               });
-              _context.p = 2;
+              _context.n = 2;
+              return _this.enviarSolicitud(messageText);
+            case 2:
+              return _context.a(2);
+          }
+        }, _callee);
+      }))();
+    },
+    enviarSolicitud: function enviarSolicitud(solicitud) {
+      var _this2 = this;
+      return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+        var userSession, sessionData, nombreCompleto, response, errorMessage, _t;
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.p = _context2.n) {
+            case 0:
+              _context2.p = 0;
               // 👇 obtenemos el nombre del usuario desde localStorage
-              userSession = JSON.parse(localStorage.getItem("userSession")) || {};
-              nombreCompleto = userSession.nombre_completo || "Usuario no Registrado";
-              _context.n = 3;
+              userSession = {};
+              try {
+                sessionData = localStorage.getItem("userSession");
+                if (sessionData) {
+                  userSession = JSON.parse(sessionData) || {};
+                }
+              } catch (e) {
+                console.warn('Error al parsear userSession:', e);
+                localStorage.removeItem('userSession');
+              }
+              nombreCompleto = userSession.nombre_completo || "Usuario no Registrado"; // Validar solo el teléfono
+              _context2.n = 1;
               return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/chat_response', {
-                message: messageToSend,
-                nombre_completo: nombreCompleto
+                telefono: telefono,
+                nombre_completo: nombreCompleto,
+                step: 'validar_telefono'
+              }, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                }
               });
-            case 3:
-              response = _context.v;
-              console.log(response.data); // Muestra la respuesta del servidor
+            case 1:
+              response = _context2.v;
+              _this2.messages.pop(); // Quitar mensaje de carga
 
-              _this.messages.pop(); // Quitar mensaje de carga
-
-              if (response.data.content) {
-                // 📌 Si hay PDF, mostrarlo
-                _this.messages.push({
-                  text: response.data.message,
-                  content: response.data.content,
+              if (response.data.success) {
+                // Teléfono válido, guardarlo y pedir la solicitud
+                _this2.telefonoUsuario = telefono;
+                _this2.step = 'solicitud';
+                _this2.messages.push({
+                  text: "\xA1Perfecto! \u2705 Tu n\xFAmero ha sido validado correctamente. Ahora, \xBFen qu\xE9 puedo ayudarte? Por favor, describe tu solicitud o consulta.",
                   user: false,
-                  type: "pdf"
+                  type: "text"
                 });
               } else {
-                // 📌 Si es solo texto, mostrar mensaje normal
-                _this.messages.push({
-                  text: response.data.message,
+                _this2.messages.push({
+                  text: response.data.message || 'Error al validar el número de teléfono.',
                   user: false,
                   type: "text"
                 });
               }
-              _context.n = 5;
+              _context2.n = 3;
               break;
-            case 4:
-              _context.p = 4;
-              _t = _context.v;
-              _this.messages.pop(); // Quitar mensaje de carga
+            case 2:
+              _context2.p = 2;
+              _t = _context2.v;
+              _this2.messages.pop(); // Quitar mensaje de carga
 
               // Mostrar detalle completo del error en consola
-              console.error('Error en la solicitud:', _t); // Muestra el error completo
+              console.error('Error en la solicitud:', _t);
+              console.error('Error completo:', {
+                message: _t.message,
+                response: _t.response,
+                request: _t.request,
+                config: _t.config
+              });
 
-              // Si el error tiene respuesta, mostramos la información de la respuesta
+              // Si el error tiene respuesta, mostramos el mensaje del servidor
               if (_t.response) {
-                // Si la respuesta tiene error HTTP, mostramos el código de estado y el cuerpo de la respuesta
-                console.error('Detalles del error HTTP:', _t.response.status, _t.response.data);
+                // Verificar si la respuesta es JSON válido
+                if (_t.response.data && _typeof(_t.response.data) === 'object') {
+                  errorMessage = _t.response.data.message || _t.response.data.error || "Error al validar el número de teléfono.";
+                  _this2.messages.push({
+                    text: errorMessage,
+                    user: false,
+                    type: "text"
+                  });
+                  console.error('Detalles del error HTTP:', _t.response.status, _t.response.data);
+                } else {
+                  // Si la respuesta no es JSON, mostrar mensaje genérico
+                  console.error('La respuesta no es JSON válido:', _t.response.data);
+                  _this2.messages.push({
+                    text: "Error del servidor (".concat(_t.response.status, "). Por favor, intenta de nuevo."),
+                    user: false,
+                    type: "text"
+                  });
+                }
               } else if (_t.request) {
-                // Si no hay respuesta pero se hizo la solicitud, mostramos los detalles de la solicitud
+                // Si no hay respuesta pero se hizo la solicitud
                 console.error('Solicitud realizada sin respuesta:', _t.request);
+                _this2.messages.push({
+                  text: "Error de conexión. Por favor, intenta de nuevo.",
+                  user: false,
+                  type: "text"
+                });
               } else {
-                // Si el error no es relacionado con la solicitud, muestra el mensaje del error
+                // Error al configurar la solicitud
                 console.error('Error general:', _t.message);
+                if (_t.message && _t.message.includes('JSON')) {
+                  _this2.messages.push({
+                    text: "Error al procesar la respuesta del servidor. Por favor, intenta de nuevo.",
+                    user: false,
+                    type: "text"
+                  });
+                } else {
+                  _this2.messages.push({
+                    text: "Error al obtener respuesta del servidor.",
+                    user: false,
+                    type: "text"
+                  });
+                }
               }
+            case 3:
+              _context2.p = 3;
+              _this2.loading = false;
+              _this2.$nextTick(function () {
+                return _this2.scrollToBottom();
+              });
+              return _context2.f(3);
+            case 4:
+              return _context2.a(2);
+          }
+        }, _callee2, null, [[0, 2, 3, 4]]);
+      }))();
+    }
+  }, "enviarSolicitud", function enviarSolicitud(solicitud) {
+    var _this3 = this;
+    return _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+      var userSession, sessionData, nombreCompleto, response, errorMessage, _t2;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            _context3.p = 0;
+            // 👇 obtenemos el nombre del usuario desde localStorage
+            userSession = {};
+            try {
+              sessionData = localStorage.getItem("userSession");
+              if (sessionData) {
+                userSession = JSON.parse(sessionData) || {};
+              }
+            } catch (e) {
+              console.warn('Error al parsear userSession:', e);
+              localStorage.removeItem('userSession');
+            }
+            nombreCompleto = userSession.nombre_completo || "Usuario no Registrado"; // Enviar solicitud directamente
+            _context3.n = 1;
+            return axios__WEBPACK_IMPORTED_MODULE_0__["default"].post('/chat_response', {
+              solicitud: solicitud,
+              nombre_completo: nombreCompleto
+            }, {
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              }
+            });
+          case 1:
+            response = _context3.v;
+            _this3.messages.pop(); // Quitar mensaje de carga
 
-              // Mostrar mensaje de error al usuario
-              _this.messages.push({
-                text: "Error al obtener respuesta del servidor.",
+            if (response.data.success) {
+              // Solicitud enviada exitosamente - abrir WhatsApp
+              _this3.messages.push({
+                text: response.data.message || '¡Tu solicitud ha sido recibida exitosamente! 🎉 Se abrirá WhatsApp para enviar los detalles.',
                 user: false,
                 type: "text"
               });
-            case 5:
-              _context.p = 5;
-              _this.loading = false;
-              _this.$nextTick(function () {
-                return _this.scrollToBottom();
+
+              // Abrir WhatsApp con el mensaje preformateado
+              if (response.data.whatsapp_url) {
+                setTimeout(function () {
+                  window.open(response.data.whatsapp_url, '_blank');
+                }, 1000);
+              }
+
+              // Resetear para una nueva conversación después de un momento
+              setTimeout(function () {
+                _this3.resetChatState();
+              }, 4000);
+            } else {
+              _this3.messages.push({
+                text: response.data.message || 'Error al enviar tu solicitud.',
+                user: false,
+                type: "text"
               });
-              return _context.f(5);
-            case 6:
-              return _context.a(2);
-          }
-        }, _callee, null, [[2, 4, 5, 6]]);
-      }))();
-    },
-    scrollToBottom: function scrollToBottom() {
-      var chatMessages = this.$refs.chatMessages;
-      if (chatMessages) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
+            }
+            _context3.n = 3;
+            break;
+          case 2:
+            _context3.p = 2;
+            _t2 = _context3.v;
+            _this3.messages.pop(); // Quitar mensaje de carga
+
+            console.error('Error en la solicitud:', _t2);
+            console.error('Error completo:', {
+              message: _t2.message,
+              response: _t2.response,
+              request: _t2.request
+            });
+            if (_t2.response && _t2.response.data && _typeof(_t2.response.data) === 'object') {
+              errorMessage = _t2.response.data.message || _t2.response.data.error || "Error al enviar la solicitud.";
+              _this3.messages.push({
+                text: errorMessage,
+                user: false,
+                type: "text"
+              });
+            } else if (_t2.request) {
+              _this3.messages.push({
+                text: "Error de conexión. Por favor, intenta de nuevo.",
+                user: false,
+                type: "text"
+              });
+            } else {
+              _this3.messages.push({
+                text: "Error al enviar la solicitud.",
+                user: false,
+                type: "text"
+              });
+            }
+          case 3:
+            _context3.p = 3;
+            _this3.loading = false;
+            _this3.$nextTick(function () {
+              return _this3.scrollToBottom();
+            });
+            return _context3.f(3);
+          case 4:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[0, 2, 3, 4]]);
+    }))();
+  }), "scrollToBottom", function scrollToBottom() {
+    var chatMessages = this.$refs.chatMessages;
+    if (chatMessages) {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-  }
+  })
 });
 
 /***/ }),
@@ -28516,7 +28702,25 @@ __webpack_require__.r(__webpack_exports__);
     //   { label: 'Garantia', route: '/garantia' }
     ];
     var updateUserSession = function updateUserSession() {
-      userSession.value = JSON.parse(localStorage.getItem('userSession')) || null;
+      try {
+        var sessionData = localStorage.getItem('userSession');
+        if (!sessionData) {
+          userSession.value = null;
+          return;
+        }
+        // Intentar parsear el JSON, si falla (como con datos cifrados), establecer null
+        try {
+          userSession.value = JSON.parse(sessionData);
+        } catch (e) {
+          console.warn('Error al parsear userSession de localStorage:', e);
+          // Limpiar el valor inválido del localStorage
+          localStorage.removeItem('userSession');
+          userSession.value = null;
+        }
+      } catch (e) {
+        console.error('Error al leer userSession:', e);
+        userSession.value = null;
+      }
     };
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.onMounted)(function () {
       updateUserSession();
@@ -28883,7 +29087,24 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   setup: function setup() {
-    var user = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(JSON.parse(localStorage.getItem('userSession')) || {});
+    // Función helper para obtener userSession de forma segura
+    var getUserSession = function getUserSession() {
+      try {
+        var sessionData = localStorage.getItem('userSession');
+        if (!sessionData) return {};
+        try {
+          return JSON.parse(sessionData) || {};
+        } catch (e) {
+          console.warn('Error al parsear userSession:', e);
+          localStorage.removeItem('userSession');
+          return {};
+        }
+      } catch (e) {
+        console.error('Error al leer userSession:', e);
+        return {};
+      }
+    };
+    var user = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(getUserSession());
     var tickets = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)([]);
     var loading = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(false);
     var fetchTickets = /*#__PURE__*/function () {
@@ -29033,7 +29254,8 @@ var _hoisted_2 = {
   "class": "chat-messages"
 };
 var _hoisted_3 = ["src"];
-var _hoisted_4 = {
+var _hoisted_4 = ["href"];
+var _hoisted_5 = {
   "class": "chat-input"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -29070,17 +29292,25 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       src: msg.content,
       width: "100%",
       height: "300px"
-    }, null, 8 /* PROPS */, _hoisted_3)], 64 /* STABLE_FRAGMENT */)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-      key: 1
+    }, null, 8 /* PROPS */, _hoisted_3)], 64 /* STABLE_FRAGMENT */)) : msg.type === 'link' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
+      key: 1,
+      href: msg.link,
+      target: "_blank",
+      style: {
+        "color": "blue",
+        "text-decoration": "underline"
+      }
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(msg.text), 9 /* TEXT, PROPS */, _hoisted_4)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+      key: 2
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(msg.text), 1 /* TEXT */)], 64 /* STABLE_FRAGMENT */))], 2 /* CLASS */);
-  }), 128 /* KEYED_FRAGMENT */))], 512 /* NEED_PATCH */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  }), 128 /* KEYED_FRAGMENT */))], 512 /* NEED_PATCH */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
       return $data.newMessage = $event;
     }),
     onKeyup: _cache[4] || (_cache[4] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(function () {
       return $options.sendMessage && $options.sendMessage.apply($options, arguments);
     }, ["enter"])),
-    placeholder: "Escribe un mensaje..."
+    placeholder: "Envia tu consulta..."
   }, null, 544 /* NEED_HYDRATION, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.newMessage]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     onClick: _cache[5] || (_cache[5] = function () {
       return $options.sendMessage && $options.sendMessage.apply($options, arguments);
