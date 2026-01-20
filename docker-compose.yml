@@ -13,7 +13,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ".:/var/www"
+      - "./public:/var/www/public"
 
   nginx:
     image: nginx:latest
@@ -22,11 +22,11 @@ services:
       - app
     ports:
       - "80:80"
-      - "443:443"
+      - "443:443"   # 🔹 agrega el puerto 443 para HTTPS
     volumes:
-      - ".:/var/www:ro"
+      - "./public:/var/www/public:ro"
       - "./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro"
-      - "/etc/letsencrypt:/etc/letsencrypt:ro"
+      - "./nginx/ssl:/etc/nginx/ssl:ro"
     networks:
       - appnet
     restart: always
