@@ -26,8 +26,8 @@
         </div>
       </div>
 
-      <!-- Tabla de Tickets -->
-      <div class="card shadow">
+      <!-- Tabla de Tickets (solo admin) -->
+      <div class="card shadow" v-if="isAdmin">
         <div class="card-body p-0">
           <div class="flex justify-end p-2">
             <button @click="exportExcel" class="btn btn-success">Exportar a Excel</button>
@@ -63,6 +63,10 @@
           </div>
         </div>
       </div>
+
+      <div class="alert alert-warning" v-else>
+        Solo el usuario administrador puede visualizar la tabla de tickets.
+      </div>
     </div>
   </section>
 </template>
@@ -93,12 +97,18 @@ export default {
       }
     };
     const user = ref(getUserSession());
+    const isAdmin = ref(user.value?.username === 'admin' && user.value?.role === 'admin');
     const tickets = ref([]);
     const loading = ref(false);
 
     const fetchTickets = async () => {
+      if (!isAdmin.value) {
+        tickets.value = [];
+        return;
+      }
+
       try {
-        const response = await axios.get(`/tickets?telefono=${user.value.telefono}`);
+        const response = await axios.get('/tickets');
         tickets.value = response.data || [];
       } catch (error) {
         console.error('Error fetching tickets:', error);
@@ -139,7 +149,7 @@ export default {
       fetchTickets();
     });
 
-    return { user, tickets, loading, updateProfile, exportExcel };
+    return { user, isAdmin, tickets, loading, updateProfile, exportExcel };
   },
 };
 </script>

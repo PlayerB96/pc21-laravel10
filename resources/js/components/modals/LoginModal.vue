@@ -6,8 +6,8 @@
             </div>
             <h2>{{ isRegister ? 'Registrar Usuario' : 'Iniciar sesión' }}</h2>
             <form @submit.prevent="handleSubmit" class="login-form">
-                <input type="number" v-model="username" placeholder="Ingrese su DNI" required class="input-field"
-                    @input="validateDNI" autocomplete="off" />
+                <input type="text" v-model="username" placeholder="Ingrese su usuario" required class="input-field"
+                    autocomplete="off" />
 
                 <input type="number" v-if="isRegister" v-model="telefono" placeholder="Numero de Telefono" required
                     class="input-field" autocomplete="off" />
@@ -67,13 +67,6 @@ export default {
         closeModal() {
             this.$emit('update:isVisible', false);
         },
-        validateDNI() {
-            if (typeof this.username !== 'string') {
-                this.username = String(this.username); // Convertir a string si no lo es
-            }
-            this.username = this.username.replace(/\D/g, ''); // Eliminar caracteres no numéricos
-        },
-
         toggleMode() {
             this.isRegister = !this.isRegister;
             this.clearFields();
@@ -87,8 +80,8 @@ export default {
 
         },
         async handleSubmit() {
-            if (this.username.length < 8 || isNaN(this.username)) {
-                alert('Por favor, ingrese un DNI válido (8 dígitos).');
+            if (!this.username || !String(this.username).trim()) {
+                alert('Por favor, ingrese un usuario válido.');
                 return;
             }
             this.loading = true;

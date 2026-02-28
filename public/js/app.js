@@ -28800,12 +28800,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     closeModal: function closeModal() {
       this.$emit('update:isVisible', false);
     },
-    validateDNI: function validateDNI() {
-      if (typeof this.username !== 'string') {
-        this.username = String(this.username); // Convertir a string si no lo es
-      }
-      this.username = this.username.replace(/\D/g, ''); // Eliminar caracteres no numéricos
-    },
     toggleMode: function toggleMode() {
       this.isRegister = !this.isRegister;
       this.clearFields();
@@ -28824,11 +28818,11 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
-              if (!(_this.username.length < 8 || isNaN(_this.username))) {
+              if (!(!_this.username || !String(_this.username).trim())) {
                 _context.n = 1;
                 break;
               }
-              alert('Por favor, ingrese un DNI válido (8 dígitos).');
+              alert('Por favor, ingrese un usuario válido.');
               return _context.a(2);
             case 1:
               _this.loading = true;
@@ -29087,6 +29081,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   setup: function setup() {
+    var _user$value, _user$value2;
     // Función helper para obtener userSession de forma segura
     var getUserSession = function getUserSession() {
       try {
@@ -29105,6 +29100,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       }
     };
     var user = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(getUserSession());
+    var isAdmin = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(((_user$value = user.value) === null || _user$value === void 0 ? void 0 : _user$value.username) === 'admin' && ((_user$value2 = user.value) === null || _user$value2 === void 0 ? void 0 : _user$value2.role) === 'admin');
     var tickets = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)([]);
     var loading = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)(false);
     var fetchTickets = /*#__PURE__*/function () {
@@ -29113,22 +29109,29 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         return _regenerator().w(function (_context) {
           while (1) switch (_context.p = _context.n) {
             case 0:
-              _context.p = 0;
-              _context.n = 1;
-              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/tickets?telefono=".concat(user.value.telefono));
+              if (isAdmin.value) {
+                _context.n = 1;
+                break;
+              }
+              tickets.value = [];
+              return _context.a(2);
             case 1:
+              _context.p = 1;
+              _context.n = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get('/tickets');
+            case 2:
               response = _context.v;
               tickets.value = response.data || [];
-              _context.n = 3;
+              _context.n = 4;
               break;
-            case 2:
-              _context.p = 2;
+            case 3:
+              _context.p = 3;
               _t = _context.v;
               console.error('Error fetching tickets:', _t);
-            case 3:
+            case 4:
               return _context.a(2);
           }
-        }, _callee, null, [[0, 2]]);
+        }, _callee, null, [[1, 3]]);
       }));
       return function fetchTickets() {
         return _ref.apply(this, arguments);
@@ -29193,6 +29196,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     });
     return {
       user: user,
+      isAdmin: isAdmin,
       tickets: tickets,
       loading: loading,
       updateProfile: updateProfile,
@@ -29608,36 +29612,33 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   return $props.isVisible ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
     key: 0,
     "class": "modal-overlay",
-    onClick: _cache[9] || (_cache[9] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
+    onClick: _cache[8] || (_cache[8] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.closeModal && $options.closeModal.apply($options, arguments);
     }, ["self"]))
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_cache[10] || (_cache[10] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_cache[9] || (_cache[9] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "logo-container"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
     src: "/assets/imgs/pc21v1.png",
     alt: "Grupo LN1 Logo",
     "class": "logo"
   })], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isRegister ? 'Registrar Usuario' : 'Iniciar sesión'), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
-    onSubmit: _cache[6] || (_cache[6] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
+    onSubmit: _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.handleSubmit && $options.handleSubmit.apply($options, arguments);
     }, ["prevent"])),
     "class": "login-form"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-    type: "number",
+    type: "text",
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $data.username = $event;
     }),
-    placeholder: "Ingrese su DNI",
+    placeholder: "Ingrese su usuario",
     required: "",
     "class": "input-field",
-    onInput: _cache[1] || (_cache[1] = function () {
-      return $options.validateDNI && $options.validateDNI.apply($options, arguments);
-    }),
     autocomplete: "off"
-  }, null, 544 /* NEED_HYDRATION, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.username]]), $data.isRegister ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
+  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.username]]), $data.isRegister ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
     key: 0,
     type: "number",
-    "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
       return $data.telefono = $event;
     }),
     placeholder: "Numero de Telefono",
@@ -29647,7 +29648,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, null, 512 /* NEED_PATCH */)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.telefono]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.isRegister ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
     key: 1,
     type: "email",
-    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+    "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
       return $data.email = $event;
     }),
     placeholder: "Ingrese su Email",
@@ -29657,7 +29658,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, null, 512 /* NEED_PATCH */)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.email]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.isRegister ? (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("input", {
     key: 2,
     type: "text",
-    "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
+    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
       return $data.nombreCompleto = $event;
     }),
     placeholder: "Nombre Completo",
@@ -29666,7 +29667,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     autocomplete: "off"
   }, null, 512 /* NEED_PATCH */)), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.nombreCompleto]]) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: $data.showPassword ? 'text' : 'password',
-    "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
+    "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
       return $data.password = $event;
     }),
     placeholder: "Contraseña",
@@ -29677,16 +29678,16 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     type: "submit",
     "class": "submit-button",
     disabled: $data.loading
-  }, [$data.loading ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_4)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isRegister ? 'Registrar' : 'Iniciar sesión'), 1 /* TEXT */))], 8 /* PROPS */, _hoisted_3)], 32 /* NEED_HYDRATION */), _cache[11] || (_cache[11] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+  }, [$data.loading ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_4)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isRegister ? 'Registrar' : 'Iniciar sesión'), 1 /* TEXT */))], 8 /* PROPS */, _hoisted_3)], 32 /* NEED_HYDRATION */), _cache[10] || (_cache[10] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
     id: "mensajeError",
     "class": "error-message"
   }, null, -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
     "class": "toggle-mode text-black",
-    onClick: _cache[7] || (_cache[7] = function () {
+    onClick: _cache[6] || (_cache[6] = function () {
       return $options.toggleMode && $options.toggleMode.apply($options, arguments);
     })
   }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    onClick: _cache[8] || (_cache[8] = function () {
+    onClick: _cache[7] || (_cache[7] = function () {
       return $options.closeModal && $options.closeModal.apply($options, arguments);
     }),
     "class": "close-button"
@@ -29844,6 +29845,7 @@ var _hoisted_7 = {
 };
 var _hoisted_8 = ["disabled"];
 var _hoisted_9 = {
+  key: 0,
   "class": "card shadow"
 };
 var _hoisted_10 = {
@@ -29873,6 +29875,10 @@ var _hoisted_18 = {
 };
 var _hoisted_19 = {
   key: 0
+};
+var _hoisted_20 = {
+  key: 1,
+  "class": "alert alert-warning"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("section", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_cache[10] || (_cache[10] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
@@ -29912,7 +29918,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     type: "submit",
     "class": "btn btn-primary",
     disabled: $setup.loading
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.loading ? 'Guardando...' : 'Actualizar Perfil'), 9 /* TEXT, PROPS */, _hoisted_8)], 32 /* NEED_HYDRATION */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Tabla de Tickets "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.loading ? 'Guardando...' : 'Actualizar Perfil'), 9 /* TEXT, PROPS */, _hoisted_8)], 32 /* NEED_HYDRATION */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Tabla de Tickets (solo admin) "), $setup.isAdmin ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     onClick: _cache[4] || (_cache[4] = function () {
       return $setup.exportExcel && $setup.exportExcel.apply($setup, arguments);
     }),
@@ -29938,7 +29944,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }), 128 /* KEYED_FRAGMENT */)), $setup.tickets.length === 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", _hoisted_19, _toConsumableArray(_cache[8] || (_cache[8] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", {
     colspan: "4",
     "class": "text-center py-5 text-gray-500"
-  }, " No hay tickets disponibles ", -1 /* CACHED */)])))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])])])])]);
+  }, " No hay tickets disponibles ", -1 /* CACHED */)])))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_20, " Solo el usuario administrador puede visualizar la tabla de tickets. "))])]);
 }
 
 /***/ }),

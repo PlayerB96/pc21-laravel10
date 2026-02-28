@@ -15,10 +15,25 @@ use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
+    private function ensureDefaultAdminUser(): void
+    {
+        Usuario::updateOrCreate(
+            ['username' => 'admin'],
+            [
+                'password' => Hash::make('admin'),
+                'role' => 'admin',
+                'telefono' => null,
+                'email' => 'admin@local.dev',
+                'nombre_completo' => 'Administrador'
+            ]
+        );
+    }
     
 
     public function auth(Request $request)
     {
+        $this->ensureDefaultAdminUser();
+
         $request->validate([
             'username' => 'required',
             'password' => 'required',
@@ -46,7 +61,10 @@ class AuthController extends Controller
             'email' => $user->email,
             'telefono' => $user->telefono,
             'username' => $user->username,
+            'role' => $user->role ?? 'user',
         ];
+
+        $request->session()->put('userSession', $sessionData);
     
         return response()->json([
             'message' => 'Autenticación exitosa.',
@@ -57,9 +75,18 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        $this->ensureDefaultAdminUser();
+
         // Asegurar que el email no tenga espacios extra
         $request->merge(['email' => trim($request->email)]);
            Log::info("Archivo subido exitosamente: $request->email");
+
+        if ($request->username === 'admin') {
+            return response()->json([
+                'message' => 'El usuario admin está reservado.'
+            ], 422);
+        }
+
         $request->validate([
             'username' => 'required|unique:users',
             'telefono' => 'sometimes|unique:users',

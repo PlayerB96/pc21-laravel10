@@ -137,6 +137,12 @@ class ChatController extends Controller
 
     public function getTickets()
     {
+        $sessionUser = session('userSession');
+
+        if (!$sessionUser || ($sessionUser['username'] ?? null) !== 'admin' || ($sessionUser['role'] ?? null) !== 'admin') {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
         // Recuperar todos los tickets de la base de datos
         $tickets = Ticket::all();
         // Devolver los tickets en formato JSON
