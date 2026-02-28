@@ -28,17 +28,17 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-enable xdebug
 
 
-# Instala drivers de Microsoft SQL Server, eliminando paquetes en conflicto
-RUN curl -sSL https://packages.microsoft.com/keys/microsoft.asc \
-      | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg && \
-    curl -sSL https://packages.microsoft.com/config/debian/11/prod.list \
-      > /etc/apt/sources.list.d/mssql-release.list && \
-    apt-get update && \
-    # Elimina paquetes con conflicto
-    apt-get remove -y libodbc2 odbcinst unixodbc-common unixodbc && \
-    ACCEPT_EULA=Y apt-get install -y msodbcsql17 unixodbc-dev && \
-    pecl install sqlsrv pdo_sqlsrv && \
-    docker-php-ext-enable sqlsrv pdo_sqlsrv
+# Instala drivers de Microsoft SQL Server
+RUN set -eux; \
+        curl -sSL https://packages.microsoft.com/keys/microsoft.asc \
+            | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg; \
+        . /etc/os-release; \
+        curl -sSL "https://packages.microsoft.com/config/debian/${VERSION_ID}/prod.list" \
+            > /etc/apt/sources.list.d/mssql-release.list; \
+        apt-get update; \
+        ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18 unixodbc-dev; \
+        pecl install sqlsrv pdo_sqlsrv; \
+        docker-php-ext-enable sqlsrv pdo_sqlsrv
 
 
 
