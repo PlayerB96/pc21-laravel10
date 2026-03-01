@@ -48,7 +48,7 @@ RUN pecl install mongodb-1.21.0 \
     && docker-php-ext-enable xdebug
 
 # -----------------------------
-# Instala drivers Microsoft SQL Server
+# Instala drivers Microsoft SQL Server (compatible con PHP 8.2)
 # -----------------------------
 RUN set -eux; \
     curl -sSL https://packages.microsoft.com/keys/microsoft.asc \
@@ -59,7 +59,7 @@ RUN set -eux; \
     ACCEPT_EULA=Y apt-get install -y --no-install-recommends \
         msodbcsql18 \
         unixodbc-dev; \
-    pecl install sqlsrv pdo_sqlsrv; \
+    pecl install sqlsrv-5.11.1 pdo_sqlsrv-5.11.1; \
     docker-php-ext-enable sqlsrv pdo_sqlsrv; \
     rm -rf /var/lib/apt/lists/*
 
